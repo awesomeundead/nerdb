@@ -1,0 +1,6 @@
+AddDefaultCharset UTF-8
+
+<IfModule rewrite_module>
+    RewriteEngine On
+    RewriteRule .* index.php [QSA,L]
+</IfModule>

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title></title>
+</head>
+<body>
+
+<div id="app">
+    <button class="steam_connect" type="button">Conectar com Steam</button>
+</div>
+
+<script>
+
+document.querySelector('.steam_connect').addEventListener('click', () =>
+{
+    const params =
+    {
+        'openid.ns'         : 'http://specs.openid.net/auth/2.0',
+        'openid.mode'       : 'checkid_setup',
+        'openid.return_to'  : 'http://localhost/projeto_abigo/auth.php',
+        'openid.realm'      : 'http://localhost/projeto_abigo',
+        'openid.identity'   : 'http://specs.openid.net/auth/2.0/identifier_select',
+        'openid.claimed_id' : 'http://specs.openid.net/auth/2.0/identifier_select'
+    }
+
+    const queryParams = new URLSearchParams(params);
+
+    const url = 'https://steamcommunity.com/openid/login';
+
+    window.location.href = `${url}?${queryParams.toString()}`;
+});
+
+</script>
+
+</body>
+</html>
