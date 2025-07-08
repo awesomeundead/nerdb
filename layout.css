@@ -1,0 +1,42 @@
+*
+{
+    box-sizing: border-box;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+body
+{
+    color: #333;
+    margin: 0;
+}
+
+body, button, input, label, select
+{
+    font-size: 14px;
+}
+
+button, input, select
+{
+    border: 1px solid #CCC;
+    padding: 10px 5px;
+}
+
+.column
+{
+    display: flex;
+    flex-direction: row;
+    gap: 5px;
+}
+
+#movies
+{
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+#movies .item
+{
+    background-color: #EEE;
+    padding: 5px;
+}

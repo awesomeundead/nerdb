@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Filmes</title>
+<link href="layout.css" rel="stylesheet" />
+</head>
+<body>
+
+<div id="app">
+    <header>
+        <nav>
+            <a href="movies.html">Filmes</a>
+            <a href="add_movie.html">Adicionar filme</a>
+        </nav>
+    </header>
+    <template>
+        <div class="item">
+            <div>
+                <div class="title_br"></div>
+            </div>
+            <div class="column">
+                <div>Título em inglês:</div>
+                <div class="title_us"></div>
+            </div>
+            <div class="column">
+                <div>Lançamento:</div>
+                <div class="release_year"></div>
+            </div>
+            <div class="imdb">
+                <a href="" target="_blank">IMDB</a>
+            </div>
+        </div>
+    </template>
+    <div id="movies"></div>
+</div>
+
+
+<script>
+
+const container = document.getElementById('movies');
+const template = document.querySelector('template');
+
+load_movies();
+
+function load_movies()
+{
+    fetch('api/v1/movies')
+    .then(response =>
+    {
+        if (!response.ok)
+        {
+            throw new Error(response.statusText);
+        }
+
+        return response.json();
+    })
+    .then(json =>
+    {
+        render_movies(json.movies)
+    })
+    .catch(error =>
+    {
+        console.error(error);
+    });
+}
+
+function render_movies(movies)
+{
+    container.innerHTML = '';
+
+    movies.forEach(item =>
+    {
+        const clone = template.content.cloneNode(true);
+
+        clone.querySelector('.title_br').textContent =  item.title_br;
+        clone.querySelector('.title_us').textContent =  item.title_us;
+        clone.querySelector('.release_year').textContent =  item.release_year;
+        clone.querySelector('.imdb a').href =  `https://www.imdb.com/pt/title/${item.imdb}/`;
+
+        container.appendChild(clone);
+    });
+}
+
+</script>
+
+</body>
+</html>
