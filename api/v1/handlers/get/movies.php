@@ -5,7 +5,17 @@ header('Content-Type: application/json; charset=utf-8');
 require ROOT_DIR . '/pdo.php';
 
 $params = [];
-$query = 'SELECT * FROM movies';
+
+if (isset($_GET['release']) && preg_match('/^\d{4}$/', $_GET['release']))
+{
+    $params['release_year'] = $_GET['release'];
+
+    $query = 'SELECT * FROM movies WHERE release_year = :release_year';
+}
+else
+{
+    $query = 'SELECT * FROM movies';
+}
 
 $stmt = $pdo->prepare($query);
 $stmt->execute($params);

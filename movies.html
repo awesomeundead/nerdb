@@ -14,22 +14,31 @@
             <a href="movies.html">Filmes</a>
             <a href="add_movie.html">Adicionar filme</a>
         </nav>
+        <div>
+            <input name="q" placeholder="Pesquisar por nome" type="search" />
+            <button type="submit">Ok</button>
+        </div>
     </header>
     <template>
-        <div class="item">
-            <div>
-                <div class="title_br"></div>
+        <div class="item column">
+            <div class="image">
+                <img alt="" height="128" src="" />
             </div>
-            <div class="column">
-                <div>Título em inglês:</div>
-                <div class="title_us"></div>
-            </div>
-            <div class="column">
-                <div>Lançamento:</div>
-                <div class="release_year"></div>
-            </div>
-            <div class="imdb">
-                <a href="" target="_blank">IMDB</a>
+            <div class="row">
+                <div>
+                    <div class="title_br"></div>
+                </div>
+                <div class="column">
+                    <div>Título em inglês:</div>
+                    <div class="title_us"></div>
+                </div>
+                <div class="column">
+                    <div>Lançamento:</div>
+                    <div class="release_year"></div>
+                </div>
+                <div class="imdb">
+                    <a href="" target="_blank">IMDB</a>
+                </div>
             </div>
         </div>
     </template>
@@ -39,14 +48,22 @@
 
 <script>
 
+const query = new URLSearchParams(window.location.search);
 const container = document.getElementById('movies');
 const template = document.querySelector('template');
 
-load_movies();
-
-function load_movies()
+if (query.has('release'))
 {
-    fetch('api/v1/movies')
+    load_movies(`api/v1/movies?release=${query.get('release')}`);
+}
+else
+{
+    load_movies('api/v1/movies');
+}
+
+function load_movies(url)
+{
+    fetch(url)
     .then(response =>
     {
         if (!response.ok)
@@ -74,6 +91,7 @@ function render_movies(movies)
     {
         const clone = template.content.cloneNode(true);
 
+        clone.querySelector('img').src =  `public/images/256/${item.media}.webp`;
         clone.querySelector('.title_br').textContent =  item.title_br;
         clone.querySelector('.title_us').textContent =  item.title_us;
         clone.querySelector('.release_year').textContent =  item.release_year;

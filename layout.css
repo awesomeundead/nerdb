@@ -28,6 +28,13 @@ button, input, select
     gap: 5px;
 }
 
+.row
+{
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
 #movies
 {
     display: flex;
@@ -39,4 +46,17 @@ button, input, select
 {
     background-color: #EEE;
     padding: 5px;
+}
+
+#movies .image
+{
+    background-color: #000;
+    display: flex;
+    justify-content: center;
+    width: 96px;
+}
+
+#movies .image img
+{
+    height: 128px;
 }
