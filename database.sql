@@ -43,7 +43,7 @@ CREATE TABLE `movies` (
   `id` int(11) UNSIGNED NOT NULL,
   `title_br` varchar(255) NOT NULL,
   `title_us` varchar(255) NOT NULL,
-  `release` year(4) NOT NULL,
+  `release_year` year(4) NOT NULL,
   `imdb` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -51,7 +51,7 @@ CREATE TABLE `movies` (
 -- Despejando dados para a tabela `movies`
 --
 
-INSERT INTO `movies` (`id`, `title_br`, `title_us`, `release`, `imdb`) VALUES
+INSERT INTO `movies` (`id`, `title_br`, `title_us`, `release_year`, `imdb`) VALUES
 (1, 'Constantine', 'Constantine', '2005', 'tt0360486'),
 (2, 'Amnésia', 'Memento', '2000', 'tt0209144'),
 (3, 'Batman Begins', 'Batman Begins', '2005', 'tt0372784'),

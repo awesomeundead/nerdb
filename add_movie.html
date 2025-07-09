@@ -67,6 +67,11 @@ function add_movie(body)
         if (json.hasOwnProperty('status'))
         {
             notification(json.status, {success: 'Sucesso.', failure: 'Falha.'});
+
+            if (json.status == 'success')
+            {
+                clear_form();
+            }
         }
         else
         {
@@ -79,6 +84,14 @@ function add_movie(body)
     {
         console.error(error);
     });
+}
+
+function clear_form()
+{
+    title_br.value = '';
+    title_us.value = '';
+    release_year.value = '';
+    imdb.value = '';
 }
 
 submit.addEventListener('click', () =>

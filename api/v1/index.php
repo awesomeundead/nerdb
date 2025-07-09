@@ -5,7 +5,7 @@ require __DIR__ . '/../../vendor/autoload.php';
 date_default_timezone_set('America/Sao_Paulo');
 define('ROOT_DIR', __DIR__);
 
-$base_path = '/projeto_abigo/api/v1';
+$base_path = dirname($_SERVER['PHP_SELF']);
 
 $routes = require 'routes.php';
 $dispatcher = \FastRoute\simpleDispatcher($routes);
