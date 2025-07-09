@@ -4,6 +4,8 @@ use FastRoute\RouteCollector;
 
 return function(RouteCollector $route)
 {
+    $route->get('/movie/{id:\d+}', 'handlers/get/movie.php');
+
     $route->get('/movies', 'handlers/get/movies.php');
 
     $route->get('/user', 'handlers/get/user.php');
@@ -11,4 +13,7 @@ return function(RouteCollector $route)
 
     $route->post('/movie', 'handlers/post/movie.php');
     $route->post('/user', 'handlers/get/user.php');
+
+    $route->put('/movie/{id:\d+}', 'handlers/put/movie.php');
+
 };

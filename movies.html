@@ -42,6 +42,9 @@
                 <div class="imdb">
                     <a href="" target="_blank">IMDB</a>
                 </div>
+                <div class="update">
+                    <a href="update_movie.html" target="_blank">Editar</a>
+                </div>
             </div>
         </div>
     </template>
@@ -107,6 +110,7 @@ function render_movies(movies)
         clone.querySelector('.title_us').textContent =  item.title_us;
         clone.querySelector('.release_year').textContent =  item.release_year;
         clone.querySelector('.imdb a').href =  `https://www.imdb.com/pt/title/${item.imdb}/`;
+        clone.querySelector('.update a').href +=  `?id=${item.id}`;
 
         container.appendChild(clone);
     });
