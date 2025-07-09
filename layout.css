@@ -21,42 +21,16 @@ button, input, select
     padding: 10px 5px;
 }
 
-.column
+.flex_column
 {
     display: flex;
     flex-direction: row;
     gap: 5px;
 }
 
-.row
+.flex_row
 {
     display: flex;
     flex-direction: column;
     gap: 5px;
-}
-
-#movies
-{
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-}
-
-#movies .item
-{
-    background-color: #EEE;
-    padding: 5px;
-}
-
-#movies .image
-{
-    background-color: #000;
-    display: flex;
-    justify-content: center;
-    width: 96px;
-}
-
-#movies .image img
-{
-    height: 128px;
 }

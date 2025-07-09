@@ -12,6 +12,13 @@ if (isset($_GET['release']) && preg_match('/^\d{4}$/', $_GET['release']))
 
     $query = 'SELECT * FROM movies WHERE release_year = :release_year';
 }
+elseif (isset($_GET['search']))
+{
+    $search = trim($_GET['search']);
+    $params['search'] = "%{$search}%";
+
+    $query = 'SELECT * FROM movies WHERE CONCAT_WS(" ", title_br, title_us, release_year) LIKE :search';
+}
 else
 {
     $query = 'SELECT * FROM movies';
