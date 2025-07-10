@@ -27,12 +27,16 @@ const steam_connect = document.querySelector('.steam_connect');
 
 steam_connect.addEventListener('click', () =>
 {
+    const protocol = window.location.protocol;
+    const host = window.location.host;
+    const path = window.location.pathname;
+    const basePath = path.substring(0, path.lastIndexOf('/'));
     const params =
     {
         'openid.ns'         : 'http://specs.openid.net/auth/2.0',
         'openid.mode'       : 'checkid_setup',
-        'openid.return_to'  : 'http://localhost/projeto_abigo/auth.php',
-        'openid.realm'      : 'http://localhost/projeto_abigo',
+        'openid.return_to'  : `${protocol}://${host}${basePath}/auth.php`,
+        'openid.realm'      : `${protocol}://${host}${basePath}`,
         'openid.identity'   : 'http://specs.openid.net/auth/2.0/identifier_select',
         'openid.claimed_id' : 'http://specs.openid.net/auth/2.0/identifier_select'
     }
