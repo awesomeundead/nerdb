@@ -13,7 +13,7 @@ return function(RouteCollector $route)
     $route->get('/user/movies/{id:\d+}', 'handlers/get/user_movies.php');
 
     $route->post('/movie', 'handlers/post/movie.php');
-    $route->post('/user', 'handlers/get/user.php');
+    $route->post('/user', 'handlers/post/user.php');
 
     $route->put('/movie/{id:\d+}', 'handlers/put/movie.php');
 

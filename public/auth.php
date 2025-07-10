@@ -55,19 +55,20 @@ if (preg_match('#is_valid\s*:\s*true#i', $response))
 
     $protocol = !empty($_SERVER['HTTPS']) ? 'https' : 'http';
     $url = "{$protocol}://{$_SERVER['HTTP_HOST']}";
-    $base_path = rtrim(dirname($_SERVER['PHP_SELF']), '/\\');
+    $base_path = rtrim(dirname($_SERVER['PHP_SELF'], 2), '/\\');
 
     /*
      *  verifica se o usuário existe
      */
     $response = file_get_contents("{$url}{$base_path}/api/v1/user?steamid={$steamid64}");
 
-    if (!$response)
+    if ($response == 'false')
     {
         $params = [
             'steamid'     => $player['steamid'],
             'personaname' => $player['personaname'],
-            'avatarhash'  => $player['avatarhash']
+            'avatarhash'  => $player['avatarhash'],
+            'realname'  => $player['realname']
         ];
 
         $jsonData = json_encode($params, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);

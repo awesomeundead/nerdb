@@ -10,15 +10,16 @@ $dados = json_decode($content, true);
 $steamid = trim($dados['steamid']);
 $personaname = trim($dados['personaname']);
 $avatarhash = trim($dados['avatarhash']);
+$realname = trim($dados['realname']);
 
 $params = [
     'steamid' => $steamid,
     'personaname' => $personaname,
     'avatarhash' => $avatarhash,
-    'created_date' => 'NOW()'
+    'name' => $realname
 ];
 
-$query = 'INSERT INTO users (steamid, personaname, avatarhash, created_date) VALUES (:steamid, :personaname, :avatarhash, :created_date)';
+$query = 'INSERT INTO users (steamid, personaname, avatarhash, name, created_date) VALUES (:steamid, :personaname, :avatarhash, :name, NOW())';
 
 $stmt = $pdo->prepare($query);
 $result = $stmt->execute($params);
