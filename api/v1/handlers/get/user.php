@@ -4,18 +4,19 @@ header('Content-Type: application/json; charset=utf-8');
 
 require ROOT_DIR . '/pdo.php';
 
-if (isset($_GET['steamid']))
+$steamid = $_GET['steamid'] ?? false;
+
+if (!$steamid)
 {
-    $params = [
-        'steamid' => $_GET['steamid']
-    ];
-    $query = 'SELECT * FROM users WHERE steamid = :steamid';
-}
-else
-{
+    http_response_code(400);
+    echo 'BAD REQUEST';
     exit;
 }
 
+$params = [
+    'steamid' => $steamid
+];
+$query = 'SELECT * FROM users WHERE steamid = :steamid';
 
 $stmt = $pdo->prepare($query);
 $stmt->execute($params);

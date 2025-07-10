@@ -2,13 +2,32 @@
 
 header('Content-Type: application/json; charset=utf-8');
 
+require ROOT_DIR . '/../../session.php';
+
+$logged_in = $_SESSION['logged_in'] ?? false;
+
+if(!$logged_in)
+{
+    http_response_code(401);
+    echo 'UNAUTHORIZED';
+    exit;
+}
+
 require ROOT_DIR . '/pdo.php';
 
 $content = trim(file_get_contents('php://input'));
 $dados = json_decode($content, true);
 
-$id = $vars['id'];
+$params = [
+    'steamid' => $_SESSION['steamid']
+];
+$query = 'SELECT id FROM users WHERE steamid = :steamid';
 
+$stmt = $pdo->prepare($query);
+$stmt->execute($params);
+$user_id = $stmt->fetchColumn();
+
+$id = $vars['id'];
 $title_br = trim($dados['title_br']);
 $title_us = trim($dados['title_us']);
 $release_year = trim($dados['release_year']);
@@ -19,14 +38,16 @@ $params = [
     'title_br' => $title_br,
     'title_us' => $title_us,
     'release_year' => $release_year,
-    'imdb' => $imdb
+    'imdb' => $imdb,
+    'last_user_id' => $user_id
 ];
 
 $query = 'UPDATE movies SET
           title_br = :title_br,
           title_us = :title_us,
           release_year = :release_year,
-          imdb = :imdb
+          imdb = :imdb,
+          last_user_id = :last_user_id
           WHERE id = :id';
 
 $stmt = $pdo->prepare($query);

@@ -16,13 +16,13 @@ foreach ($signed_fields as $field)
     $params['openid.' . $field] = $_GET[$key];
 }
 
-$data = http_build_query($params);
+$body = http_build_query($params);
 $context = stream_context_create([
     'http' => [
         'method'  => 'POST',
         'header'  => "Content-type: application/x-www-form-urlencoded\r\n" .
-                     'Content-Length: ' . strlen($data) . "\r\n",
-        'content' => $data
+                     'Content-Length: ' . strlen($body) . "\r\n",
+        'content' => $body
     ]
 ]);
 
@@ -38,9 +38,9 @@ if (preg_match('#is_valid\s*:\s*true#i', $response))
     /*
      *  busca os dados do usuário steam
      */
-    $response = file_get_contents("https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key={$steam_api_key}&steamids={$steamID64}");
-    $json = json_decode($response, true);
-    $player = $json['response']['players'][0] ?? false;
+    $response = file_get_contents("https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key={$steam_api_key}&steamids={$steamid64}");
+    $data = json_decode($response, true);
+    $player = $data['response']['players'][0] ?? false;
 
     if (!$player)
     {
@@ -86,9 +86,9 @@ if (preg_match('#is_valid\s*:\s*true#i', $response))
         $response = file_get_contents("{$url}{$base_path}/api/v1/user", false, $context);
     }
 
-    header('movies.html?login=success');
+    header('location: index.html?login=success');
 }
 else
 {
-    header('index.html?login=failure');
+    header('location: index.html?login=failure');
 }

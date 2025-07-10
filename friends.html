@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title></title>
+<link href="layout.css" rel="stylesheet" />
+<link href="default.css" rel="stylesheet" />
+<script src="auth.js"></script>
+</head>
+<body>
+
+<div id="app">
+    <header>
+        <nav>
+            <a href="friends.html">Amigos</a>
+            <a href="movies.html">Filmes</a>
+            <a href="add_movie.html">Adicionar filme</a>
+        </nav>
+    </header>
+    <template>
+        <div class="item flex_column">
+            <div class="image">
+                <img alt="" src="" />
+            </div>
+            <div class="flex_row">
+                <div>
+                    <div class="personaname"></div>
+                </div>
+                <div class="movies">
+                    <a href="">Filmes</a>
+                </div>
+            </div>
+        </div>
+    </template>
+    <div id="friends"></div>
+</div>
+
+<script>
+
+const container = document.getElementById('friends');
+const template = document.querySelector('template');
+
+load_friends();
+
+function load_friends()
+{
+    fetch(`api/v1/user/friends?steamid=${steamid}`)
+    .then(response =>
+    {
+        if (!response.ok)
+        {
+            throw new Error(response.statusText);
+        }
+
+        return response.json();
+    })
+    .then(json =>
+    {
+        render_friends(json.friends);
+    })
+    .catch(error =>
+    {
+        console.error(error);
+    });
+}
+
+function render_friends(friends)
+{
+    container.innerHTML = '';
+
+    friends.forEach(item =>
+    {
+        const clone = template.content.cloneNode(true);
+
+        clone.querySelector('img').src =  `https://avatars.steamstatic.com/${item.avatarhash}_medium.jpg`;
+        clone.querySelector('.personaname').textContent = item.personaname;
+        clone.querySelector('.movies a').href = `user_movies.html?id=${item.id}`;
+
+        container.appendChild(clone);
+    });
+}
+
+</script>
+
+</body>
+</html>

@@ -5,22 +5,28 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title></title>
 <link href="layout.css" rel="stylesheet" />
+<link href="default.css" rel="stylesheet" />
 </head>
 <body>
 
 <div id="app">
     <header>
         <nav>
+            <a href="friends.html">Amigos</a>
             <a href="movies.html">Filmes</a>
             <a href="add_movie.html">Adicionar filme</a>
         </nav>
     </header>
-    <button class="steam_connect" type="button">Conectar com Steam</button>
+    <button class="steam_connect" hidden="hidden" type="button">Conectar com Steam</button>
 </div>
 
 <script>
 
-document.querySelector('.steam_connect').addEventListener('click', () =>
+load_login();
+
+const steam_connect = document.querySelector('.steam_connect');
+
+steam_connect.addEventListener('click', () =>
 {
     const params =
     {
@@ -36,8 +42,42 @@ document.querySelector('.steam_connect').addEventListener('click', () =>
 
     const url = 'https://steamcommunity.com/openid/login';
 
-    //window.location.href = `${url}?${queryParams.toString()}`;
+    window.location.href = `${url}?${queryParams.toString()}`;
 });
+
+function load_login()
+{
+    fetch('login.php')
+    .then(response =>
+    {
+        if (!response.ok)
+        {
+            throw new Error(response.statusText);
+        }
+
+        return response.json();
+    })
+    .then(json =>
+    {
+        render(json);
+    })
+    .catch(error =>
+    {
+        console.error(error);
+    });
+}
+
+function render(json)
+{
+    if (json.logged_in)
+    {
+        steam_connect.remove();
+    }
+    else
+    {
+        steam_connect.hidden = false;
+    }
+}
 
 </script>
 
