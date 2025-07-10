@@ -1,6 +1,6 @@
 <?php
 
-require __DIR__ . '/session.php';
+require __DIR__ . '/../session.php';
 
 if (isset($_SESSION['logged_in']))
 {

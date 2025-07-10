@@ -33,7 +33,7 @@ if (preg_match('#is_valid\s*:\s*true#i', $response))
     preg_match('#^https://steamcommunity.com/openid/id/([0-9]{17,25})#', $_GET['openid_claimed_id'], $matches);
     $steamid64 = $matches[1] ?? null;
 
-    $steam_api_key = (require __DIR__ . '/config.php')['steam_api_key'];
+    $steam_api_key = (require __DIR__ . '/../config.php')['steam_api_key'];
 
     /*
      *  busca os dados do usuário steam
@@ -47,7 +47,7 @@ if (preg_match('#is_valid\s*:\s*true#i', $response))
         exit;
     }
 
-    require __DIR__ . '/session.php';
+    require __DIR__ . '/../session.php';
 
     $_SESSION['logged_in'] = true;
     $_SESSION['steamid'] = $steamid64;
