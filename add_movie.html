@@ -6,6 +6,7 @@
 <title>Adicionar filmes</title>
 <link href="layout.css" rel="stylesheet" />
 <script src="default.js"></script>
+<script src="auth.js"></script>
 </head>
 <body>
 
@@ -34,6 +35,11 @@
 </div>
 
 <script>
+
+/*
+ * Verifica se o usuário esta logado
+ */
+check_login();
 
 const title_br = document.querySelector('#title_br');
 const title_us = document.querySelector('#title_us');

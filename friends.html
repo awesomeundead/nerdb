@@ -38,6 +38,11 @@
 
 <script>
 
+/*
+ * Verifica se o usuário esta logado
+ */
+check_login();
+
 const container = document.getElementById('friends');
 const template = document.querySelector('template');
 
@@ -45,7 +50,7 @@ load_friends();
 
 function load_friends()
 {
-    fetch(`api/v1/user/friends?steamid=${steamid}`)
+    fetch(`api/v1/user/friends?steamid=${session.steamid}`)
     .then(response =>
     {
         if (!response.ok)

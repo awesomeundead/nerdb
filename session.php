@@ -5,7 +5,7 @@ ini_set('session.use_strict_mode', 1);
 session_set_cookie_params([
     'domain' => $_SERVER['SERVER_NAME'],
     'httponly' => true,
-    'lifetime' => 1800,
+    'lifetime' => 3600,
     'samesite' => 'Lax'
 ]);
 
@@ -13,12 +13,12 @@ session_start();
 
 $user_agent = $_SERVER['HTTP_USER_AGENT'] ?? 'UNKNOWN';
 $address = $_SERVER['HTTP_CLIENT_IP']
-?? $_SERVER['HTTP_X_FORWARDED_FOR']
-?? $_SERVER['HTTP_X_FORWARDED']
-?? $_SERVER['HTTP_FORWARDED_FOR']
-?? $_SERVER['HTTP_FORWARDED']
-?? $_SERVER['REMOTE_ADDR']
-?? 'UNKNOWN';
+        ?? $_SERVER['HTTP_X_FORWARDED_FOR']
+        ?? $_SERVER['HTTP_X_FORWARDED']
+        ?? $_SERVER['HTTP_FORWARDED_FOR']
+        ?? $_SERVER['HTTP_FORWARDED']
+        ?? $_SERVER['REMOTE_ADDR']
+        ?? 'UNKNOWN';
 
 if (isset($_SESSION['regeneration']))
 {
