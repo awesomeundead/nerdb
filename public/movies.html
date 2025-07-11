@@ -12,8 +12,9 @@
 <div id="app">
     <header>
         <nav>
-            <a href="friends.html">Amigos</a>
-            <a href="movies.html">Filmes</a>
+            <a href="my_movie_list.html">Minha lista de filmes</a>
+            <a href="friends.html">Meus amigos</a>
+            <a href="movies.html">Filmes cadastrados</a>
             <a href="add_movie.html">Adicionar filme</a>
         </nav>
         <div>
@@ -45,6 +46,9 @@
                 </div>
                 <div class="update">
                     <a href="update_movie.html">Editar</a>
+                </div>
+                <div class="add">
+                    <button type="button">Adicionar a minha lista</button>
                 </div>
             </div>
         </div>
@@ -98,6 +102,36 @@ function load_movies(url)
     });
 }
 
+function addmovie(id, button)
+{
+    fetch('api/v1/user/addmovie/' + id,
+    {
+        method: 'post'
+    })
+    .then(response =>
+    {
+        if (!response.ok)
+        {
+            throw new Error(response.statusText);
+        }
+
+        return response.json();
+    })
+    .then(json =>
+    {
+        if (json.status == 'success')
+        {
+            button.remove();
+        }
+
+        console.log(json);
+    })
+    .catch(error =>
+    {
+        console.error(error);
+    });
+}
+
 function render_movies(movies)
 {
     container.innerHTML = '';
@@ -112,6 +146,11 @@ function render_movies(movies)
         clone.querySelector('.release_year').textContent =  item.release_year;
         clone.querySelector('.imdb a').href =  `https://www.imdb.com/pt/title/${item.imdb}/`;
         clone.querySelector('.update a').href +=  `?id=${item.id}`;
+
+        clone.querySelector('.add button').addEventListener('click', e => 
+        {
+            addmovie(item.id, e.target);
+        });
 
         container.appendChild(clone);
     });

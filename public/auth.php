@@ -44,14 +44,10 @@ if (preg_match('#is_valid\s*:\s*true#i', $response))
 
     if (!$player)
     {
+        http_response_code(500);
+        echo 'INTERNAL SERVER ERROR';
         exit;
     }
-
-    require __DIR__ . '/../session.php';
-
-    $_SESSION['logged_in'] = true;
-    $_SESSION['steamid'] = $steamid64;
-    $_SESSION['personaname'] = $player['personaname'];
 
     $protocol = !empty($_SERVER['HTTPS']) ? 'https' : 'http';
     $url = "{$protocol}://{$_SERVER['HTTP_HOST']}";
@@ -68,7 +64,7 @@ if (preg_match('#is_valid\s*:\s*true#i', $response))
             'steamid'     => $player['steamid'],
             'personaname' => $player['personaname'],
             'avatarhash'  => $player['avatarhash'],
-            'realname'  => $player['realname']
+            'realname'    => $player['realname']
         ];
 
         $jsonData = json_encode($params, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
@@ -85,7 +81,23 @@ if (preg_match('#is_valid\s*:\s*true#i', $response))
          *  insere novo usuário
          */
         $response = file_get_contents("{$url}{$base_path}/api/v1/user", false, $context);
+        $data = json_decode($response, true);
+        $status = $data['status'] ?? false;
+
+        if ($status)
+        {
+            $response = file_get_contents("{$url}{$base_path}/api/v1/user?steamid={$steamid64}");
+        }
     }
+
+    $data = json_decode($response, true);
+
+    require __DIR__ . '/../session.php';
+
+    $_SESSION['logged_in'] = true;
+    $_SESSION['user_id'] = $data['id'];
+    $_SESSION['steamid'] = $steamid64;
+    $_SESSION['personaname'] = $player['personaname'];
 
     header('location: index.html?login=success');
 }

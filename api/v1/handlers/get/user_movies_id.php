@@ -2,21 +2,10 @@
 
 header('Content-Type: application/json; charset=utf-8');
 
-require ROOT_DIR . '/../../session.php';
-
-$logged_in = $_SESSION['logged_in'] ?? false;
-
-if(!$logged_in)
-{
-    http_response_code(401);
-    echo 'UNAUTHORIZED';
-    exit;
-}
-
 require ROOT_DIR . '/pdo.php';
 
 $params = [
-    'user_id' => $_SESSION['user_id']
+    'user_id' => $vars['id']
 ];
 $query = 'SELECT watched, movies.* FROM users_list_movies
           INNER JOIN movies ON movies.id = users_list_movies.movie_id
