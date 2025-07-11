@@ -4,21 +4,17 @@ header('Content-Type: application/json; charset=utf-8');
 
 require ROOT_DIR . '/pdo.php';
 
-$user_id = $vars['id'] ?? false;
-$steamid = $_GET['steamid'] ?? false;
+$selector = $_GET['selector'] ?? false;
 
-if (!$user_id && !$steamid)
+if (!$selector)
 {
     http_response_code(400);
     echo 'BAD REQUEST';
     exit;
 }
 
-$params = [
-    'id' => $user_id,
-    'steamid' => $steamid
-];
-$query = 'SELECT * FROM users WHERE id = :id || steamid = :steamid';
+$params = ['selector' => $selector];
+$query = 'SELECT * FROM login_log WHERE selector = :selector';
 
 $stmt = $pdo->prepare($query);
 $stmt->execute($params);

@@ -31,7 +31,8 @@ if($logged_in)
     else
     {
         $query = 'SELECT movies.*, userlist.id AS added FROM movies
-                  LEFT JOIN users_list_movies AS userlist ON movies.id = userlist.movie_id AND userlist.user_id = :user_id';
+                  LEFT JOIN users_list_movies AS userlist ON movies.id = userlist.movie_id AND userlist.user_id = :user_id
+                  ORDER BY movies.id ASC';
     }
 }
 else

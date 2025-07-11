@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title></title>
 <link href="layout.css" rel="stylesheet" />
-<link href="default.css" rel="stylesheet" />
+<link href="default.css?11072025" rel="stylesheet" />
 <script src="auth.js"></script>
 </head>
 <body>
@@ -28,6 +28,7 @@ const steam_connect = document.querySelector('.steam_connect');
 
 steam_connect.addEventListener('click', () =>
 {
+    /*
     const protocol = window.location.protocol;
     const host = window.location.host;
     const path = window.location.pathname;
@@ -47,11 +48,14 @@ steam_connect.addEventListener('click', () =>
     const url = 'https://steamcommunity.com/openid/login';
 
     window.location.href = `${url}?${queryParams.toString()}`;
+    */
+
+    window.location.href = 'auth.php?login';
 });
 
-load();
+is_logged_in();
 
-async function load()
+async function is_logged_in()
 {
     const logged_in = await login();
 
