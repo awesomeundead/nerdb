@@ -29,9 +29,10 @@ if(!$logged_in)
 $steamid  = $_SESSION['steamid'];
 
 /*
- * Pode ocorrer um erro se o steamid estiver errado
+ * Pode ocorrer um erro se o steamid estiver errado ou se a lista de amigos não estiver pública.
  */
-$response = file_get_contents("https://api.steampowered.com/ISteamUser/GetFriendList/v1/?key={$steam_api_key}&steamid={$steamid}&relationship=friend");
+$context = stream_context_create(['http' => ['ignore_errors' => true]]);
+$response = file_get_contents("https://api.steampowered.com/ISteamUser/GetFriendList/v1/?key={$steam_api_key}&steamid={$steamid}&relationship=friend", false, $context);
 $data = json_decode($response, true);
 $list = $data['friendslist']['friends'] ?? false;
 

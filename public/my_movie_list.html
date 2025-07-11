@@ -43,7 +43,9 @@
             </div>
         </div>
     </template>
-    <div id="movies"></div>
+    <div id="movies">
+        <div class="grid"></div>
+    </div>
 </div>
 
 <script>
@@ -53,7 +55,7 @@
  */
 check_login();
 
-const container = document.getElementById('movies');
+const container = document.querySelector('#movies .grid');
 const template = document.querySelector('template');
 
 load_movies();

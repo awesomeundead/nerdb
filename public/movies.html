@@ -53,14 +53,16 @@
             </div>
         </div>
     </template>
-    <div id="movies"></div>
+    <div id="movies">
+        <div class="flex"></div>
+    </div>
 </div>
 
 
 <script>
 
 const query = new URLSearchParams(window.location.search);
-const container = document.getElementById('movies');
+const container = document.querySelector('#movies .flex');
 const template = document.querySelector('template');
 const search = document.querySelector('#search');
 
@@ -151,6 +153,11 @@ function render_movies(movies)
         {
             addmovie(item.id, e.target);
         });
+
+        if (item.added)
+        {
+            clone.querySelector('.add button').remove();
+        }
 
         container.appendChild(clone);
     });

@@ -42,14 +42,15 @@
             </div>
         </div>
     </template>
-    <div id="movies"></div>
+    <div id="movies">
+        <div class="grid"></div>
+    </div>
 </div>
-
 
 <script>
 
 const query = new URLSearchParams(window.location.search);
-const container = document.getElementById('movies');
+const container = document.querySelector('#movies .grid');
 const template = document.querySelector('template');
 
 if (query.has('id'))
