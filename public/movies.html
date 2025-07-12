@@ -13,6 +13,7 @@
 <div id="app">
     <header>
         <nav>
+            <a href="index.html">Início</a>
             <a href="my_movie_list.html">Minha lista de filmes</a>
             <a href="friends.html">Meus amigos</a>
             <a href="movies.html">Filmes cadastrados</a>
@@ -76,6 +77,10 @@ search.addEventListener('submit', e =>
 if (query.has('release'))
 {
     load_movies(`api/v1/movies?release=${query.get('release')}`);
+}
+else if (query.has('q'))
+{
+    load_movies(`api/v1/movies?search=${query.get('q')}`);
 }
 else
 {
@@ -171,6 +176,7 @@ async function is_logged_in()
 
     if (!logged_in)
     {
+        document.querySelectorAll('.update a').forEach(item => item.remove());
         document.querySelectorAll('.add button').forEach(item => item.remove());
     }
 }

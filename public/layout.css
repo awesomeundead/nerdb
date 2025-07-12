@@ -34,3 +34,14 @@ button, input, select
     flex-direction: column;
     gap: 5px;
 }
+
+nav
+{
+    display: flex;
+    justify-content: space-between;
+}
+
+nav a
+{
+    padding: 5px 10px;
+}
