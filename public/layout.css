@@ -6,13 +6,21 @@
 
 body
 {
-    color: #333;
+    background-color: #222;
+    color: #FFF;
+    font-size: 16px;
     margin: 0;
 }
 
 body, button, input, label, select
 {
     font-size: 14px;
+}
+
+a
+{
+    color: #FFF;
+    text-decoration: none;
 }
 
 button, input, select
@@ -39,6 +47,8 @@ nav
 {
     display: flex;
     justify-content: space-between;
+    margin: auto;
+    width: 1600px;
 }
 
 nav a

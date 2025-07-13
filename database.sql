@@ -96,10 +96,10 @@ INSERT INTO `users` (`id`, `steamid`, `personaname`, `avatarhash`, `name`, `crea
 -- --------------------------------------------------------
 
 --
--- Estrutura para tabela `users_list_movies`
+-- Estrutura para tabela `user_movie_list`
 --
 
-CREATE TABLE `users_list_movies` (
+CREATE TABLE `user_movie_list` (
   `id` int(10) UNSIGNED NOT NULL,
   `user_id` int(10) UNSIGNED NOT NULL,
   `movie_id` int(10) UNSIGNED NOT NULL,
@@ -107,10 +107,10 @@ CREATE TABLE `users_list_movies` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Despejando dados para a tabela `users_list_movies`
+-- Despejando dados para a tabela `user_movie_list`
 --
 
-INSERT INTO `users_list_movies` (`id`, `user_id`, `movie_id`, `watched`) VALUES
+INSERT INTO `user_movie_list` (`id`, `user_id`, `movie_id`, `watched`) VALUES
 (1, 1, 1, 1),
 (2, 1, 2, 1),
 (3, 1, 3, 1),
@@ -147,9 +147,9 @@ ALTER TABLE `users`
   ADD PRIMARY KEY (`id`);
 
 --
--- Índices de tabela `users_list_movies`
+-- Índices de tabela `user_movie_list`
 --
-ALTER TABLE `users_list_movies`
+ALTER TABLE `user_movie_list`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -175,9 +175,9 @@ ALTER TABLE `users`
   MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
--- AUTO_INCREMENT de tabela `users_list_movies`
+-- AUTO_INCREMENT de tabela `user_movie_list`
 --
-ALTER TABLE `users_list_movies`
+ALTER TABLE `user_movie_list`
   MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 COMMIT;
 

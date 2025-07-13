@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Adicionar filmes</title>
-<link href="layout.css" rel="stylesheet" />
+<link href="layout.css?130725" rel="stylesheet" />
 <script src="default.js?11072025"></script>
 <script src="auth.js"></script>
 </head>
@@ -26,6 +26,9 @@
         </div>
         <div>
             <input id="title_us" placeholder="Título em inglês" type="text" />
+        </div>
+        <div>
+            <input id="director" placeholder="Diretor" type="text" />
         </div>
         <div>
             <input id="release_year" placeholder="Ano de lançamento" type="number" />
@@ -53,6 +56,7 @@ if (!query.has('id'))
 
 const title_br = document.querySelector('#title_br');
 const title_us = document.querySelector('#title_us');
+const director = document.querySelector('#director');
 const release_year = document.querySelector('#release_year');
 const imdb = document.querySelector('#imdb');
 const submit = document.querySelector('[type="submit"]');
@@ -65,6 +69,7 @@ submit.addEventListener('click', () =>
     {
         'title_br': title_br.value,
         'title_us': title_us.value,
+        'director': director.value,
         'release_year': release_year.value,
         'imdb': imdb.value
     };
@@ -140,6 +145,7 @@ function render(item)
 {
     title_br.value = item.title_br,
     title_us.value = item.title_us,
+    director.value = item.director,
     release_year.value = item.release_year,
     imdb.value = item.imdb;
 }

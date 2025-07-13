@@ -22,6 +22,7 @@ $user_id = $_SESSION['user_id'];
 $id = $vars['id'];
 $title_br = trim($dados['title_br']);
 $title_us = trim($dados['title_us']);
+$director = trim($dados['director']);
 $release_year = trim($dados['release_year']);
 $imdb = trim($dados['imdb']);
 
@@ -48,6 +49,7 @@ if ($result)
         'id' => $id,
         'title_br' => $title_br,
         'title_us' => $title_us,
+        'director' => $director,
         'release_year' => $release_year,
         'imdb' => $imdb,
         'last_user_id' => $user_id
@@ -56,6 +58,7 @@ if ($result)
     $query = 'UPDATE movies SET
             title_br = :title_br,
             title_us = :title_us,
+            director = :director,
             release_year = :release_year,
             imdb = :imdb,
             last_user_id = :last_user_id

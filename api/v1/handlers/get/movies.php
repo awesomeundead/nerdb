@@ -22,7 +22,7 @@ if($logged_in)
         $params['release_year'] = $_GET['release'];
 
         $query = 'SELECT * FROM movies
-                  LEFT JOIN users_list_movies AS userlist ON movies.id = userlist.movie_id AND userlist.user_id = :user_id
+                  LEFT JOIN user_movie_list AS userlist ON movies.id = userlist.movie_id AND userlist.user_id = :user_id
                   WHERE release_year = :release_year';
     }
     elseif (isset($_GET['search']))
@@ -31,13 +31,13 @@ if($logged_in)
         $params['search'] = "%{$search}%";
 
         $query = 'SELECT movies.*, userlist.id AS added FROM movies
-                  LEFT JOIN users_list_movies AS userlist ON movies.id = userlist.movie_id AND userlist.user_id = :user_id
-                  WHERE CONCAT_WS(" ", title_br, title_us, release_year) LIKE :search';
+                  LEFT JOIN user_movie_list AS userlist ON movies.id = userlist.movie_id AND userlist.user_id = :user_id
+                  WHERE CONCAT_WS(" ", title_br, title_us, director, release_year) LIKE :search';
     }
     else
     {
         $query = 'SELECT movies.*, userlist.id AS added FROM movies
-                  LEFT JOIN users_list_movies AS userlist ON movies.id = userlist.movie_id AND userlist.user_id = :user_id
+                  LEFT JOIN user_movie_list AS userlist ON movies.id = userlist.movie_id AND userlist.user_id = :user_id
                   ORDER BY movies.id ASC';
     }
 }
@@ -54,7 +54,7 @@ else
         $search = trim($_GET['search']);
         $params['search'] = "%{$search}%";
 
-        $query = 'SELECT * FROM movies WHERE CONCAT_WS(" ", title_br, title_us, release_year) LIKE :search';
+        $query = 'SELECT * FROM movies WHERE CONCAT_WS(" ", title_br, title_us, director, release_year) LIKE :search';
     }
     else
     {

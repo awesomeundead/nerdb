@@ -18,9 +18,9 @@ require ROOT_DIR . '/pdo.php';
 $params = [
     'user_id' => $_SESSION['user_id']
 ];
-$query = 'SELECT watched, movies.* FROM users_list_movies
-          INNER JOIN movies ON movies.id = users_list_movies.movie_id
-          WHERE users_list_movies.user_id = :user_id';
+$query = 'SELECT watched, movies.* FROM user_movie_list
+          INNER JOIN movies ON movies.id = user_movie_list.movie_id
+          WHERE user_movie_list.user_id = :user_id';
 
 $stmt = $pdo->prepare($query);
 $stmt->execute($params);

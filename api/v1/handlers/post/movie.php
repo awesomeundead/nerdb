@@ -21,6 +21,7 @@ $dados = json_decode($content, true);
 $user_id = $_SESSION['user_id'];
 $title_br = trim($dados['title_br']);
 $title_us = trim($dados['title_us']);
+$director = trim($dados['director']);
 $release_year = trim($dados['release_year']);
 $imdb = trim($dados['imdb']);
 
@@ -45,14 +46,15 @@ if ($result)
     $params = [
         'title_br' => $title_br,
         'title_us' => $title_us,
+        'director' => $director,
         'release_year' => $release_year,
         'imdb' => $imdb,
         'first_user_id' => $user_id,
         'last_user_id' => $user_id
     ];
 
-    $query = 'INSERT INTO movies (title_br, title_us, release_year, imdb, first_user_id, last_user_id)
-              VALUES (:title_br, :title_us, :release_year, :imdb, :first_user_id, :last_user_id)';
+    $query = 'INSERT INTO movies (title_br, title_us, director, release_year, imdb, first_user_id, last_user_id)
+              VALUES (:title_br, :title_us, :director, :release_year, :imdb, :first_user_id, :last_user_id)';
 
     $stmt = $pdo->prepare($query);
     $result = $stmt->execute($params);
