@@ -13,14 +13,41 @@ if(!$logged_in)
     exit;
 }
 
+$watched = $_GET['watched'] ?? null;
+$rating = $_GET['rating'] ?? null;
+$reaction = $_GET['reaction'] ?? null;
+
 require ROOT_DIR . '/pdo.php';
 
-$params = [
-    'user_id' => $_SESSION['user_id']
-];
-$query = 'SELECT watched, movies.* FROM user_movie_list
-          INNER JOIN movies ON movies.id = user_movie_list.movie_id
-          WHERE user_movie_list.user_id = :user_id';
+$params = ['user_id' => $_SESSION['user_id']];
+$conditions = [];
+
+if ($watched !== null && $watched !== '')
+{
+    $conditions[] = 'list.watched = :watched';
+    $params['watched'] = $watched;
+}
+
+if ($rating !== null && $rating !== '')
+{
+    $conditions[] = 'list.rating = :rating';
+    $params['rating'] = $rating;
+}
+
+if ($reaction !== null && $reaction !== '')
+{
+    $conditions[] = 'list.reaction = :reaction';
+    $params['reaction'] = $reaction;
+}
+
+$query = 'SELECT watched, movies.* FROM user_movie_list AS list
+          INNER JOIN movies ON movies.id = list.movie_id
+          WHERE list.user_id = :user_id';
+
+if (!empty($conditions))
+{
+    $query .= ' AND ' . implode(' AND ', $conditions);
+}
 
 $stmt = $pdo->prepare($query);
 $stmt->execute($params);

@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title></title>
-<link href="layout.css?130725" rel="stylesheet" />
+<link href="layout.css?130725b" rel="stylesheet" />
 <link href="default.css?13072025" rel="stylesheet" />
 <script src="auth.js"></script>
 <link href="https://unpkg.com/swiper/swiper-bundle.min.css" rel="stylesheet" />
@@ -15,8 +15,8 @@
 {
     display: grid;
     grid-template-columns: minmax(0, 1fr);
-    grid-template-rows: auto auto 512px;
-    min-height: 100vh;
+    grid-template-rows: auto auto 320px;
+    min-height: 100svh;
 }
 
 .user_panel
@@ -24,7 +24,8 @@
     display: flex;
     justify-content: end;
     margin: auto;
-    width: 1600px;
+    padding: 5px;
+    width: var(--layout-width);
 }
 
 .steam_connect
@@ -56,7 +57,7 @@
     gap: 5px;
     margin: auto;
     padding: 10px 20px;
-    width: 1600px;
+    width: var(--layout-width);
 }
 
 #search input
@@ -94,9 +95,8 @@
 .swiper-slide img
 {
     display: block;
-    height: 100%;
+    height: 320px;
     object-fit: cover;
-    width: 100%;
 }
 
 </style>
@@ -197,13 +197,19 @@ function render_movies(movies)
     {
         const clone = template.content.cloneNode(true);
 
-        clone.querySelector('a').href += `#${item.title_br}`;
+        clone.querySelector('a').href = `movie.html?id=${item.id}&title=${item.title_us}`;
         clone.querySelector('img').src = `public/images/512/${item.media}.webp`;
 
         container.appendChild(clone);
     });
 
-    const swiper = new Swiper('.mySwiper', {
+    const swiper = new Swiper('.mySwiper',
+    {
+        autoplay:
+        {
+            delay: 1000,
+            disableOnInteraction: false,
+        },
         slidesPerView: 'auto',
         spaceBetween: 5,
         freeMode: true
