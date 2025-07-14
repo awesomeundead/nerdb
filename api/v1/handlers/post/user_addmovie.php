@@ -13,9 +13,13 @@ if(!$logged_in)
     exit;
 }
 
-require ROOT_DIR . '/pdo.php';
-
 $movie_id = $vars['id'];
+$watchlist = $_GET['watchlist'] ?? null;
+$watched = $_GET['watched'] ?? null;
+$rating = $_GET['rating'] ?? null;
+$reaction = $_GET['reaction'] ?? null;
+
+require ROOT_DIR . '/pdo.php';
 
 $params = [
     'user_id' => $_SESSION['user_id'],
@@ -24,21 +28,84 @@ $params = [
 $query = 'SELECT id FROM user_movie_list WHERE user_id = :user_id AND movie_id = :movie_id';
 $stmt = $pdo->prepare($query);
 $stmt->execute($params);
-$result = $stmt->fetchColumn();
+$user_movie_list_id = $stmt->fetchColumn();
 
-if (!$result)
+if (!$user_movie_list_id)
 {
-    $query = 'INSERT INTO user_movie_list (user_id, movie_id)
-              VALUES (:user_id, :movie_id)';
+    $params['watchlist'] = 0;
+    $params['watched'] = 0;
+    $params['rating'] = null;
+    $params['reaction'] = null;
 
-    $stmt = $pdo->prepare($query);
-    $result = $stmt->execute($params);
+    if (!empty($watchlist))
+    {
+        $params['watchlist'] = $watchlist;
+    }
 
-    $json['status'] = $result ? 'success' : 'failure';
+    if (!empty($watched))
+    {
+        $params['watched'] = $watched; 
+    }
 
-    echo json_encode($json);
+    if (!empty($rating))
+    {
+        $params['rating'] = $rating;
+    }
+
+    if (!empty($reaction))
+    {
+        $params['reaction'] = $reaction;
+    }
+
+    $query = 'INSERT INTO user_movie_list (user_id, movie_id, watchlist, watched, rating, reaction)
+              VALUES (:user_id, :movie_id, :watchlist, :watched, :rating, :reaction)';
 }
 else
 {
-    echo 'false';
+    $params = ['id' => $user_movie_list_id];
+    $conditions = [];
+
+    if (!empty($watchlist))
+    {
+        $conditions[] = 'watchlist = :watchlist';
+        $params['watchlist'] = $watchlist;
+    }
+
+    if (!empty($watched))
+    {
+        $conditions[] = 'watched = :watched';
+        $params['watched'] = $watched;
+    }
+
+    if (!empty($rating))
+    {
+        $conditions[] = 'rating = :rating';
+        $params['rating'] = $rating;
+    }
+
+    if (!empty($reaction))
+    {
+        $conditions[] = 'reaction = :reaction';
+        $params['reaction'] = $reaction;
+    }
+
+    if (empty($conditions))
+    {
+        http_response_code(400);
+        echo 'BAD REQUEST';
+        exit;
+    }
+    else
+    {
+        $subquery = implode(', ', $conditions);
+    }
+
+    $query = "UPDATE user_movie_list SET {$subquery} WHERE id = :id";
 }
+
+$stmt = $pdo->prepare($query);
+$result = $stmt->execute($params);
+
+$json['status'] = $result ? 'success' : 'failure';
+
+echo json_encode($json);

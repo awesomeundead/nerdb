@@ -3,7 +3,6 @@
 header('Content-Type: application/json; charset=utf-8');
 
 require ROOT_DIR . '/pdo.php';
-
 require ROOT_DIR . '/../../session.php';
 
 $logged_in = $_SESSION['logged_in'] ?? false;
@@ -13,32 +12,25 @@ $params = [];
 if($logged_in)
 {
     $user_id  = $_SESSION['user_id'];
-    $params = [
-        'user_id' => $user_id
-    ];
+    $params = ['user_id' => $user_id];
+    $query = 'SELECT movies.*, list.watchlist, list.watched, list.rating, list.reaction FROM movies
+              LEFT JOIN user_movie_list AS list ON movies.id = list.movie_id AND list.user_id = :user_id
+              ';
 
     if (isset($_GET['release']) && preg_match('/^\d{4}$/', $_GET['release']))
     {
         $params['release_year'] = $_GET['release'];
-
-        $query = 'SELECT * FROM movies
-                  LEFT JOIN user_movie_list AS userlist ON movies.id = userlist.movie_id AND userlist.user_id = :user_id
-                  WHERE release_year = :release_year';
+        $query .= 'WHERE release_year = :release_year';
     }
     elseif (isset($_GET['search']))
     {
         $search = trim($_GET['search']);
         $params['search'] = "%{$search}%";
-
-        $query = 'SELECT movies.*, userlist.id AS added FROM movies
-                  LEFT JOIN user_movie_list AS userlist ON movies.id = userlist.movie_id AND userlist.user_id = :user_id
-                  WHERE CONCAT_WS(" ", title_br, title_us, director, release_year) LIKE :search';
+        $query .= 'WHERE CONCAT_WS(" ", title_br, title_us, director, release_year) LIKE :search';
     }
     else
     {
-        $query = 'SELECT movies.*, userlist.id AS added FROM movies
-                  LEFT JOIN user_movie_list AS userlist ON movies.id = userlist.movie_id AND userlist.user_id = :user_id
-                  ORDER BY movies.id ASC';
+        $query .= 'ORDER BY movies.id ASC';
     }
 }
 else

@@ -6,7 +6,7 @@
 <title></title>
 <link href="layout.css?130725b" rel="stylesheet" />
 <link href="default.css?13072025" rel="stylesheet" />
-<script src="auth.js"></script>
+<script src="auth.js?140725"></script>
 <link href="https://unpkg.com/swiper/swiper-bundle.min.css" rel="stylesheet" />
 <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
 <style>
@@ -15,8 +15,14 @@
 {
     display: grid;
     grid-template-columns: minmax(0, 1fr);
-    grid-template-rows: auto auto 320px;
+    grid-template-rows: min-content auto 320px;
     min-height: 100svh;
+}
+
+#app > section
+{
+    align-items: center;
+    display: flex;
 }
 
 .user_panel
@@ -106,6 +112,10 @@
 <div id="app">
     <header>
         <div class="user_panel">
+            <div class="avatar">
+                <img alt="" src="" />
+            </div>
+            <div class="personame"></div>
             <button class="steam_connect" hidden="hidden" title="Entrar com a Steam" type="button">
                 <span>Entrar com a</span>
                 <img alt="" src="logo_steam.svg" />
@@ -151,7 +161,6 @@ steam_connect.addEventListener('click', () =>
 });
 
 is_logged_in();
-load_movies();
 
 async function is_logged_in()
 {
@@ -160,11 +169,16 @@ async function is_logged_in()
     if (logged_in)
     {
         steam_connect.remove();
+
+        document.querySelector('.personame').textContent = session.personaname;
+        document.querySelector('.avatar img').src = `https://avatars.steamstatic.com/${session.avatarhash}_medium.jpg`;
     }
     else
     {
         steam_connect.hidden = false;
     }
+    
+    load_movies();
 }
 
 function load_movies()

@@ -13,7 +13,7 @@
 #movies .grid
 {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: repeat(8, 1fr);
     gap: 10px;
 }
 
@@ -34,4 +34,40 @@
 #movies .image img
 {
     height: 128px;
+}
+
+#my_movie_list
+{
+    margin: auto;
+    width: var(--layout-width);
+}
+
+#my_movie_list .grid
+{
+    display: grid;
+    grid-template-columns: repeat(10, 120px);
+    gap: 10px;
+}
+
+#my_movie_list .title_br
+{
+    font-size: 12px;
+}
+
+#my_movie_list .image
+{
+    background-color: #000;
+    display: flex;
+}
+
+#my_movie_list .image a
+{
+    display: flex;
+    justify-content: center;
+    width: 120px;
+}
+
+#my_movie_list img
+{
+    height: 160px;
 }

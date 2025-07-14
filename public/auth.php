@@ -91,6 +91,7 @@ function create_session($data)
     $_SESSION['user_id'] = $data['id'];
     $_SESSION['steamid'] = $data['steamid'];
     $_SESSION['personaname'] = $data['personaname'];
+    $_SESSION['avatarhash'] = $data['avatarhash'];
 }
 
 function get_steam_user($steamid64)

@@ -6,7 +6,7 @@
 <title>Filmes</title>
 <link href="layout.css?130725b" rel="stylesheet" />
 <link href="default.css?13072025" rel="stylesheet" />
-<script src="auth.js"></script>
+<script src="auth.js?140725"></script>
 </head>
 <body>
 
@@ -21,39 +21,35 @@
         </nav>
     </header>
     <template>
-        <div class="item flex_column">
+        <div class="item flex_row">
             <div class="image">
-                <img alt="" height="128" src="" />
+                <a href="">
+                    <img alt="" src="" />
+                </a>
             </div>
             <div class="flex_row">
                 <div>
                     <div class="title_br"></div>
                 </div>
-                <div class="flex_column">
-                    <div>Título em inglês:</div>
-                    <div class="title_us"></div>
-                </div>
-                <div class="flex_column">
-                    <div>Lançamento:</div>
-                    <div class="release_year"></div>
-                </div>
-                <div class="imdb">
-                    <a href="" target="_blank">IMDB</a>
-                </div>
                 <div class="watched">Assistido</div>
+                <div class="reaction">Gostei</div>
             </div>
         </div>
     </template>
     <section>
         <div>
+            Filmes que eu quero assistir
+            <input checked="checked" id="watchlist_checkbox" type="checkbox" />
+        </div>        
+        <div>
             Filmes assistidos
-            <input type="checkbox" />
+            <input id="watched_checkbox" type="checkbox" />
         </div>
         <div>
             Filmes que eu gostei
-            <input type="checkbox" />
+            <input id="reaction_checkbox" type="checkbox" />
         </div>
-        <div id="movies">
+        <div id="my_movie_list">
             <div class="grid"></div>
         </div>
     </section>
@@ -66,14 +62,71 @@
  */
 check_login();
 
-const container = document.querySelector('#movies .grid');
+const container = document.querySelector('#my_movie_list .grid');
 const template = document.querySelector('template');
+const watchlist_checkbox = document.querySelector('#watchlist_checkbox');
+const watched_checkbox = document.querySelector('#watched_checkbox');
+const reaction_checkbox = document.querySelector('#reaction_checkbox');
+const filter = {};
+
+watchlist_checkbox.addEventListener('click', () =>
+{
+    if (watchlist_checkbox.checked)
+    {
+        filter.watchlist = 1;
+    }
+    else
+    {
+        delete filter.watchlist;
+    }
+
+    load_movies();
+});
+
+watched_checkbox.addEventListener('click', () =>
+{
+    if (watched_checkbox.checked)
+    {
+        filter.watched = 1;
+    }
+    else
+    {
+        delete filter.watched;
+    }
+
+    load_movies();
+});
+
+reaction_checkbox.addEventListener('click', () =>
+{
+    if (reaction_checkbox.checked)
+    {
+        filter.reaction = 'approval';
+    }
+    else
+    {
+        delete filter.reaction;
+    }
+
+    load_movies();
+});
+
+filter.watchlist = 1;
 
 load_movies();
 
 function load_movies()
 {
-    fetch('api/v1/user/movies')
+    let url = 'api/v1/user/movies';
+
+    if (Object.keys(filter).length)
+    {
+        url += '?' + new URLSearchParams(filter).toString();
+    }
+
+    console.log(url);
+
+    fetch(url)
     .then(response =>
     {
         if (!response.ok)
@@ -101,15 +154,18 @@ function render_movies(movies)
     {
         const clone = template.content.cloneNode(true);
 
+        clone.querySelector('a').href = `movie.html?id=${item.id}&title=${item.title_us}`;
         clone.querySelector('img').src =  `public/images/256/${item.media}.webp`;
         clone.querySelector('.title_br').textContent =  item.title_br;
-        clone.querySelector('.title_us').textContent =  item.title_us;
-        clone.querySelector('.release_year').textContent =  item.release_year;
-        clone.querySelector('.imdb a').href =  `https://www.imdb.com/pt/title/${item.imdb}/`;
 
         if (!item.watched)
         {
             clone.querySelector('.watched').remove();
+        }
+
+        if (!item.reaction)
+        {
+            clone.querySelector('.reaction').remove();
         }
 
         container.appendChild(clone);

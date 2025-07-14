@@ -6,7 +6,7 @@
 <title>Filmes</title>
 <link href="layout.css?130725b" rel="stylesheet" />
 <link href="default.css?13072025" rel="stylesheet" />
-<script src="auth.js"></script>
+<script src="auth.js?140725"></script>
 </head>
 <body>
 
@@ -54,7 +54,13 @@
                     <a href="update_movie.html">Editar</a>
                 </div>
                 <div class="add">
-                    <button type="button">Adicionar a minha lista</button>
+                    <button data-action="watchlist" data-value="1" type="button">Quero assistir</button>
+                </div>
+                <div class="add">
+                    <button data-action="watched" data-value="1" type="button">Já assisti</button>
+                </div>
+                <div class="add">
+                    <button data-action="reaction" data-value="approval" type="button">Gostei</button>
                 </div>
             </div>
         </div>
@@ -96,9 +102,9 @@ function load_movies(url)
     });
 }
 
-function addmovie(id, button)
+function addmovie(movie_id, params, button)
 {
-    fetch('api/v1/user/addmovie/' + id,
+    fetch(`api/v1/user/addmovie/${movie_id}?${params.action}=${params.value}`,
     {
         method: 'post'
     })
@@ -126,25 +132,30 @@ function addmovie(id, button)
     });
 }
 
-function render(item)
+function render(movie)
 {
-    document.querySelector('img').src =  `public/images/512/${item.media}.webp`;
-    document.querySelector('.title_br').textContent =  item.title_br;
-    document.querySelector('.title_us').textContent =  item.title_us;
-    document.querySelector('.director').textContent =  item.director;
-    document.querySelector('.release_year').textContent =  item.release_year;
-    document.querySelector('.imdb a').href =  `https://www.imdb.com/pt/title/${item.imdb}/`;
-    document.querySelector('.update a').href +=  `?id=${item.id}`;
+    document.querySelector('img').src =  `public/images/512/${movie.media}.webp`;
+    document.querySelector('.title_br').textContent =  movie.title_br;
+    document.querySelector('.title_us').textContent =  movie.title_us;
+    document.querySelector('.director').textContent =  movie.director;
+    document.querySelector('.release_year').textContent =  movie.release_year;
+    document.querySelector('.imdb a').href =  `https://www.imdb.com/pt/title/${movie.imdb}/`;
+    document.querySelector('.update a').href +=  `?id=${movie.id}`;
 
-    document.querySelector('.add button').addEventListener('click', e => 
+    document.querySelectorAll('.add button').forEach(item =>
     {
-        addmovie(item.id, e.target);
+        if (movie[item.dataset.action] == null)
+        {
+            item.addEventListener('click', e => 
+            {
+                addmovie(movie.id, {action: item.dataset.action, value: item.dataset.value}, item);
+            });
+        }
+        else
+        {
+            item.parentElement.remove();
+        }
     });
-
-    if (item.added)
-    {
-        document.querySelector('.add button').remove();
-    }
 
     is_logged_in();
 }

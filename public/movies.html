@@ -6,7 +6,7 @@
 <title>Filmes</title>
 <link href="layout.css?130725b" rel="stylesheet" />
 <link href="default.css?13072025" rel="stylesheet" />
-<script src="auth.js"></script>
+<script src="auth.js?140725"></script>
 </head>
 <body>
 
@@ -29,7 +29,9 @@
     <template>
         <div class="item flex_column">
             <div class="image">
-                <img alt="" height="128" src="" />
+                <a href="">
+                    <img alt="" src="" />
+                </a>
             </div>
             <div class="flex_row">
                 <div>
@@ -49,12 +51,6 @@
                 </div>
                 <div class="imdb">
                     <a href="" target="_blank">IMDB</a>
-                </div>
-                <div class="update">
-                    <a href="update_movie.html">Editar</a>
-                </div>
-                <div class="add">
-                    <button type="button">Adicionar a minha lista</button>
                 </div>
             </div>
         </div>
@@ -115,36 +111,6 @@ function load_movies(url)
     });
 }
 
-function addmovie(id, button)
-{
-    fetch('api/v1/user/addmovie/' + id,
-    {
-        method: 'post'
-    })
-    .then(response =>
-    {
-        if (!response.ok)
-        {
-            throw new Error(response.statusText);
-        }
-
-        return response.json();
-    })
-    .then(json =>
-    {
-        if (json.status == 'success')
-        {
-            button.remove();
-        }
-
-        console.log(json);
-    })
-    .catch(error =>
-    {
-        console.error(error);
-    });
-}
-
 function render_movies(movies)
 {
     container.innerHTML = '';
@@ -153,40 +119,26 @@ function render_movies(movies)
     {
         const clone = template.content.cloneNode(true);
 
+        clone.querySelector('a').href = `movie.html?id=${item.id}&title=${item.title_us}`;
         clone.querySelector('img').src =  `public/images/256/${item.media}.webp`;
         clone.querySelector('.title_br').textContent =  item.title_br;
         clone.querySelector('.title_us').textContent =  item.title_us;
         clone.querySelector('.director').textContent =  item.director;
         clone.querySelector('.release_year').textContent =  item.release_year;
         clone.querySelector('.imdb a').href =  `https://www.imdb.com/pt/title/${item.imdb}/`;
-        clone.querySelector('.update a').href +=  `?id=${item.id}`;
-
-        clone.querySelector('.add button').addEventListener('click', e => 
-        {
-            addmovie(item.id, e.target);
-        });
-
-        if (item.added)
-        {
-            clone.querySelector('.add button').remove();
-        }
 
         container.appendChild(clone);
     });
-
-    is_logged_in();
 }
 
+/*
 async function is_logged_in()
 {
     const logged_in = await login();
 
-    if (!logged_in)
-    {
-        document.querySelectorAll('.update a').forEach(item => item.remove());
-        document.querySelectorAll('.add button').forEach(item => item.remove());
-    }
+    if (!logged_in){}
 }
+*/
 
 </script>
 

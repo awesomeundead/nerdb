@@ -17,6 +17,7 @@ async function login()
         {
             session.steamid = json.steamid;
             session.personaname = json.personaname;
+            session.avatarhash = json.avatarhash;
 
             return true;
         }
