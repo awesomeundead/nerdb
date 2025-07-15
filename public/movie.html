@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Filmes</title>
-<link href="layout.css?130725b" rel="stylesheet" />
+<link href="layout.css?150725" rel="stylesheet" />
 <link href="default.css?13072025" rel="stylesheet" />
 <script src="auth.js?140725"></script>
 </head>
@@ -53,14 +53,25 @@
                 <div class="update">
                     <a href="update_movie.html">Editar</a>
                 </div>
-                <div class="add">
-                    <button data-action="watchlist" data-value="1" type="button">Quero assistir</button>
-                </div>
-                <div class="add">
-                    <button data-action="watched" data-value="1" type="button">Já assisti</button>
-                </div>
-                <div class="add">
-                    <button data-action="reaction" data-value="approval" type="button">Gostei</button>
+                <div class="flex_column">
+                    <div class="add">
+                        <button aria-label="Quero assistir" class="icon" data-action="watchlist" type="button">
+                            <img alt="" src="saved.png" />
+                        </button>
+                        <div>Quero assistir</div>
+                    </div>
+                    <div class="add">
+                        <button aria-label="Já assisti" class="icon" data-action="watched" type="button">
+                            <img alt="" src="saved.png" />
+                        </button>
+                        <div>Já assisti</div>
+                    </div>
+                    <div class="add">
+                        <button aria-label="Gostei" class="icon" data-action="liked" type="button">
+                            <img alt="" src="liked.png" />
+                        </button>
+                        <div>Gostei</div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -102,9 +113,12 @@ function load_movies(url)
     });
 }
 
-function addmovie(movie_id, params, button)
+function addmovie(movie_id, button)
 {
-    fetch(`api/v1/user/addmovie/${movie_id}?${params.action}=${params.value}`,
+    const action = button.dataset.action;
+    const value = button.dataset.value;
+
+    fetch(`api/v1/user/addmovie/${movie_id}?${action}=${value}`,
     {
         method: 'post'
     })
@@ -121,10 +135,9 @@ function addmovie(movie_id, params, button)
     {
         if (json.status == 'success')
         {
-            button.remove();
+            button.classList.toggle('checked');
+            button.dataset.value = value == 1 ? 0 : 1;
         }
-
-        console.log(json);
     })
     .catch(error =>
     {
@@ -144,17 +157,20 @@ function render(movie)
 
     document.querySelectorAll('.add button').forEach(item =>
     {
-        if (movie[item.dataset.action] == null)
-        {
-            item.addEventListener('click', e => 
-            {
-                addmovie(movie.id, {action: item.dataset.action, value: item.dataset.value}, item);
-            });
+        if (movie[item.dataset.action])
+        {            
+            item.classList.add('checked');
+            item.dataset.value = 0;
         }
         else
         {
-            item.parentElement.remove();
+            item.dataset.value = 1;
         }
+
+        item.addEventListener('click', e => 
+        {
+            addmovie(movie.id, item);
+        });
     });
 
     is_logged_in();
@@ -167,7 +183,7 @@ async function is_logged_in()
     if (!logged_in)
     {
         document.querySelectorAll('.update a').forEach(item => item.remove());
-        document.querySelectorAll('.add button').forEach(item => item.remove());
+        document.querySelectorAll('.add').forEach(item => item.remove());
     }
 }
 

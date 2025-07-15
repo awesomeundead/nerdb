@@ -42,6 +42,29 @@ button, input, select
     padding: 10px 5px;
 }
 
+button.icon
+{
+    border: none;
+    display: flex;
+    padding: 5px;
+}
+
+button.icon.checked
+{
+    background-color: #555;
+}
+
+button.icon:hover
+{
+    background-color: #486077;
+}
+
+button.icon img
+{
+    height: 32px;
+    width: 32px;
+}
+
 .flex_column
 {
     display: flex;

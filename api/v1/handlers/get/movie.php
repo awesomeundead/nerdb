@@ -13,7 +13,7 @@ if($logged_in)
 {
     $user_id  = $_SESSION['user_id'];
     $params['user_id'] = $user_id;
-    $query = 'SELECT movies.*, list.watchlist, list.watched, list.rating, list.reaction FROM movies
+    $query = 'SELECT movies.*, list.watchlist, list.watched, list.rating, list.liked FROM movies
               LEFT JOIN user_movie_list AS list ON movies.id = list.movie_id AND list.user_id = :user_id
               WHERE movies.id = :id';
 }

@@ -31,23 +31,23 @@
                 <div>
                     <div class="title_br"></div>
                 </div>
-                <div class="watchlist">Quero assistir</div>
-                <div class="watched">Assistido</div>
-                <div class="liked">Gostei</div>
+                <div class="watchlist">Quer assistir</div>
+                <div class="watched">Assistiu</div>
+                <div class="liked">Gostou</div>
             </div>
         </div>
     </template>
     <section>
         <div>
-            Filmes que eu quero assistir
+            Filmes que seu amigo quer assistir
             <input id="watchlist_checkbox" type="checkbox" />
         </div>        
         <div>
-            Filmes assistidos
+            Filmes que seu amigo assistiu
             <input id="watched_checkbox" type="checkbox" />
         </div>
         <div>
-            Filmes que eu gostei
+            Filmes que seu amigo gostou
             <input id="liked_checkbox" type="checkbox" />
         </div>
         <div id="my_movie_list">
@@ -63,6 +63,7 @@
  */
 check_login();
 
+const query = new URLSearchParams(window.location.search);
 const container = document.querySelector('#my_movie_list .grid');
 const template = document.querySelector('template');
 const watchlist_checkbox = document.querySelector('#watchlist_checkbox');
@@ -116,14 +117,18 @@ load_movies();
 
 function load_movies()
 {
-    let url = 'api/v1/user/movies';
+    if (!query.has('id'))
+    {
+        /* corrigir futuramente */
+        return;
+    }
+
+    let url = `api/v1/user/movies/${query.get('id')}`;
 
     if (Object.keys(filter).length)
     {
         url += '?' + new URLSearchParams(filter).toString();
     }
-
-    console.log(url);
 
     fetch(url)
     .then(response =>

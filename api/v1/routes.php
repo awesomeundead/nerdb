@@ -13,9 +13,9 @@ return function(RouteCollector $route)
     $route->get('/user[/{id:\d+}]', 'handlers/get/user.php'); // (Query String) steamid={steamid}
     $route->get('/user/friends', 'handlers/get/user_friends.php');
 
-    $route->get('/user/movies', 'handlers/get/user_movies.php'); // (Query String) watched={0,1} || rating={1-10} || reaction={approval||disapproval}
+    $route->get('/user/movies', 'handlers/get/user_movies.php'); // (Query String) watchlist={0 || 1}, watched={0 || 1} || rating={1-10} || liked={0 || 1}
 
-    $route->get('/user/movies/{id:\d+}', 'handlers/get/user_movies_id.php');
+    $route->get('/user/movies/{id:\d+}', 'handlers/get/user_friend_movies.php'); // (Query String) watchlist={0 || 1}, watched={0 || 1} || rating={1-10} || liked={0 || 1}
 
     $route->post('/login', 'handlers/post/login.php');
 

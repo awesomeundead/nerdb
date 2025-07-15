@@ -17,7 +17,7 @@ $movie_id = $vars['id'];
 $watchlist = $_GET['watchlist'] ?? null;
 $watched = $_GET['watched'] ?? null;
 $rating = $_GET['rating'] ?? null;
-$reaction = $_GET['reaction'] ?? null;
+$liked = $_GET['liked'] ?? null;
 
 require ROOT_DIR . '/pdo.php';
 
@@ -35,7 +35,7 @@ if (!$user_movie_list_id)
     $params['watchlist'] = 0;
     $params['watched'] = 0;
     $params['rating'] = null;
-    $params['reaction'] = null;
+    $params['liked'] = 0;
 
     if (!empty($watchlist))
     {
@@ -52,26 +52,26 @@ if (!$user_movie_list_id)
         $params['rating'] = $rating;
     }
 
-    if (!empty($reaction))
+    if (!empty($liked))
     {
-        $params['reaction'] = $reaction;
+        $params['liked'] = $liked;
     }
 
-    $query = 'INSERT INTO user_movie_list (user_id, movie_id, watchlist, watched, rating, reaction)
-              VALUES (:user_id, :movie_id, :watchlist, :watched, :rating, :reaction)';
+    $query = 'INSERT INTO user_movie_list (user_id, movie_id, watchlist, watched, rating, liked)
+              VALUES (:user_id, :movie_id, :watchlist, :watched, :rating, :liked)';
 }
 else
 {
     $params = ['id' => $user_movie_list_id];
     $conditions = [];
 
-    if (!empty($watchlist))
+    if ($watchlist === '0' || $watchlist === '1')
     {
         $conditions[] = 'watchlist = :watchlist';
         $params['watchlist'] = $watchlist;
     }
 
-    if (!empty($watched))
+    if ($watched === '0' || $watched === '1')
     {
         $conditions[] = 'watched = :watched';
         $params['watched'] = $watched;
@@ -83,10 +83,10 @@ else
         $params['rating'] = $rating;
     }
 
-    if (!empty($reaction))
+    if ($liked === '0' || $liked === '1')
     {
-        $conditions[] = 'reaction = :reaction';
-        $params['reaction'] = $reaction;
+        $conditions[] = 'liked = :liked';
+        $params['liked'] = $liked;
     }
 
     if (empty($conditions))

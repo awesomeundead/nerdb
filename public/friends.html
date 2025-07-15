@@ -82,7 +82,7 @@ function render_friends(friends)
 
         clone.querySelector('img').src =  `https://avatars.steamstatic.com/${item.avatarhash}_medium.jpg`;
         clone.querySelector('.personaname').textContent = item.personaname;
-        clone.querySelector('.movies a').href = `user_movies.html?id=${item.id}`;
+        clone.querySelector('.movies a').href = `user_movie_list.html?id=${item.id}`;
 
         container.appendChild(clone);
     });

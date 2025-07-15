@@ -13,6 +13,8 @@ if(!$logged_in)
     exit;
 }
 
+$user_id = $vars['id'];
+$params = ['user_id' => $user_id];
 $watchlist = $_GET['watchlist'] ?? null;
 $watched = $_GET['watched'] ?? null;
 $rating = $_GET['rating'] ?? null;
@@ -20,7 +22,7 @@ $liked = $_GET['liked'] ?? null;
 
 require ROOT_DIR . '/pdo.php';
 
-$params = ['user_id' => $_SESSION['user_id']];
+//$params = ['my_user_id' => $_SESSION['user_id']];
 $conditions = [];
 
 if (!empty($watchlist))
