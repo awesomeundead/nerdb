@@ -62,7 +62,7 @@ else
 {    
     $params['watchlist'] = 0;
     $params['watched'] = 0;
-    $params['rating'] = null;
+    $params['rating'] = 0;
     $params['liked'] = 0;
 
     $query = 'SELECT  movies.*, watchlist, watched, rating, liked FROM user_movie_list AS list

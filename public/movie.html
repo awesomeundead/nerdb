@@ -4,8 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Filmes</title>
-<link href="layout.css?150725" rel="stylesheet" />
-<link href="default.css?13072025" rel="stylesheet" />
+<link href="layout.css?1507251" rel="stylesheet" />
+<link href="default.css?150725" rel="stylesheet" />
 <script src="auth.js?140725"></script>
 </head>
 <body>
@@ -53,25 +53,31 @@
                 <div class="update">
                     <a href="update_movie.html">Editar</a>
                 </div>
-                <div class="flex_column">
-                    <div class="add">
-                        <button aria-label="Quero assistir" class="icon" data-action="watchlist" type="button">
-                            <img alt="" src="saved.png" />
-                        </button>
-                        <div>Quero assistir</div>
-                    </div>
-                    <div class="add">
-                        <button aria-label="Já assisti" class="icon" data-action="watched" type="button">
-                            <img alt="" src="saved.png" />
-                        </button>
-                        <div>Já assisti</div>
-                    </div>
-                    <div class="add">
-                        <button aria-label="Gostei" class="icon" data-action="liked" type="button">
-                            <img alt="" src="liked.png" />
-                        </button>
-                        <div>Gostei</div>
-                    </div>
+                <div class="toggle flex_column">
+                    <button aria-label="Quero assistir" class="icon" data-action="watchlist" type="button">
+                        <img alt="" src="saved.png" />
+                        <span>Quero assistir</span>
+                    </button>
+                    <button aria-label="Já assisti" class="icon" data-action="watched" type="button">
+                        <img alt="" src="watched.png" />
+                        <span>Já assisti</span>
+                    </button>
+                    <button aria-label="Gostei" class="icon" data-action="liked" type="button">
+                        <img alt="" src="liked.png" />
+                        <span>Gostei</span>
+                    </button>
+                </div>
+                <div class="rating flex_column">
+                    <button class="star" data-value="1" title="1 estrela" type="button"></button>
+                    <button class="star" data-value="2" title="2 estrelas" type="button"></button>
+                    <button class="star" data-value="3" title="3 estrelas" type="button"></button>
+                    <button class="star" data-value="4" title="4 estrelas" type="button"></button>
+                    <button class="star" data-value="5" title="5 estrelas" type="button"></button>
+                    <button class="star" data-value="6" title="6 estrelas" type="button"></button>
+                    <button class="star" data-value="7" title="7 estrelas" type="button"></button>
+                    <button class="star" data-value="8" title="8 estrelas" type="button"></button>
+                    <button class="star" data-value="9" title="9 estrelas" type="button"></button>
+                    <button class="star" data-value="10" title="10 estrelas" type="button"></button>
                 </div>
             </div>
         </div>
@@ -135,8 +141,47 @@ function addmovie(movie_id, button)
     {
         if (json.status == 'success')
         {
-            button.classList.toggle('checked');
+            button.classList.toggle('selected');
             button.dataset.value = value == 1 ? 0 : 1;
+        }
+    })
+    .catch(error =>
+    {
+        console.error(error);
+    });
+}
+
+function rating_movie(movie_id, value)
+{
+    fetch(`api/v1/user/addmovie/${movie_id}?rating=${value}`,
+    {
+        method: 'post'
+    })
+    .then(response =>
+    {
+        if (!response.ok)
+        {
+            throw new Error(response.statusText);
+        }
+
+        return response.json();
+    })
+    .then(json =>
+    {
+        if (json.status == 'success')
+        {
+            document.querySelectorAll('.rating button').forEach(item =>
+            {
+                item.classList.remove('starred');
+
+                if (value)
+                {
+                    if (parseInt(value) >= parseInt(item.dataset.value))
+                    {
+                        item.classList.add('starred');
+                    }
+                }
+            });
         }
     })
     .catch(error =>
@@ -155,11 +200,11 @@ function render(movie)
     document.querySelector('.imdb a').href =  `https://www.imdb.com/pt/title/${movie.imdb}/`;
     document.querySelector('.update a').href +=  `?id=${movie.id}`;
 
-    document.querySelectorAll('.add button').forEach(item =>
+    document.querySelectorAll('.toggle button').forEach(item =>
     {
         if (movie[item.dataset.action])
         {            
-            item.classList.add('checked');
+            item.classList.add('selected');
             item.dataset.value = 0;
         }
         else
@@ -167,9 +212,25 @@ function render(movie)
             item.dataset.value = 1;
         }
 
-        item.addEventListener('click', e => 
+        item.addEventListener('click', () => 
         {
             addmovie(movie.id, item);
+        });
+    });
+
+    document.querySelectorAll('.rating button').forEach(item =>
+    {
+        if (movie.rating >= item.dataset.value)
+        {
+            item.classList.add('starred');
+        }
+
+        item.addEventListener('click', () =>
+        {
+            const value = (movie.rating == item.dataset.value) ? 0 : item.dataset.value;
+            movie.rating = value;
+
+            rating_movie(movie.id, value);
         });
     });
 
@@ -182,8 +243,9 @@ async function is_logged_in()
 
     if (!logged_in)
     {
-        document.querySelectorAll('.update a').forEach(item => item.remove());
-        document.querySelectorAll('.add').forEach(item => item.remove());
+        document.querySelector('.update').remove();
+        document.querySelector('.toggle').remove();
+        document.querySelector('.rating').remove();
     }
 }
 

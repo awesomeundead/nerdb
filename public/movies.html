@@ -4,8 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Filmes</title>
-<link href="layout.css?130725b" rel="stylesheet" />
-<link href="default.css?13072025" rel="stylesheet" />
+<link href="layout.css?1507251" rel="stylesheet" />
+<link href="default.css?150725" rel="stylesheet" />
 <script src="auth.js?140725"></script>
 </head>
 <body>
@@ -33,7 +33,7 @@
                     <img alt="" src="" />
                 </a>
             </div>
-            <div class="flex_row">
+            <div class="info flex_row">
                 <div>
                     <div class="title_br"></div>
                 </div>
@@ -55,15 +55,13 @@
             </div>
         </div>
     </template>
-    <div id="movies">
-        <div class="flex"></div>
-    </div>
+    <div class="grid" id="movies"></div>
 </div>
 
 <script>
 
 const query = new URLSearchParams(window.location.search);
-const container = document.querySelector('#movies .flex');
+const container = document.querySelector('#movies');
 const template = document.querySelector('template');
 const search = document.querySelector('#search');
 

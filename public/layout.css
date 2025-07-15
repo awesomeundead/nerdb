@@ -44,14 +44,18 @@ button, input, select
 
 button.icon
 {
+    align-items: center;
+    background-color: #DDD;
     border: none;
+    border-radius: 5px;
     display: flex;
+    gap: 5px;
     padding: 5px;
 }
 
-button.icon.checked
+button.icon.selected
 {
-    background-color: #555;
+    background-color: #333;
 }
 
 button.icon:hover
@@ -63,6 +67,26 @@ button.icon img
 {
     height: 32px;
     width: 32px;
+}
+
+button.star
+{
+    align-items: center;
+    background: #DDD no-repeat center/32px url('black_star.png');
+    border: none;
+    border-radius: 5px;
+    height: 42px;
+    width: 42px;
+}
+
+button.star.starred
+{
+    background-image: url('yellow_star.png');
+}
+
+button.star:hover
+{
+    background-color: #486077;
 }
 
 .flex_column

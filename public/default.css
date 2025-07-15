@@ -1,25 +1,26 @@
 #movies
 {
-    padding: 10px;
+    margin: auto;
+    width: var(--layout-width);
 }
 
-#movies .flex
+#movies.flex
 {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 5px;
 }
 
-#movies .grid
+#movies.grid
 {
     display: grid;
-    grid-template-columns: repeat(8, 1fr);
-    gap: 10px;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 5px;
 }
 
 #movies .item
 {
-    padding: 5px;
+    font-size: 14px;
 }
 
 #movies .image
@@ -34,6 +35,13 @@
 #movies .image img
 {
     height: 128px;
+}
+
+#movies .info
+{
+    background-color: #333;
+    flex: 1;
+    padding: 5px;
 }
 
 #my_movie_list
