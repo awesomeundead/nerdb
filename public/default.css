@@ -1,4 +1,31 @@
-#movies
+#search
+{
+    display: flex;
+    gap: 5px;
+    margin: auto;
+    padding: 10px 0;
+    width: var(--layout-width);
+}
+
+#search input
+{
+    background-color: #222;
+    border: 1px solid #777;
+    color: #CCC;
+    padding: 10px;
+    width: 100%;
+}
+
+#search button
+{
+    border: none;
+    border-radius: 5px;
+    background-color: #777;
+    color: #FFF;
+    padding: 10px;
+}
+
+#movies, #movie, #friends
 {
     margin: auto;
     width: var(--layout-width);
@@ -53,7 +80,7 @@
 #my_movie_list .grid
 {
     display: grid;
-    grid-template-columns: repeat(10, 120px);
+    grid-template-columns: repeat(10, 1fr);
     gap: 10px;
 }
 
@@ -78,4 +105,44 @@
 #my_movie_list img
 {
     height: 160px;
+}
+
+#my_movie_list .icon
+{
+    align-items: center;
+    background-color: #EB0;
+    border-radius: 5px;
+    display: flex;
+    gap: 5px;
+    padding: 5px;
+    text-align: center;
+}
+
+#my_movie_list .icon img
+{
+    height: 16px;
+    width: 16px;
+}
+
+#my_movie_list .icon_rating
+{
+    background-color: #EB0;
+    border-radius: 5px;
+    color: #000;
+    font-weight: bold;
+    padding: 5px;
+    text-align: center;
+}
+
+#my_movie_list_checkbox
+{
+    margin: auto;
+    padding: 5px 0;
+    width: var(--layout-width);
+}
+
+#my_movie_list_checkbox div
+{
+    background-color: #333;
+    padding: 5px;
 }

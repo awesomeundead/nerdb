@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title></title>
+<title>Filmes</title>
 <link href="layout.css?1507251" rel="stylesheet" />
 <link href="default.css?160725-1" rel="stylesheet" />
 <script src="auth.js?140725"></script>
@@ -20,40 +20,27 @@
         </nav>
     </header>
     <template>
-        <div class="item flex_column">
-            <div class="image">
-                <img alt="" src="" />
-            </div>
-            <div class="flex_row">
-                <div>
-                    <div class="personaname"></div>
-                </div>
-                <div class="movies">
-                    <a href="">Filmes</a>
-                </div>
-            </div>
+        <div class="info flex_column">
+            <div class="movie_id"></div>
+            <a class="flex_column" href="">
+                <span class="title_br"></span>
+                <span class="release_year"></span>
+            </a>
         </div>
     </template>
-    <section>
-        <div id="friends"></div>
-    </section>
+    <div class="flex" id="movies"></div>
 </div>
 
 <script>
 
-/*
- * Verifica se o usuário esta logado
- */
-check_login();
-
-const container = document.getElementById('friends');
+const container = document.querySelector('#movies');
 const template = document.querySelector('template');
 
-load_friends();
+load_movies();
 
-function load_friends()
+function load_movies()
 {
-    fetch(`api/v1/user/friends?steamid=${session.steamid}`)
+    fetch('api/v1/movies')
     .then(response =>
     {
         if (!response.ok)
@@ -65,7 +52,7 @@ function load_friends()
     })
     .then(json =>
     {
-        render_friends(json.friends);
+        render_movies(json.movies)
     })
     .catch(error =>
     {
@@ -73,17 +60,18 @@ function load_friends()
     });
 }
 
-function render_friends(friends)
+function render_movies(movies)
 {
     container.innerHTML = '';
 
-    friends.forEach(item =>
+    movies.forEach(item =>
     {
         const clone = template.content.cloneNode(true);
 
-        clone.querySelector('img').src =  `https://avatars.steamstatic.com/${item.avatarhash}_medium.jpg`;
-        clone.querySelector('.personaname').textContent = item.personaname;
-        clone.querySelector('.movies a').href = `user_movie_list.html?id=${item.id}`;
+        clone.querySelector('.movie_id').textContent =  item.id;
+        clone.querySelector('a').href = `movie.html?id=${item.id}&title=${item.title_us}`;
+        clone.querySelector('.title_br').textContent =  item.title_br;
+        clone.querySelector('.release_year').textContent =  `(${item.release_year})`;
 
         container.appendChild(clone);
     });

@@ -22,7 +22,7 @@ $liked = $_GET['liked'] ?? null;
 
 require ROOT_DIR . '/pdo.php';
 
-//$params = ['my_user_id' => $_SESSION['user_id']];
+$params['my_user_id'] = $_SESSION['user_id'];
 $conditions = [];
 
 if (!empty($watchlist))
@@ -49,16 +49,15 @@ if (!empty($liked))
     $params['liked'] = $liked;
 }
 
+$query = 'SELECT  m.id, m.title_br, m.media, ml.watchlist, ml.watched, ml.rating, ml.liked
+          FROM user_movie_list AS list
+          INNER JOIN movies AS m ON m.id = list.movie_id
+          LEFT JOIN user_movie_list AS ml ON ml.movie_id = list.movie_id AND ml.user_id = :my_user_id
+          WHERE list.user_id = :user_id';
+
 if (!empty($conditions))
 {
-    $query = 'SELECT  movies.*, watchlist, watched, rating, liked FROM user_movie_list AS list
-              INNER JOIN movies ON movies.id = list.movie_id
-              WHERE list.user_id = :user_id';
-
-    if (!empty($conditions))
-    {
-        $query .= ' AND ' . implode(' AND ', $conditions);
-    }
+    $query .= ' AND ' . implode(' AND ', $conditions);
 }
 else
 {    
@@ -67,9 +66,7 @@ else
     $params['rating'] = 0;
     $params['liked'] = 0;
 
-    $query = 'SELECT  movies.*, watchlist, watched, rating, liked FROM user_movie_list AS list
-              INNER JOIN movies ON movies.id = list.movie_id
-              WHERE list.user_id = :user_id AND (list.watchlist != :watchlist OR list.watched != :watched OR list.rating != :rating OR list.liked != :liked)';
+    $query .= ' AND (list.watchlist != :watchlist OR list.watched != :watched OR list.rating != :rating OR list.liked != :liked)';
 }
 
 $stmt = $pdo->prepare($query);

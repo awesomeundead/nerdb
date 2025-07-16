@@ -25,8 +25,8 @@ if($logged_in)
     elseif (isset($_GET['search']))
     {
         $search = trim($_GET['search']);
-        $params['search'] = "%{$search}%";
-        $query .= 'WHERE CONCAT_WS(" ", title_br, title_us, director, release_year) LIKE :search';
+        $params['search'] = $search;
+        $query .= 'WHERE MATCH(title_br, title_us, director) AGAINST(:search)';
     }
     else
     {
@@ -44,9 +44,9 @@ else
     elseif (isset($_GET['search']))
     {
         $search = trim($_GET['search']);
-        $params['search'] = "%{$search}%";
+        $params['search'] = $search;
 
-        $query = 'SELECT * FROM movies WHERE CONCAT_WS(" ", title_br, title_us, director, release_year) LIKE :search';
+        $query = 'SELECT * FROM movies WHERE MATCH(title_br, title_us, director) AGAINST(:search)';
     }
     else
     {
