@@ -122,7 +122,7 @@ function insert_user($player)
         'steamid'     => $player['steamid'],
         'personaname' => $player['personaname'],
         'avatarhash'  => $player['avatarhash'],
-        'realname'    => $player['realname']
+        'realname'    => $player['realname'] ?? ''
     ];
 
     $jsonData = json_encode($params, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
@@ -146,7 +146,7 @@ function update_user($player)
     $params = [
         'personaname' => $player['personaname'],
         'avatarhash'  => $player['avatarhash'],
-        'realname'    => $player['realname']
+        'realname'    => $player['realname'] ?? ''
     ];
 
     $jsonData = json_encode($params, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);

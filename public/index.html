@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title></title>
-<link href="layout.css?1507251" rel="stylesheet" />
-<link href="default.css?160725-1" rel="stylesheet" />
-<script src="auth.js?140725"></script>
+<title>Início</title>
+<link href="layout.css?180725" rel="stylesheet" />
+<link href="default.css?180725" rel="stylesheet" />
+<script src="auth.js?180725"></script>
 <link href="https://unpkg.com/swiper/swiper-bundle.min.css" rel="stylesheet" />
 <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
 <style>
@@ -21,41 +21,26 @@
 
 #app > section
 {
-    align-items: center;
     display: flex;
 }
 
 .user_panel
 {
     display: flex;
+    gap: 10px;
     justify-content: end;
     margin: auto;
     padding: 5px;
     width: var(--layout-width);
 }
 
-.steam_connect
+.user_panel .logout
 {
     align-items: center;
-    background-color: #136;
-    border: none;
+    background-color: #555;
     border-radius: 5px;
-    color: #FFF;
     display: flex;
-    font-weight: bold;
-    gap: 5px;
-    height: 38px;
-    padding: 5px;
-}
-
-.steam_connect:hover
-{
-    background-color: #247;
-}
-
-.steam_connect img
-{
-    height: 100%;
+    padding: 5px 10px;
 }
 
 .swiper
@@ -86,17 +71,21 @@
 <div id="app">
     <header>
         <div class="user_panel">
-            <div class="avatar">
-                <img alt="" src="" />
+            <div class="steam_card connected">
+                <div class="avatar">
+                    <img alt="" src="" />
+                </div>
+                <div class="personame"></div>
             </div>
-            <div class="personame"></div>
-            <button class="steam_connect" hidden="hidden" title="Entrar com a Steam" type="button">
+            <a class="steam_card connect" href="auth.php?login" title="Entrar com a Steam">
                 <span>Entrar com a</span>
                 <img alt="" src="logo_steam.svg" />
-            </button>
+            </a>
+            <a class="logout" href="logout.php">Sair</a>
         </div>
         <nav>
             <a href="index.html">Início</a>
+            <a href="top_movies.html">Top filmes</a>
             <a href="my_movie_list.html">Minha lista de filmes</a>
             <a href="friends.html">Meus amigos</a>
             <a href="add_movie.html">Adicionar filme</a>
@@ -104,7 +93,7 @@
     </header>
     <section>
         <form action="movies.html" id="search">
-            <input name="q" placeholder="Pesquisar por título, diretor ou lançamento" type="search" />
+            <input name="q" placeholder="Pesquisar por título, diretor ou lançamento" required="required" type="search" />
             <button type="submit">Pesquisar</button>
         </form>
     </section>
@@ -124,7 +113,8 @@
 
 <script>
 
-const steam_connect = document.querySelector('.steam_connect');
+const steam_connected = document.querySelector('.steam_card.connected');
+const steam_connect = document.querySelector('.steam_card.connect');
 const container = document.querySelector('#movies_media');
 const template = document.querySelector('template');
 
@@ -144,11 +134,12 @@ async function is_logged_in()
         steam_connect.remove();
 
         document.querySelector('.personame').textContent = session.personaname;
-        document.querySelector('.avatar img').src = `https://avatars.steamstatic.com/${session.avatarhash}_medium.jpg`;
+        document.querySelector('.avatar img').src = `https://avatars.steamstatic.com/${session.avatarhash}.jpg`;
     }
     else
     {
-        steam_connect.hidden = false;
+        steam_connected.remove();
+        document.querySelector('.logout').remove();
     }
     
     load_movies();

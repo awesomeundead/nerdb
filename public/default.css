@@ -1,9 +1,38 @@
+.steam_card
+{
+    align-items: center;
+    background-color: #136;
+    border: none;
+    border-radius: 5px;
+    color: #FFF;
+    display: flex;
+    font-weight: bold;
+    gap: 5px;
+    height: 38px;
+    padding: 5px;
+}
+
+.steam_card.connect:hover
+{
+    background-color: #247;
+}
+
+.steam_card.connect img
+{
+    height: 100%;
+}
+
+.steam_card.connected img
+{
+    border-radius: 5px;
+}
+
 #search
 {
     display: flex;
     gap: 5px;
     margin: auto;
-    padding: 10px 0;
+    padding: 10px var(--padding-side);
     width: var(--layout-width);
 }
 
@@ -25,6 +54,11 @@
     padding: 10px;
 }
 
+#search button:hover
+{
+    background-color: #555;
+}
+
 #movies, #movie, #friends
 {
     margin: auto;
@@ -41,13 +75,8 @@
 #movies.grid
 {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
     gap: 5px;
-}
-
-#movies .item
-{
-    font-size: 14px;
+    padding: 0 var(--padding-side);
 }
 
 #movies .image
@@ -80,13 +109,14 @@
 #my_movie_list .grid
 {
     display: grid;
-    grid-template-columns: repeat(10, 1fr);
+    grid-template-columns: repeat(var(--columns), 1fr);
     gap: 10px;
+    padding: 0 var(--padding-side);
 }
 
 #my_movie_list .title_br
 {
-    font-size: 12px;
+    font-size: var(--min-font-size);
 }
 
 #my_movie_list .image
@@ -118,6 +148,11 @@
     text-align: center;
 }
 
+#my_movie_list .icon.friend
+{
+    background-color: #CCC;
+}
+
 #my_movie_list .icon img
 {
     height: 16px;
@@ -130,8 +165,21 @@
     border-radius: 5px;
     color: #000;
     font-weight: bold;
+    height: 26px;
     padding: 5px;
     text-align: center;
+    width: 26px;
+}
+
+#my_movie_list .icon_rating.friend
+{
+    background-color: #CCC;
+}
+
+#my_movie_list .disable
+{
+    opacity: 0.1;
+    pointer-events: none;
 }
 
 #my_movie_list_checkbox
@@ -145,4 +193,18 @@
 {
     background-color: #333;
     padding: 5px;
+}
+
+@media (min-width: 1600px)
+{
+    #movie
+    {
+        display: flex;
+        gap: 10px;
+    }
+
+    #movies.grid
+    {
+        grid-template-columns: repeat(2, 1fr);
+    }
 }

@@ -37,7 +37,7 @@ if (!empty($watched))
 
 if (!empty($rating))
 {
-    $conditions[] = 'list.rating = :rating';
+    $conditions[] = 'list.rating >= :rating';
     $params['rating'] = $rating;
 }
 
@@ -56,6 +56,11 @@ if (!empty($conditions))
     if (!empty($conditions))
     {
         $query .= ' AND ' . implode(' AND ', $conditions);
+    }
+
+    if ($rating == 1)
+    {
+        $query .= ' ORDER BY list.rating DESC';
     }
 }
 else

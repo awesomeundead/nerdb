@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Filmes</title>
-<link href="layout.css?1507251" rel="stylesheet" />
-<link href="default.css?160725-1" rel="stylesheet" />
-<script src="auth.js?140725"></script>
+<title>Lista de filmes do meu amigo</title>
+<link href="layout.css?180725" rel="stylesheet" />
+<link href="default.css?180725" rel="stylesheet" />
+<script src="auth.js?180725"></script>
 </head>
 <body>
 
@@ -14,52 +14,29 @@
     <header>
         <nav>
             <a href="index.html">Início</a>
+            <a href="top_movies.html">Top filmes</a>
             <a href="my_movie_list.html">Minha lista de filmes</a>
             <a href="friends.html">Meus amigos</a>
             <a href="add_movie.html">Adicionar filme</a>
         </nav>
     </header>
-    <template>
-        <div class="item flex_row">
-            <div class="flex_column">
-                <div class="image">
-                    <a href="">
-                        <img alt="" src="" />
-                    </a>
-                </div>
-                <div class="flex_row">
-                    <div aria-label="Quero assistir" class="icon watchlist" title="Quero assistir">
-                        <img alt="" src="saved.png" />
-                    </div>
-                    <div aria-label="Já assisti" class="icon watched" title="Já assisti">
-                        <img alt="" src="watched.png" />
-                    </div>
-                    <div aria-label="Gostei" class="icon liked" title="Gostei">
-                        <img alt="" src="liked.png" />
-                    </div>
-                    <div aria-label="Minha avaliação" class="icon_rating rating" title="Minha avaliação"></div>
-                </div>
-            </div>
-            <div class="flex_row">
-                <div>
-                    <div class="title_br"></div>
-                </div>
-            </div>
-        </div>
-    </template>
     <section>
         <div class="flex_row" id="my_movie_list_checkbox">
-            <div class="flex_column">
+            <div class="flex_column vcenter">
+                <input data-filter="watchlist" id="watchlist_checkbox" type="checkbox" />
                 <label for="watchlist_checkbox">Filmes que seu amigo quer assistir</label>
-                <input id="watchlist_checkbox" type="checkbox" />
             </div>        
-            <div class="flex_column">
+            <div class="flex_column vcenter">
+                <input data-filter="watched" id="watched_checkbox" type="checkbox" />
                 <label for="watched_checkbox">Filmes que seu amigo assistiu</label>
-                <input id="watched_checkbox" type="checkbox" />
             </div>
-            <div class="flex_column">
+            <div class="flex_column vcenter">
+                <input data-filter="liked" id="liked_checkbox" type="checkbox" />
                 <label for="liked_checkbox">Filmes que seu amigo gostou</label>
-                <input id="liked_checkbox" type="checkbox" />
+            </div>
+            <div class="flex_column vcenter">
+                <input data-filter="rating" id="rating_checkbox" type="checkbox" />
+                <label for="rating_checkbox">Filmes que seu amigo melhor avaliou</label>
             </div>
         </div>
         <div id="my_movie_list">
@@ -67,6 +44,57 @@
         </div>
     </section>
 </div>
+
+<template>
+    <div class="item flex_row">
+        <div class="flex_column">
+            <div class="image">
+                <a href="">
+                    <img alt="" src="" />
+                </a>
+            </div>
+
+            <div class="flex_row">
+                <div class="flex_column">
+                    <div aria-label="Quer assistir" class="icon friend friend_watchlist" title="Quer assistir">
+                        <img alt="" src="saved.png" />
+                    </div>
+                    <div aria-label="Quero assistir" class="icon watchlist" title="Quero assistir">
+                        <img alt="" src="saved.png" />
+                    </div>
+                </div>
+
+                <div class="flex_column">
+                    <div aria-label="Já assistiu" class="icon friend friend_watched" title="Já assistiu">
+                        <img alt="" src="watched.png" />
+                    </div>
+                    <div aria-label="Já assisti" class="icon watched" title="Já assisti">
+                        <img alt="" src="watched.png" />
+                    </div>
+                </div>
+
+                <div class="flex_column">
+                    <div aria-label="Gostou" class="icon friend friend_liked" title="Gostou">
+                        <img alt="" src="liked.png" />
+                    </div>
+                    <div aria-label="Gostei" class="icon liked" title="Gostei">
+                        <img alt="" src="liked.png" />
+                    </div>
+                </div>
+
+                <div class="flex_column">
+                    <div aria-label="Avaliação" class="icon_rating friend friend_rating" title="Avaliação"></div>
+                    <div aria-label="Minha avaliação" class="icon_rating rating" title="Minha avaliação"></div>
+                </div>
+            </div>
+        </div>
+        <div class="flex_row">
+            <div>
+                <div class="title_br"></div>
+            </div>
+        </div>
+    </div>
+</template>
 
 <script>
 
@@ -78,51 +106,23 @@ check_login();
 const query = new URLSearchParams(window.location.search);
 const container = document.querySelector('#my_movie_list .grid');
 const template = document.querySelector('template');
-const watchlist_checkbox = document.querySelector('#watchlist_checkbox');
-const watched_checkbox = document.querySelector('#watched_checkbox');
-const liked_checkbox = document.querySelector('#liked_checkbox');
 const filter = {};
 
-watchlist_checkbox.addEventListener('click', () =>
+document.querySelectorAll('#watchlist_checkbox, #watched_checkbox, #liked_checkbox, #rating_checkbox').forEach(item =>
 {
-    if (watchlist_checkbox.checked)
+    item.addEventListener('click', () =>
     {
-        filter.watchlist = 1;
-    }
-    else
-    {
-        delete filter.watchlist;
-    }
+        if (item.checked)
+        {
+            filter[item.dataset.filter] = 1;
+        }
+        else
+        {
+            delete filter[item.dataset.filter];
+        }
 
-    load_movies();
-});
-
-watched_checkbox.addEventListener('click', () =>
-{
-    if (watched_checkbox.checked)
-    {
-        filter.watched = 1;
-    }
-    else
-    {
-        delete filter.watched;
-    }
-
-    load_movies();
-});
-
-liked_checkbox.addEventListener('click', () =>
-{
-    if (liked_checkbox.checked)
-    {
-        filter.liked = 1;
-    }
-    else
-    {
-        delete filter.liked;
-    }
-
-    load_movies();
+        load_movies();
+    });
 });
 
 load_movies();
@@ -135,7 +135,7 @@ function load_movies()
         return;
     }
 
-    let url = `api/v1/user/movies/${query.get('id')}`;
+    let url = `api/v1/movie-list/user/${query.get('id')}`;
 
     if (Object.keys(filter).length)
     {
@@ -164,38 +164,67 @@ function load_movies()
 
 function render_movies(movies)
 {
+    if (!movies.length)
+    {
+        container.innerHTML = '<div class="centralizado">Não foram encontrados filmes nesta lista.</div>';
+
+        return;
+    }
+
     container.innerHTML = '';
+
+    const disable = (clone, selector, condition = true) =>
+    {
+        const element = clone.querySelector(selector);
+
+        if (condition)
+        {
+            element.classList.add('disable');
+        }
+    }
 
     movies.forEach(item =>
     {
         const clone = template.content.cloneNode(true);
 
         clone.querySelector('a').href = `movie.html?id=${item.id}`;
-        clone.querySelector('img').src = (item.media == '') ? 'public/noimage.png' : `public/images/256/${item.media}.webp`;
+        clone.querySelector('.image img').src = item.media?.trim() ? `public/images/256/${item.media}.webp` : 'public/noimage.png';
         clone.querySelector('.title_br').textContent =  item.title_br;
 
         if (!item.watchlist || item.watched)
         {
-            clone.querySelector('.watchlist').remove();
+            disable(clone, '.friend_watchlist');
         }
 
-        if (!item.watched)
-        {
-            clone.querySelector('.watched').remove();
-        }
-
-        if (!item.liked)
-        {
-            clone.querySelector('.liked').remove();
-        }
+        disable(clone, '.friend_watched', !item.watched);
+        disable(clone, '.friend_liked', !item.liked);
 
         if (item.rating)
         {
-            clone.querySelector('.rating').textContent = item.rating;
+            clone.querySelector('.friend_rating').textContent = item.rating;
         }
         else
         {
-            clone.querySelector('.rating').remove();
+            disable(clone, '.friend_rating');
+        }
+
+        /* minha lista */
+
+        if (!item.ml_watchlist || item.ml_watched)
+        {
+            disable(clone, '.watchlist');
+        }
+
+        disable(clone, '.watched', !item.ml_watched);
+        disable(clone, '.liked', !item.ml_liked);
+
+        if (item.ml_rating)
+        {
+            clone.querySelector('.rating').textContent = item.ml_rating;
+        }
+        else
+        {
+            disable(clone, '.rating');
         }
 
         container.appendChild(clone);

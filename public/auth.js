@@ -38,6 +38,6 @@ async function check_login()
 
     if (!logged_in)
     {
-        window.location.href = 'index.html';
+        window.location.href = 'login.html';
     }
 }

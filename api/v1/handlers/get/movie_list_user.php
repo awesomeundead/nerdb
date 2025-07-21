@@ -13,8 +13,16 @@ if(!$logged_in)
     exit;
 }
 
+$my_user_id = $_SESSION['user_id'];
 $user_id = $vars['id'];
-$params = ['user_id' => $user_id];
+
+if ($my_user_id == $user_id)
+{
+    http_response_code(400);
+    echo 'BAD REQUEST';
+    exit;
+}
+
 $watchlist = $_GET['watchlist'] ?? null;
 $watched = $_GET['watched'] ?? null;
 $rating = $_GET['rating'] ?? null;
@@ -22,8 +30,11 @@ $liked = $_GET['liked'] ?? null;
 
 require ROOT_DIR . '/pdo.php';
 
-$params['my_user_id'] = $_SESSION['user_id'];
 $conditions = [];
+$params = [
+    'my_user_id' => $my_user_id,
+    'user_id' => $user_id
+];
 
 if (!empty($watchlist))
 {
@@ -39,7 +50,7 @@ if (!empty($watched))
 
 if (!empty($rating))
 {
-    $conditions[] = 'list.rating = :rating';
+    $conditions[] = 'list.rating >= :rating';
     $params['rating'] = $rating;
 }
 
@@ -49,7 +60,11 @@ if (!empty($liked))
     $params['liked'] = $liked;
 }
 
-$query = 'SELECT  m.id, m.title_br, m.media, ml.watchlist, ml.watched, ml.rating, ml.liked
+$query = 'SELECT  m.id, m.title_br, m.media, list.watchlist, list.watched, list.rating, list.liked,
+          ml.watchlist AS ml_watchlist,
+          ml.watched AS ml_watched,
+          ml.rating AS ml_rating,
+          ml.liked AS ml_liked
           FROM user_movie_list AS list
           INNER JOIN movies AS m ON m.id = list.movie_id
           LEFT JOIN user_movie_list AS ml ON ml.movie_id = list.movie_id AND ml.user_id = :my_user_id
@@ -58,6 +73,11 @@ $query = 'SELECT  m.id, m.title_br, m.media, ml.watchlist, ml.watched, ml.rating
 if (!empty($conditions))
 {
     $query .= ' AND ' . implode(' AND ', $conditions);
+
+    if ($rating == 1)
+    {
+        $query .= ' ORDER BY list.rating DESC';
+    }
 }
 else
 {    

@@ -6,14 +6,22 @@
 
 :root
 {
-    --layout-width: auto;
+    --body-font-size: 16px;
+    --columns: 2;
+    --layout-width: 100%;
+    --min-font-size: 16px;
+    --padding-side: 5px;
 }
 
 @media (min-width: 1600px)
 {
     :root
     {
+        --body-font-size: 14px;
+        --columns: 8;
         --layout-width: 1600px;
+        --min-font-size: 12px;
+        --padding-side: 0;
     }
 }
 
@@ -21,13 +29,13 @@ body
 {
     background-color: #222;
     color: #FFF;
-    font-size: 16px;
+    font-size: var(--body-font-size);
     margin: 0;
 }
 
 body, button, input, label, select
 {
-    font-size: 14px;
+    font-size: var(--body-font-size);
 }
 
 a
@@ -89,11 +97,44 @@ button.star:hover
     background-color: #486077;
 }
 
+input[type="checkbox"]
+{
+    appearance: none;
+    background-color: #222;
+    border: 1px solid #FFF;
+    display: block;
+    height: 22px;
+    margin: 0;
+    width: 22px;
+}
+
+input[type="checkbox"]:checked
+{
+    appearance: auto;
+    accent-color: #FFF;
+}
+
+label
+{
+    color: #CCC;
+}
+
+
 .flex_column
 {
     display: flex;
     flex-direction: row;
     gap: 5px;
+}
+
+.flex_row.hcenter
+{
+    justify-content: center;
+}
+
+.flex_column.vcenter
+{
+    align-items: center;
 }
 
 .flex_row
@@ -103,15 +144,27 @@ button.star:hover
     gap: 5px;
 }
 
+.flex_row.hcenter
+{
+    align-items: center;
+}
+
+.flex_row.vcenter
+{
+    justify-content: center;
+}
+
 nav
 {
     display: flex;
-    justify-content: space-between;
+    gap: 10px;
     margin: auto;
     width: var(--layout-width);
 }
 
 nav a
 {
-    padding: 5px 10px;
+    background-color: #0a2b4b;
+    font-weight: bold;
+    padding: 10px;
 }
