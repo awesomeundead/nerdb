@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Atualizar filme</title>
-<link href="layout.css?180725" rel="stylesheet" />
+<link href="layout.css?260725" rel="stylesheet" />
 <script src="default.js?11072025"></script>
 <script src="auth.js?180725"></script>
 </head>
@@ -12,6 +12,11 @@
 
 <div id="app">
     <header>
+        <div id="menu_mobile">
+            <label>
+                <input type="checkbox" />
+            </label>
+        </div>
         <nav>
             <a href="index.html">Início</a>
             <a href="top_movies.html">Top filmes</a>
@@ -21,24 +26,20 @@
             <a href="movie_list.html">Todos os filmes</a>
         </nav>
     </header>
-    <div>
-        <div>
+    <section>
+        <div class="forms">
+            <div class="image">
+                <img alt="" height="256" id="media" src="" />
+            </div>
             <input id="title_br" placeholder="Título em português" type="text" />
-        </div>
-        <div>
             <input id="title_us" placeholder="Título em inglês" type="text" />
-        </div>
-        <div>
             <input id="director" placeholder="Diretor" type="text" />
-        </div>
-        <div>
             <input id="release_year" placeholder="Ano de lançamento" type="number" />
-        </div>
-        <div>
             <input id="imdb" placeholder="Link IMDB" type="text" />
+            <button type="submit">Atualizar</button>
         </div>
-        <button type="submit">Atualizar</button>
-    </div>
+    </section>
+    <footer class="flex_column hcenter vcenter">Projeto em desenvolvimento</footer>
 </div>
 
 <script>
@@ -55,6 +56,7 @@ if (!query.has('id'))
     location.href = 'index.html';
 }
 
+const media = document.querySelector('#media');
 const title_br = document.querySelector('#title_br');
 const title_us = document.querySelector('#title_us');
 const director = document.querySelector('#director');
@@ -144,6 +146,7 @@ function update_movie(body)
 
 function render(item)
 {
+    media.src = (item.media == '') ? 'public/noimage.png' : `public/images/256/${item.media}.webp`;
     title_br.value = item.title_br,
     title_us.value = item.title_us,
     director.value = item.director,

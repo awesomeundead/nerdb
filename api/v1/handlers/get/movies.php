@@ -3,11 +3,11 @@
 header('Content-Type: application/json; charset=utf-8');
 
 require ROOT_DIR . '/pdo.php';
-require ROOT_DIR . '/../../session.php';
-
-$logged_in = $_SESSION['logged_in'] ?? false;
 
 $params = [];
+
+/*
+$logged_in = $_SESSION['logged_in'] ?? false;
 
 if($logged_in)
 {
@@ -33,31 +33,36 @@ if($logged_in)
         $query .= 'ORDER BY movies.id ASC';
     }
 }
+*/
+
+if (isset($_GET['release']) && preg_match('/^\d{4}$/', $_GET['release']))
+{
+    $params['release_year'] = $_GET['release'];
+
+    $query = 'SELECT * FROM movies WHERE release_year = :release_year';
+}
+elseif (isset($_GET['director']))
+{
+    $director = trim($_GET['director']);
+    $params['director'] = $director;
+
+    $query = 'SELECT * FROM movies WHERE director = :director';
+}
+elseif (isset($_GET['search']))
+{
+    $search = trim($_GET['search']);
+    $params['search'] = $search;
+
+    $query = 'SELECT * FROM movies WHERE MATCH(title_br, title_us, director) AGAINST(:search)';
+}
 else
 {
-    if (isset($_GET['release']) && preg_match('/^\d{4}$/', $_GET['release']))
+    $query = 'SELECT * FROM movies';
+    
+    if (isset($_GET['order']) && $_GET['order'] == 'random')
     {
-        $params['release_year'] = $_GET['release'];
-
-        $query = 'SELECT * FROM movies WHERE release_year = :release_year';
+        $query = 'SELECT * FROM movies WHERE media != "" ORDER BY rand() LIMIT 20';
     }
-    elseif (isset($_GET['search']))
-    {
-        $search = trim($_GET['search']);
-        $params['search'] = $search;
-
-        $query = 'SELECT * FROM movies WHERE MATCH(title_br, title_us, director) AGAINST(:search)';
-    }
-    else
-    {
-        $query = 'SELECT * FROM movies';
-    }
-}
-
-if (isset($_GET['order']) && $_GET['order'] == 'random')
-{
-    $params = [];
-    $query = 'SELECT * FROM movies WHERE media != "" ORDER BY rand() LIMIT 20';
 }
 
 $stmt = $pdo->prepare($query);

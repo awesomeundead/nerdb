@@ -8,6 +8,7 @@
 {
     --body-font-size: 16px;
     --columns: 2;
+    --form-width: 100%;
     --layout-width: 100%;
     --min-font-size: 16px;
     --padding-side: 5px;
@@ -19,6 +20,7 @@
     {
         --body-font-size: 14px;
         --columns: 8;
+        --form-width: 400px;
         --layout-width: 1600px;
         --min-font-size: 12px;
         --padding-side: 0;
@@ -41,6 +43,12 @@ body, button, input, label, select
 a
 {
     color: #FFF;
+    text-decoration: none;
+}
+
+a:hover
+{
+    color: #999;
     text-decoration: none;
 }
 
@@ -127,7 +135,7 @@ label
     gap: 5px;
 }
 
-.flex_row.hcenter
+.flex_column.hcenter
 {
     justify-content: center;
 }
@@ -154,17 +162,94 @@ label
     justify-content: center;
 }
 
-nav
+.forms
 {
     display: flex;
+    flex-direction: column;
     gap: 10px;
     margin: auto;
-    width: var(--layout-width);
+    padding: var(--padding-side);
+    width: var(--form-width);
+}
+
+.forms button
+{
+    background-color: #DDD;
+    border: none;
+    border-radius: 5px;
+}
+
+.forms button:hover
+{
+    background-color: #CCC;
+}
+
+.forms input
+{
+    background-color: #333;
+    border: 1px solid #999;
+    color: #FFF;
+    padding: 10px;
+}
+
+#app
+{
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: min-content auto 100px;
+    min-height: 100svh;
+}
+
+#menu_mobile
+{
+    padding: 5px;
+}
+
+#menu_mobile label
+{
+    background: no-repeat center/32px url("icon_menu.png");
+    display: block;
+    height: 32px;
+    width: 32px;
+}
+
+#menu_mobile input, nav
+{
+    display: none;
+}
+
+#menu_mobile:has(input:checked) ~ nav
+{
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
 }
 
 nav a
 {
-    background-color: #0a2b4b;
+    background-color: #024;
     font-weight: bold;
     padding: 10px;
+}
+
+nav a:hover
+{
+    background-color: #135;
+    color: #FFF;
+}
+
+@media (min-width: 1600px)
+{
+    #menu_mobile
+    {
+        display: none;
+    }
+
+    nav
+    {
+        display: flex;
+        gap: 10px;
+        margin: auto;
+        width: var(--layout-width);
+    }
 }

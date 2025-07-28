@@ -4,14 +4,19 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Meus amigos</title>
-<link href="layout.css?180725" rel="stylesheet" />
-<link href="default.css?180725" rel="stylesheet" />
+<link href="layout.css?260725" rel="stylesheet" />
+<link href="default.css?250725" rel="stylesheet" />
 <script src="auth.js?180725"></script>
 </head>
 <body>
 
 <div id="app">
     <header>
+        <div id="menu_mobile">
+            <label>
+                <input type="checkbox" />
+            </label>
+        </div>
         <nav>
             <a href="index.html">Início</a>
             <a href="top_movies.html">Top filmes</a>
@@ -20,25 +25,27 @@
             <a href="add_movie.html">Adicionar filme</a>
         </nav>
     </header>
-    <template>
-        <div class="item flex_column">
-            <div class="image">
-                <img alt="" src="" />
-            </div>
-            <div class="flex_row">
-                <div>
-                    <div class="personaname"></div>
-                </div>
-                <div class="movies">
-                    <a href="">Filmes</a>
-                </div>
-            </div>
-        </div>
-    </template>
     <section>
         <div id="friends"></div>
     </section>
+    <footer class="flex_column hcenter vcenter">Projeto em desenvolvimento</footer>
 </div>
+
+<template>
+    <div class="item flex_column">
+        <div class="image">
+            <img alt="" src="" />
+        </div>
+        <div class="flex_row">
+            <div>
+                <div class="personaname"></div>
+            </div>
+            <div class="movies">
+                <a href="">Lista de filmes</a>
+            </div>
+        </div>
+    </div>
+</template>
 
 <script>
 
