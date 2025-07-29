@@ -46,7 +46,7 @@
                 </div>
                 <div class="flex_column">
                     <div>Diretor:</div>
-                    <a class="director" href=""></a>
+                    <div class="director flex_column"></div>
                 </div>
                 <div class="flex_column">
                     <div>Lançamento:</div>
@@ -84,6 +84,7 @@
                     <button class="star" data-value="9" title="9 estrelas" type="button"></button>
                     <button class="star" data-value="10" title="10 estrelas" type="button"></button>
                 </div>
+                <div class="platforms flex_column"></div>
             </div>
         </div>
     </section>
@@ -198,11 +199,19 @@ function rating_movie(movie_id, value)
 
 function render(movie)
 {
+    const directors = movie.director.split(';');
+
+    directors.forEach(director =>
+    {
+        const element = document.createElement('a');
+        element.href = `movies.html?q=diretor:${director}`;
+        element.textContent = director;
+        document.querySelector('.director').appendChild(element);
+    });
+
     document.querySelector('img').src = (movie.media == '') ? 'public/noimage.png' : `public/images/512/${movie.media}.webp`;
     document.querySelector('.title_br').textContent =  movie.title_br;
     document.querySelector('.title_us').textContent =  movie.title_us;
-    document.querySelector('.director').textContent =  movie.director;
-    document.querySelector('.director').href =  `movies.html?q=diretor:${movie.director}`;
     document.querySelector('.release_year').textContent =  movie.release_year;
     document.querySelector('.imdb a').href =  `https://www.imdb.com/pt/title/${movie.imdb}/`;
     document.querySelector('.update a').href +=  `?id=${movie.id}`;
@@ -241,7 +250,26 @@ function render(movie)
         });
     });
 
+    movie.platforms.forEach(platform =>
+    {
+        const element = document.createElement('a');
+        element.href = get_platform(platform.platform_name, platform.platform_link);
+        element.setAttribute('target', '_blank');
+        element.textContent = platform.platform_name;
+        document.querySelector('.platforms').appendChild(element);
+    });
+
     is_logged_in();
+}
+
+function get_platform(name, link)
+{
+    const platforms = {
+        'Prime Video': `https://www.primevideo.com/detail/${link}`,
+        'HBO Max': `https://play.hbomax.com/movie/${link}`
+    }
+
+    return platforms[name];
 }
 
 async function is_logged_in()

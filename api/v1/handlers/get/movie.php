@@ -26,4 +26,13 @@ $stmt = $pdo->prepare($query);
 $stmt->execute($params);
 $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
+if(true)
+{
+    $params = ['id' => $id];
+    $query = 'SELECT platform_name, platform_link FROM movie_platforms WHERE movie_id = :id';
+    $stmt = $pdo->prepare($query);
+    $stmt->execute($params);
+    $result['platforms'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
 echo json_encode($result, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);

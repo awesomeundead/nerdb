@@ -57,7 +57,7 @@
             </div>
             <div class="flex_column">
                 <div>Diretor:</div>
-                <a class="director" href=""></a>
+                <div class="director flex_column"></div>
             </div>
             <div class="flex_column">
                 <div>Lançamento:</div>
@@ -106,14 +106,21 @@ function render_movies(movies)
     movies.forEach((item, index) =>
     {
         const clone = template.content.cloneNode(true);
+        const directors = item.director.split(';');
+
+        directors.forEach(director =>
+        {
+            const element = document.createElement('a');
+            element.href = `movies.html?q=diretor:${director}`;
+            element.textContent = director;
+            clone.querySelector('.director').appendChild(element);
+        });
 
         clone.querySelector('a').href = `movie.html?id=${item.id}&title=${item.title_us}`;
         clone.querySelector('img').src = (item.media == '') ? 'public/noimage.png' : `public/images/256/${item.media}.webp`;
         clone.querySelector('.ranking').textContent =  `#${++index}`;
         clone.querySelector('.title_br').textContent =  item.title_br;
         clone.querySelector('.title_us').textContent =  item.title_us;
-        clone.querySelector('.director').textContent =  item.director;
-        clone.querySelector('.director').href =  `movies.html?q=diretor:${item.director}`;
         clone.querySelector('.release_year').textContent =  item.release_year;
         clone.querySelector('.imdb a').href =  `https://www.imdb.com/pt/title/${item.imdb}/`;
 

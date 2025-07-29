@@ -30,7 +30,7 @@
         <div class="forms">
             <input id="title_br" placeholder="Título em português" type="text" />
             <input id="title_us" placeholder="Título em inglês" type="text" />
-            <input id="director" placeholder="Diretor" type="text" />
+            <input id="director" list="directors" placeholder="Diretor" type="text" />
             <input id="release_year" placeholder="Ano de lançamento" type="number" />
             <input id="imdb" placeholder="Link IMDB" type="text" />
             <button type="submit">Adicionar</button>
@@ -52,6 +52,8 @@ const director = document.querySelector('#director');
 const release_year = document.querySelector('#release_year');
 const imdb = document.querySelector('#imdb');
 const submit = document.querySelector('[type="submit"]');
+
+get_directors();
 
 function add_movie(body)
 {
@@ -105,6 +107,40 @@ function clear_form()
     director.value = '';
     release_year.value = '';
     imdb.value = '';
+}
+
+function get_directors()
+{
+    fetch('directors.json')
+    .then(response => 
+    {
+        if (!response.ok)
+        {
+            throw new Error(response.statusText);
+        }
+
+        return response.json();
+    })
+    .then(json =>
+    {
+        const container = document.createElement('datalist');
+        container.setAttribute('id', 'directors');
+
+        json.directors.forEach(item =>
+        {
+            option = document.createElement('option');
+            option.textContent = item;
+
+            container.appendChild(option);
+        });
+
+        document.body.appendChild(container);
+
+    })
+    .catch(error =>
+    {
+        console.error('Erro ao carregar:', error);
+    });
 }
 
 submit.addEventListener('click', () =>

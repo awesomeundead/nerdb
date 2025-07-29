@@ -44,9 +44,9 @@ if (isset($_GET['release']) && preg_match('/^\d{4}$/', $_GET['release']))
 elseif (isset($_GET['director']))
 {
     $director = trim($_GET['director']);
-    $params['director'] = $director;
+    $params['director'] = "%{$director}%";
 
-    $query = 'SELECT * FROM movies WHERE director = :director';
+    $query = 'SELECT * FROM movies WHERE director LIKE :director ORDER BY release_year DESC';
 }
 elseif (isset($_GET['search']))
 {
