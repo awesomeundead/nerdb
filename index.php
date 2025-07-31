@@ -2,17 +2,10 @@
 
 use \FastRoute\Dispatcher;
 
-date_default_timezone_set('America/Sao_Paulo');
-
-define('ROOT_DIR', __DIR__);
-define('BASE_PATH', rtrim(dirname($_SERVER['PHP_SELF']), '/\\'));
-
-require ROOT_DIR . '/../../vendor/autoload.php';
-
 $http_method = $_SERVER['REQUEST_METHOD'];
 $uri = substr_replace(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH), '', 0, strlen(BASE_PATH));
 
-$routes = require 'routes.php';
+$routes = require ROOT . '/routes.php';
 
 $dispatcher = \FastRoute\simpleDispatcher($routes);
 $route_info = $dispatcher->dispatch($http_method, $uri);

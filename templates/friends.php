@@ -1,35 +1,4 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Meus amigos</title>
-<link href="layout.css?260725" rel="stylesheet" />
-<link href="default.css?250725" rel="stylesheet" />
-<script src="auth.js?180725"></script>
-</head>
-<body>
-
-<div id="app">
-    <header>
-        <div id="menu_mobile">
-            <label>
-                <input type="checkbox" />
-            </label>
-        </div>
-        <nav>
-            <a href="index.html">Início</a>
-            <a href="top_movies.html">Top filmes</a>
-            <a href="my_movie_list.html">Minha lista de filmes</a>
-            <a href="friends.html">Meus amigos</a>
-            <a href="add_movie.html">Adicionar filme</a>
-        </nav>
-    </header>
-    <section>
-        <div id="friends"></div>
-    </section>
-    <footer class="flex_column hcenter vcenter">Projeto em desenvolvimento</footer>
-</div>
+<div id="friends"></div>
 
 <template>
     <div class="item flex_column">
@@ -49,11 +18,6 @@
 
 <script>
 
-/*
- * Verifica se o usuário esta logado
- */
-check_login();
-
 const container = document.getElementById('friends');
 const template = document.querySelector('template');
 
@@ -61,7 +25,7 @@ load_friends();
 
 function load_friends()
 {
-    fetch(`api/v1/user/friends?steamid=${session.steamid}`)
+    fetch(`api/v1/user/friends`)
     .then(response =>
     {
         if (!response.ok)
@@ -91,13 +55,10 @@ function render_friends(friends)
 
         clone.querySelector('img').src =  `https://avatars.steamstatic.com/${item.avatarhash}_medium.jpg`;
         clone.querySelector('.personaname').textContent = item.personaname;
-        clone.querySelector('.movies a').href = `user_movie_list.html?id=${item.id}`;
+        clone.querySelector('.movies a').href = `friends/movielist/${item.id}`;
 
         container.appendChild(clone);
     });
 }
 
 </script>
-
-</body>
-</html>

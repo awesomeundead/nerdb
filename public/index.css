@@ -1,0 +1,33 @@
+#app
+{
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: min-content auto 320px;
+    min-height: 100svh;
+}
+
+#app > section
+{
+    display: flex;
+}
+
+.swiper
+{
+    height: 100%;
+    width: 100%;
+}
+
+.swiper-slide
+{
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    width: 240px;
+}
+
+.swiper-slide img
+{
+    display: block;
+    height: 320px;
+    object-fit: cover;
+}

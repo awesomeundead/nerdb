@@ -1,54 +1,23 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Minha lista de filmes</title>
-<link href="layout.css?260725" rel="stylesheet" />
-<link href="default.css?250725" rel="stylesheet" />
-<script src="auth.js?180725"></script>
-</head>
-<body>
-
-<div id="app">
-    <header>
-        <div id="menu_mobile">
-            <label>
-                <input type="checkbox" />
-            </label>
-        </div>
-        <nav>
-            <a href="index.html">Início</a>
-            <a href="top_movies.html">Top filmes</a>
-            <a href="my_movie_list.html">Minha lista de filmes</a>
-            <a href="friends.html">Meus amigos</a>
-            <a href="add_movie.html">Adicionar filme</a>
-        </nav>
-    </header>
-    <section>
-        <div class="flex_row" id="my_movie_list_checkbox">
-            <div class="flex_column vcenter">
-                <input data-filter="watchlist" id="watchlist_checkbox" type="checkbox" />
-                <label for="watchlist_checkbox">Filmes que eu quero assistir</label>
-            </div>        
-            <div class="flex_column vcenter">
-                <input data-filter="watched" id="watched_checkbox" type="checkbox" />
-                <label for="watched_checkbox">Filmes assistidos</label>
-            </div>
-            <div class="flex_column vcenter">
-                <input data-filter="liked" id="liked_checkbox" type="checkbox" />
-                <label for="liked_checkbox">Filmes que eu gostei</label>
-            </div>
-            <div class="flex_column vcenter">
-                <input data-filter="rating" id="rating_checkbox" type="checkbox" />
-                <label for="rating_checkbox">Filmes que eu melhor avaliei</label>
-            </div>
-        </div>
-        <div id="my_movie_list">
-            <div class="grid"></div>
-        </div>
-    </section>
-    <footer class="flex_column hcenter vcenter">Projeto em desenvolvimento</footer>
+<div class="flex_row" id="my_movie_list_checkbox">
+    <div class="flex_column vcenter">
+        <input data-filter="watchlist" id="watchlist_checkbox" type="checkbox" />
+        <label for="watchlist_checkbox">Filmes que eu quero assistir</label>
+    </div>        
+    <div class="flex_column vcenter">
+        <input data-filter="watched" id="watched_checkbox" type="checkbox" />
+        <label for="watched_checkbox">Filmes assistidos</label>
+    </div>
+    <div class="flex_column vcenter">
+        <input data-filter="liked" id="liked_checkbox" type="checkbox" />
+        <label for="liked_checkbox">Filmes que eu gostei</label>
+    </div>
+    <div class="flex_column vcenter">
+        <input data-filter="rating" id="rating_checkbox" type="checkbox" />
+        <label for="rating_checkbox">Filmes que eu melhor avaliei</label>
+    </div>
+</div>
+<div id="my_movie_list">
+    <div class="grid"></div>
 </div>
 
 <template>
@@ -81,11 +50,6 @@
 </template>
 
 <script>
-
-/*
- * Verifica se o usuário esta logado
- */
-check_login();
 
 const container = document.querySelector('#my_movie_list .grid');
 const template = document.querySelector('template');
@@ -156,7 +120,7 @@ function render_movies(movies)
     {
         const clone = template.content.cloneNode(true);
 
-        clone.querySelector('a').href = `movie.html?id=${item.id}&title=${item.title_us}`;        
+        clone.querySelector('a').href = `movie/${item.id}`;        
         clone.querySelector('img').src = (item.media == '') ? 'public/noimage.png' : `public/images/256/${item.media}.webp`;
         clone.querySelector('.title_br').textContent =  item.title_br;
 
@@ -189,6 +153,3 @@ function render_movies(movies)
 }
 
 </script>
-
-</body>
-</html>

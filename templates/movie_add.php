@@ -1,57 +1,23 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Adicionar filmes</title>
-<link href="layout.css?260725" rel="stylesheet" />
-<script src="default.js?11072025"></script>
-<script src="auth.js?180725"></script>
-</head>
-<body>
-
-<div id="app">
-    <header>
-        <div id="menu_mobile">
-            <label>
-                <input type="checkbox" />
-            </label>
-        </div>
-        <nav>
-            <a href="index.html">Início</a>
-            <a href="top_movies.html">Top filmes</a>
-            <a href="my_movie_list.html">Minha lista de filmes</a>
-            <a href="friends.html">Meus amigos</a>
-            <a href="add_movie.html">Adicionar filme</a>
-            <a href="movie_list.html">Todos os filmes</a>
-        </nav>
-    </header>
-    <section>
-        <div class="forms">
-            <input id="title_br" placeholder="Título em português" type="text" />
-            <input id="title_us" placeholder="Título em inglês" type="text" />
-            <input id="director" list="directors" placeholder="Diretor" type="text" />
-            <input id="release_year" placeholder="Ano de lançamento" type="number" />
-            <input id="imdb" placeholder="Link IMDB" type="text" />
-            <button type="submit">Adicionar</button>
-        </div>
-    </section>
-    <footer class="flex_column hcenter vcenter">Projeto em desenvolvimento</footer>
+<div class="forms">
+    <input id="title_br" placeholder="Título em português" type="text" />
+    <input id="title_us" placeholder="Título em inglês" type="text" />
+    <input id="director" list="directors" placeholder="Diretor" type="text" />
+    <input id="genres" placeholder="Gêneros" type="text" />
+    <input id="release_year" placeholder="Ano de lançamento" type="number" />
+    <input id="imdb" placeholder="Link IMDB" type="text" />
+    <button type="submit">Adicionar</button>
 </div>
 
+<script src="default.js"></script>
 <script>
-
-/*
- * Verifica se o usuário esta logado
- */
-check_login();
 
 const title_br = document.querySelector('#title_br');
 const title_us = document.querySelector('#title_us');
 const director = document.querySelector('#director');
+const genres = document.querySelector('#genres');
 const release_year = document.querySelector('#release_year');
 const imdb = document.querySelector('#imdb');
-const submit = document.querySelector('[type="submit"]');
+const submit = document.querySelector('.forms [type="submit"]');
 
 get_directors();
 
@@ -105,6 +71,7 @@ function clear_form()
     title_br.value = '';
     title_us.value = '';
     director.value = '';
+    genres.value = '';
     release_year.value = '';
     imdb.value = '';
 }
@@ -152,6 +119,7 @@ submit.addEventListener('click', () =>
         'title_br': title_br.value,
         'title_us': title_us.value,
         'director': director.value,
+        'genres': genres.value,
         'release_year': release_year.value,
         'imdb': imdb.value
     };
@@ -160,6 +128,3 @@ submit.addEventListener('click', () =>
 });
 
 </script>
-
-</body>
-</html>

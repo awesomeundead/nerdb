@@ -1,42 +1,4 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Filmes</title>
-<link href="layout.css?260725" rel="stylesheet" />
-<link href="default.css?250725" rel="stylesheet" />
-<script src="auth.js?180725"></script>
-</head>
-<body>
-
-<div id="app">
-    <header>
-        <div id="menu_mobile">
-            <label>
-                <input type="checkbox" />
-            </label>
-        </div>
-        <nav>
-            <a href="index.html">Início</a>
-            <a href="top_movies.html">Top filmes</a>
-            <a href="my_movie_list.html">Minha lista de filmes</a>
-            <a href="friends.html">Meus amigos</a>
-            <a href="add_movie.html">Adicionar filme</a>
-        </nav>
-        <div>
-            <form id="search">
-                <input name="q" placeholder="Pesquisar por título ou lançamento" required="required" type="search" />
-                <button type="submit">Pesquisar</button>
-            </form>
-        </div>
-    </header>
-    <section>
-        <div class="grid" id="movies"></div>
-    </section>
-    <footer class="flex_column hcenter vcenter">Projeto em desenvolvimento</footer>
-</div>
-
+<div class="grid" id="movies"></div>
 <template>
     <div class="item flex_column">
         <div class="image">
@@ -92,28 +54,34 @@ if (query.has('q'))
 }
 else
 {
-    load_movies('api/v1/movies?order=random');
+    load_movies('?order=random');
+
+    document.title = 'Filmes aleatórios';
 }
 
 function search_movie(value)
 {
     if (value.match(/^\d{4}$/))
     {
-        load_movies(`api/v1/movies?release=${value}`);
+        load_movies(`?release=${value}`);
     }
     else if (match = value.match(/^diretor:(.+)/))
     {
-        load_movies(`api/v1/movies?director=${match[1]}`);
+        load_movies(`?director=${match[1]}`);
+
+        value = match[1];
     }
     else
     {
-        load_movies(`api/v1/movies?search=${value}`);
+        load_movies(`?search=${value}`);
     }
+
+    document.title = value;
 }
 
 function load_movies(url)
 {
-    fetch(url)
+    fetch('api/v1/movies' + url)
     .then(response =>
     {
         if (!response.ok)
@@ -145,12 +113,12 @@ function render_movies(movies)
         directors.forEach(director =>
         {
             const element = document.createElement('a');
-            element.href = `movies.html?q=diretor:${director}`;
+            element.href = `movies?q=diretor:${director}`;
             element.textContent = director;
             clone.querySelector('.director').appendChild(element);
         });
 
-        clone.querySelector('a').href = `movie.html?id=${item.id}&title=${item.title_us}`;
+        clone.querySelector('a').href = `movie/${item.id}`;
         clone.querySelector('img').src = (item.media == '') ? 'public/noimage.png' : `public/images/256/${item.media}.webp`;
         clone.querySelector('.title_br').textContent =  item.title_br;
         clone.querySelector('.title_us').textContent =  item.title_us;
@@ -161,16 +129,4 @@ function render_movies(movies)
     });
 }
 
-/*
-async function is_logged_in()
-{
-    const logged_in = await login();
-
-    if (!logged_in){}
-}
-*/
-
 </script>
-
-</body>
-</html>

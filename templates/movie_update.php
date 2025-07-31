@@ -1,68 +1,29 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Atualizar filme</title>
-<link href="layout.css?260725" rel="stylesheet" />
-<script src="default.js?11072025"></script>
-<script src="auth.js?180725"></script>
-</head>
-<body>
-
-<div id="app">
-    <header>
-        <div id="menu_mobile">
-            <label>
-                <input type="checkbox" />
-            </label>
-        </div>
-        <nav>
-            <a href="index.html">Início</a>
-            <a href="top_movies.html">Top filmes</a>
-            <a href="my_movie_list.html">Minha lista de filmes</a>
-            <a href="friends.html">Meus amigos</a>
-            <a href="add_movie.html">Adicionar filme</a>
-            <a href="movie_list.html">Todos os filmes</a>
-        </nav>
-    </header>
-    <section>
-        <div class="forms">
-            <div class="image">
-                <img alt="" height="256" id="media" src="" />
-            </div>
-            <input id="title_br" placeholder="Título em português" type="text" />
-            <input id="title_us" placeholder="Título em inglês" type="text" />
-            <input id="director" placeholder="Diretor" type="text" />
-            <input id="release_year" placeholder="Ano de lançamento" type="number" />
-            <input id="imdb" placeholder="Link IMDB" type="text" />
-            <button type="submit">Atualizar</button>
-        </div>
-    </section>
-    <footer class="flex_column hcenter vcenter">Projeto em desenvolvimento</footer>
+<div class="forms">
+    <div class="image">
+        <img alt="" height="256" id="media" src="" />
+    </div>
+    <input id="title_br" placeholder="Título em português" type="text" />
+    <input id="title_us" placeholder="Título em inglês" type="text" />
+    <input id="director" placeholder="Diretor" type="text" />
+    <input id="genres" placeholder="Gêneros" type="text" />
+    <input id="release_year" placeholder="Ano de lançamento" type="number" />
+    <input id="imdb" placeholder="Link IMDB" type="text" />
+    <button type="submit">Atualizar</button>
 </div>
 
+<script src="default.js"></script>
 <script>
 
-/*
- * Verifica se o usuário esta logado
- */
-check_login();
-
-const query = new URLSearchParams(window.location.search);
-
-if (!query.has('id'))
-{
-    location.href = 'index.html';
-}
+const movie_id = '<?= $movie_id ?>';
 
 const media = document.querySelector('#media');
 const title_br = document.querySelector('#title_br');
 const title_us = document.querySelector('#title_us');
 const director = document.querySelector('#director');
+const genres = document.querySelector('#genres');
 const release_year = document.querySelector('#release_year');
 const imdb = document.querySelector('#imdb');
-const submit = document.querySelector('[type="submit"]');
+const submit = document.querySelector('.forms [type="submit"]');
 
 submit.addEventListener('click', () =>
 {
@@ -73,6 +34,7 @@ submit.addEventListener('click', () =>
         'title_br': title_br.value,
         'title_us': title_us.value,
         'director': director.value,
+        'genres': genres.value,
         'release_year': release_year.value,
         'imdb': imdb.value
     };
@@ -80,11 +42,11 @@ submit.addEventListener('click', () =>
     update_movie(body);
 });
 
-load_movie(`api/v1/movie/${query.get('id')}`);
+load_movie();
 
-function load_movie(url)
+function load_movie()
 {
-    fetch(url)
+    fetch(`api/v1/movie/${movie_id}`)
     .then(response =>
     {
         if (!response.ok)
@@ -106,7 +68,7 @@ function load_movie(url)
 
 function update_movie(body)
 {
-    fetch(`api/v1/movie/${query.get('id')}`,
+    fetch(`api/v1/movie/${movie_id}`,
     {
         body: JSON.stringify(body),
         headers:
@@ -150,11 +112,9 @@ function render(item)
     title_br.value = item.title_br,
     title_us.value = item.title_us,
     director.value = item.director,
+    genres.value = item.genres,
     release_year.value = item.release_year,
     imdb.value = item.imdb;
 }
 
 </script>
-
-</body>
-</html>

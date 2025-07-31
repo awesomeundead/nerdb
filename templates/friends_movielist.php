@@ -1,56 +1,24 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Lista de filmes do meu amigo</title>
-<link href="layout.css?260725" rel="stylesheet" />
-<link href="default.css?250725" rel="stylesheet" />
-<script src="auth.js?180725"></script>
-</head>
-<body>
-
-<div id="app">
-    <header>
-        <div id="menu_mobile">
-            <label>
-                <input type="checkbox" />
-            </label>
-        </div>
-        <nav>
-            <a href="index.html">Início</a>
-            <a href="top_movies.html">Top filmes</a>
-            <a href="my_movie_list.html">Minha lista de filmes</a>
-            <a href="friends.html">Meus amigos</a>
-            <a href="add_movie.html">Adicionar filme</a>
-        </nav>
-    </header>
-    <section>
-        <div class="flex_row" id="my_movie_list_checkbox">
-            <div class="flex_column vcenter">
-                <input data-filter="watchlist" id="watchlist_checkbox" type="checkbox" />
-                <label for="watchlist_checkbox">Filmes que seu amigo quer assistir</label>
-            </div>        
-            <div class="flex_column vcenter">
-                <input data-filter="watched" id="watched_checkbox" type="checkbox" />
-                <label for="watched_checkbox">Filmes que seu amigo assistiu</label>
-            </div>
-            <div class="flex_column vcenter">
-                <input data-filter="liked" id="liked_checkbox" type="checkbox" />
-                <label for="liked_checkbox">Filmes que seu amigo gostou</label>
-            </div>
-            <div class="flex_column vcenter">
-                <input data-filter="rating" id="rating_checkbox" type="checkbox" />
-                <label for="rating_checkbox">Filmes que seu amigo melhor avaliou</label>
-            </div>
-        </div>
-        <div id="my_movie_list">
-            <div class="grid"></div>
-        </div>
-    </section>
-    <footer class="flex_column hcenter vcenter">Projeto em desenvolvimento</footer>
+<div class="flex_row" id="my_movie_list_checkbox">
+    <div class="flex_column vcenter">
+        <input data-filter="watchlist" id="watchlist_checkbox" type="checkbox" />
+        <label for="watchlist_checkbox">Filmes que seu amigo quer assistir</label>
+    </div>        
+    <div class="flex_column vcenter">
+        <input data-filter="watched" id="watched_checkbox" type="checkbox" />
+        <label for="watched_checkbox">Filmes que seu amigo assistiu</label>
+    </div>
+    <div class="flex_column vcenter">
+        <input data-filter="liked" id="liked_checkbox" type="checkbox" />
+        <label for="liked_checkbox">Filmes que seu amigo gostou</label>
+    </div>
+    <div class="flex_column vcenter">
+        <input data-filter="rating" id="rating_checkbox" type="checkbox" />
+        <label for="rating_checkbox">Filmes que seu amigo melhor avaliou</label>
+    </div>
 </div>
-
+<div id="my_movie_list">
+    <div class="grid"></div>
+</div>
 <template>
     <div class="item flex_row">
         <div class="flex_column">
@@ -104,12 +72,7 @@
 
 <script>
 
-/*
- * Verifica se o usuário esta logado
- */
-check_login();
-
-const query = new URLSearchParams(window.location.search);
+const friend_id = '<?= $friend_id ?>';
 const container = document.querySelector('#my_movie_list .grid');
 const template = document.querySelector('template');
 const filter = {};
@@ -135,13 +98,7 @@ load_movies();
 
 function load_movies()
 {
-    if (!query.has('id'))
-    {
-        /* corrigir futuramente */
-        return;
-    }
-
-    let url = `api/v1/movie-list/user/${query.get('id')}`;
+    let url = `api/v1/movie-list/user/${friend_id}`;
 
     if (Object.keys(filter).length)
     {
@@ -193,7 +150,7 @@ function render_movies(movies)
     {
         const clone = template.content.cloneNode(true);
 
-        clone.querySelector('a').href = `movie.html?id=${item.id}`;
+        clone.querySelector('a').href = `movie/${item.id}`;
         clone.querySelector('.image img').src = item.media?.trim() ? `public/images/256/${item.media}.webp` : 'public/noimage.png';
         clone.querySelector('.title_br').textContent =  item.title_br;
 
@@ -238,6 +195,3 @@ function render_movies(movies)
 }
 
 </script>
-
-</body>
-</html>

@@ -1,10 +1,11 @@
 function notification(status, message)
 {
     const card = document.createElement('div');
+    const container = document.querySelector('body');
 
     card.innerHTML = message[status]; 
     card.classList.add('notification', status);   
-    document.body.insertBefore(card, document.body.firstChild);
+    container.insertBefore(card, container.firstChild);
 
     setTimeout(() =>
     {

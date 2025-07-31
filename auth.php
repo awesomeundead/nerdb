@@ -3,7 +3,6 @@
 $protocol = !empty($_SERVER['HTTPS']) ? 'https' : 'http';
 
 define('HOST', "{$protocol}://{$_SERVER['HTTP_HOST']}");
-define('BASE_PATH', rtrim(dirname($_SERVER['PHP_SELF'], 2), '/\\'));
 
 function auto_login()
 {
@@ -42,8 +41,7 @@ function auto_login()
                 */
                 $response = update_user($player);
 
-                header('location: my_movie_list.html');
-                exit;
+                redirect('/movielist');
             }
         }
     }
@@ -85,7 +83,7 @@ function create_auto_login($user_id)
 
 function create_session($data)
 {
-    require __DIR__ . '/../session.php';
+    require __DIR__ . '/session.php';
 
     $_SESSION['logged_in'] = true;
     $_SESSION['user_id'] = $data['id'];
@@ -96,7 +94,7 @@ function create_session($data)
 
 function get_steam_user($steamid64)
 {
-    $steam_api_key = (require __DIR__ . '/../config.php')['steam_api_key'];
+    $steam_api_key = (require __DIR__ . '/config.php')['steam_api_key'];
 
     /*
      *  busca os dados do usuário steam
@@ -182,7 +180,7 @@ elseif (isset($_GET['login']))
 
     $steam_login_url = 'https://steamcommunity.com/openid/login' . '?' . http_build_query($login_url_params, '', '&');
 
-    header("location: $steam_login_url");
+    header("location: {$steam_login_url}");
     exit;
 }
 elseif (isset($_GET['openid_signed']))
@@ -248,9 +246,8 @@ elseif (isset($_GET['openid_signed']))
         create_session($data);
         create_auto_login($data['id']);
 
-        header('location: my_movie_list.html?login=success');
-        exit;
+        redirect('/movielist?login=success');
     }
 }
 
-header('location: index.html?login=failure');
+redirect('/login?login=failure');

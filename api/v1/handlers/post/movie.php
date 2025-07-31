@@ -22,6 +22,7 @@ $user_id = $_SESSION['user_id'];
 $title_br = trim($dados['title_br']);
 $title_us = trim($dados['title_us']);
 $director = trim($dados['director']);
+$genres = trim($dados['genres']);
 $release_year = trim($dados['release_year']);
 $imdb = trim($dados['imdb']);
 
@@ -38,7 +39,7 @@ $result = !$stmt->fetchColumn();
 
 if ($result)
 {
-    if (preg_match('#^https://www.imdb.com/[\w-]+/title/(tt\d+)/#', $imdb, $matches))
+    if (preg_match('#/title/(tt\d+)/#', $imdb, $matches))
     {
         $imdb = $matches[1];
     }
@@ -47,14 +48,15 @@ if ($result)
         'title_br' => $title_br,
         'title_us' => $title_us,
         'director' => $director,
+        'genres' => $genres,
         'release_year' => $release_year,
         'imdb' => $imdb,
         'first_user_id' => $user_id,
         'last_user_id' => $user_id
     ];
 
-    $query = 'INSERT INTO movies (title_br, title_us, director, release_year, imdb, first_user_id, last_user_id)
-              VALUES (:title_br, :title_us, :director, :release_year, :imdb, :first_user_id, :last_user_id)';
+    $query = 'INSERT INTO movies (title_br, title_us, director, genres, release_year, imdb, first_user_id, last_user_id)
+              VALUES (:title_br, :title_us, :director, :genres, :release_year, :imdb, :first_user_id, :last_user_id)';
 
     $stmt = $pdo->prepare($query);
     $result = $stmt->execute($params);
