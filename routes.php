@@ -74,7 +74,7 @@ return function(RouteCollector $route)
     {
         $check_login();
 
-        $template = $templates()->make('friends_movielist.html');
+        $template = $templates()->make('friends_movielist.php');
         $template->layout('layouts/default.php', ['title' => 'Amigos - Lista de filmes']);
 
         echo $template->render(['friend_id' => $vars['id']]);
@@ -105,7 +105,7 @@ return function(RouteCollector $route)
 
     $route->get('/movie/{id:\d+}', function($vars) use ($templates)
     {
-        $template = $templates()->make('movie.html');
+        $template = $templates()->make('movie.php');
         $template->layout('layouts/default.php');
 
         echo $template->render(['movie_id' => $vars['id']]);
@@ -125,7 +125,7 @@ return function(RouteCollector $route)
     {
         $check_login();
 
-        $template = $templates()->make('movie_update.html');
+        $template = $templates()->make('movie_update.php');
         $template->layout('layouts/default.php', ['title' => 'Atualizar filme']);
 
         echo $template->render(['movie_id' => $vars['id']]);

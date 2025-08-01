@@ -14,6 +14,28 @@ function notification(status, message)
     }, 1000 * 3);
 }
 
+function load_movie(url, render)
+{
+    fetch(url)
+    .then(response =>
+    {
+        if (!response.ok)
+        {
+            throw new Error(response.statusText);
+        }
+
+        return response.json();
+    })
+    .then(json =>
+    {
+        render(json)
+    })
+    .catch(error =>
+    {
+        console.error(error);
+    });
+}
+
 function load_movies(url, render)
 {
     fetch(url)

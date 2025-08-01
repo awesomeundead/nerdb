@@ -1,23 +1,25 @@
-<div class="forms">
-    <input id="title_br" placeholder="Título em português" type="text" />
-    <input id="title_us" placeholder="Título em inglês" type="text" />
-    <input id="director" list="directors" placeholder="Diretor" type="text" />
-    <input id="genres" placeholder="Gêneros" type="text" />
-    <input id="release_year" placeholder="Ano de lançamento" type="number" />
-    <input id="imdb" placeholder="Link IMDB" type="text" />
+<form class="forms">
+    <input name="title_br" placeholder="Título em português" required="required" type="text" />
+    <input name="title_us" placeholder="Título em inglês" required="required" type="text" />
+    <input name="director" list="directors" placeholder="Diretor" required="required" type="text" />
+    <input name="genres" placeholder="Gêneros" type="text" />
+    <input name="release_year" placeholder="Ano de lançamento" required="required" type="number" />
+    <input name="imdb" placeholder="Link IMDB" type="text" />
     <button type="submit">Adicionar</button>
-</div>
+</form>
 
 <script src="default.js"></script>
 <script>
 
-const title_br = document.querySelector('#title_br');
-const title_us = document.querySelector('#title_us');
-const director = document.querySelector('#director');
-const genres = document.querySelector('#genres');
-const release_year = document.querySelector('#release_year');
-const imdb = document.querySelector('#imdb');
-const submit = document.querySelector('.forms [type="submit"]');
+const form = document.querySelector('form.forms');
+
+form.addEventListener('submit', e =>
+{
+    e.preventDefault();
+    form.querySelector('[type="submit"]').disabled = true;
+
+    add_movie(Object.fromEntries(new FormData(form)));
+});
 
 get_directors();
 
@@ -50,7 +52,7 @@ function add_movie(body)
 
             if (json.status == 'success')
             {
-                clear_form();
+                form.reset();
             }
         }
         else
@@ -58,22 +60,13 @@ function add_movie(body)
             console.log(json);
         }
 
-        submit.disabled = false;
+        form.querySelector('[type="submit"]').disabled = false;
     })
     .catch(error =>
     {
+        form.querySelector('[type="submit"]').disabled = false;
         console.error(error);
     });
-}
-
-function clear_form()
-{
-    title_br.value = '';
-    title_us.value = '';
-    director.value = '';
-    genres.value = '';
-    release_year.value = '';
-    imdb.value = '';
 }
 
 function get_directors()
@@ -109,22 +102,5 @@ function get_directors()
         console.error('Erro ao carregar:', error);
     });
 }
-
-submit.addEventListener('click', () =>
-{
-    submit.disabled = true;
-
-    const body =
-    {
-        'title_br': title_br.value,
-        'title_us': title_us.value,
-        'director': director.value,
-        'genres': genres.value,
-        'release_year': release_year.value,
-        'imdb': imdb.value
-    };
-
-    add_movie(body);
-});
 
 </script>

@@ -62,103 +62,9 @@
 <script>
 
 const movie_id = '<?= $movie_id ?>';
+const url = `api/v1/movie/${movie_id}`;
 
-load_movie();
-
-function load_movie()
-{
-    fetch(`api/v1/movie/${movie_id}`)
-    .then(response =>
-    {
-        if (!response.ok)
-        {
-            throw new Error(response.statusText);
-        }
-
-        return response.json();
-    })
-    .then(json =>
-    {
-        render(json)
-    })
-    .catch(error =>
-    {
-        console.error(error);
-    });
-}
-
-function addmovie(movie_id, button)
-{
-    const action = button.dataset.action;
-    const value = button.dataset.value;
-
-    fetch(`api/v1/user/addmovie/${movie_id}?${action}=${value}`,
-    {
-        method: 'post'
-    })
-    .then(response =>
-    {
-        if (!response.ok)
-        {
-            throw new Error(response.statusText);
-        }
-
-        return response.json();
-    })
-    .then(json =>
-    {
-        if (json.status == 'success')
-        {
-            button.classList.toggle('selected');
-            button.dataset.value = value == 1 ? 0 : 1;
-        }
-    })
-    .catch(error =>
-    {
-        console.error(error);
-    });
-}
-
-function rating_movie(value)
-{
-    fetch(`api/v1/user/addmovie/${movie_id}?rating=${value}`,
-    {
-        method: 'post'
-    })
-    .then(response =>
-    {
-        if (!response.ok)
-        {
-            throw new Error(response.statusText);
-        }
-
-        return response.json();
-    })
-    .then(json =>
-    {
-        if (json.status == 'success')
-        {
-            document.querySelectorAll('.rating button').forEach(item =>
-            {
-                item.classList.remove('starred');
-
-                if (value)
-                {
-                    if (parseInt(value) >= parseInt(item.dataset.value))
-                    {
-                        item.classList.add('starred');
-                    }
-                }
-            });
-        }
-    })
-    .catch(error =>
-    {
-        console.error(error);
-    });
-}
-
-function render(movie)
+const render = function(movie)
 {
     const directors = movie.director.split(';');
 
@@ -229,6 +135,79 @@ function render(movie)
         element.setAttribute('target', '_blank');
         element.textContent = platform.platform_name;
         document.querySelector('.platforms').appendChild(element);
+    });
+}
+
+load_movie(url, render);
+
+function addmovie(movie_id, button)
+{
+    const action = button.dataset.action;
+    const value = button.dataset.value;
+
+    fetch(`api/v1/user/addmovie/${movie_id}?${action}=${value}`,
+    {
+        method: 'post'
+    })
+    .then(response =>
+    {
+        if (!response.ok)
+        {
+            throw new Error(response.statusText);
+        }
+
+        return response.json();
+    })
+    .then(json =>
+    {
+        if (json.status == 'success')
+        {
+            button.classList.toggle('selected');
+            button.dataset.value = value == 1 ? 0 : 1;
+        }
+    })
+    .catch(error =>
+    {
+        console.error(error);
+    });
+}
+
+function rating_movie(value)
+{
+    fetch(`api/v1/user/addmovie/${movie_id}?rating=${value}`,
+    {
+        method: 'post'
+    })
+    .then(response =>
+    {
+        if (!response.ok)
+        {
+            throw new Error(response.statusText);
+        }
+
+        return response.json();
+    })
+    .then(json =>
+    {
+        if (json.status == 'success')
+        {
+            document.querySelectorAll('.rating button').forEach(item =>
+            {
+                item.classList.remove('starred');
+
+                if (value)
+                {
+                    if (parseInt(value) >= parseInt(item.dataset.value))
+                    {
+                        item.classList.add('starred');
+                    }
+                }
+            });
+        }
+    })
+    .catch(error =>
+    {
+        console.error(error);
     });
 }
 
