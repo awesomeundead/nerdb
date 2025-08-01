@@ -34,6 +34,7 @@ return function(RouteCollector $route)
     $templates = function() use ($session)
     {
         $engine = new Engine(ROOT . '/templates');
+        $engine->setFileExtension(null);
         $engine->loadExtension(new Asset(ROOT . '/public'));
         $engine->loadExtension(new URI(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH)));
 
@@ -54,7 +55,7 @@ return function(RouteCollector $route)
 
     $route->get('/', function() use ($templates)
     {
-        echo $templates()->render('index');
+        echo $templates()->render('index.php');
     });
 
     $route->get('/auth', 'auth.php');
@@ -63,8 +64,8 @@ return function(RouteCollector $route)
     {
         $check_login();
 
-        $template = $templates()->make('friends');
-        $template->layout('layouts/default', ['title' => 'Meus amigos']);
+        $template = $templates()->make('friends.html');
+        $template->layout('layouts/default.php', ['title' => 'Meus amigos']);
 
         echo $template->render();
     });
@@ -73,8 +74,8 @@ return function(RouteCollector $route)
     {
         $check_login();
 
-        $template = $templates()->make('friends_movielist');
-        $template->layout('layouts/default', ['title' => 'Amigos - Lista de filmes']);
+        $template = $templates()->make('friends_movielist.html');
+        $template->layout('layouts/default.php', ['title' => 'Amigos - Lista de filmes']);
 
         echo $template->render(['friend_id' => $vars['id']]);
     });
@@ -86,8 +87,8 @@ return function(RouteCollector $route)
             redirect('/');
         }
 
-        $template = $templates()->make('login');
-        $template->layout('layouts/default', ['title' => 'Login']);
+        $template = $templates()->make('login.html');
+        $template->layout('layouts/default.php', ['title' => 'Login']);
 
         echo $template->render();
     });
@@ -96,16 +97,16 @@ return function(RouteCollector $route)
     {
         $check_login();
 
-        $template = $templates()->make('movielist');
-        $template->layout('layouts/default', ['title' => 'Minha lista de filmes']);
+        $template = $templates()->make('movielist.html');
+        $template->layout('layouts/default.php', ['title' => 'Minha lista de filmes']);
 
         echo $template->render();
     });
 
     $route->get('/movie/{id:\d+}', function($vars) use ($templates)
     {
-        $template = $templates()->make('movie');
-        $template->layout('layouts/default');
+        $template = $templates()->make('movie.html');
+        $template->layout('layouts/default.php');
 
         echo $template->render(['movie_id' => $vars['id']]);
     });
@@ -114,8 +115,8 @@ return function(RouteCollector $route)
     {
         $check_login();
 
-        $template = $templates()->make('movie_add');
-        $template->layout('layouts/default', ['title' => 'Adicionar filme']);
+        $template = $templates()->make('movie_add.html');
+        $template->layout('layouts/default.php', ['title' => 'Adicionar filme']);
 
         echo $template->render();
     });
@@ -124,24 +125,24 @@ return function(RouteCollector $route)
     {
         $check_login();
 
-        $template = $templates()->make('movie_update');
-        $template->layout('layouts/default', ['title' => 'Atualizar filme']);
+        $template = $templates()->make('movie_update.html');
+        $template->layout('layouts/default.php', ['title' => 'Atualizar filme']);
 
         echo $template->render(['movie_id' => $vars['id']]);
     });
 
     $route->get('/movies', function() use ($templates)
     {
-        $template = $templates()->make('movies');
-        $template->layout('layouts/default');
+        $template = $templates()->make('movies.html');
+        $template->layout('layouts/default.php');
 
         echo $template->render();
     });
 
     $route->get('/movies/top', function() use ($templates)
     {
-        $template = $templates()->make('movies_top');
-        $template->layout('layouts/default', ['title' => 'Os 100 melhores filmes']);
+        $template = $templates()->make('movies_top.html');
+        $template->layout('layouts/default.php', ['title' => 'Os 100 melhores filmes']);
 
         echo $template->render();
     });

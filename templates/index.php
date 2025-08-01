@@ -8,19 +8,20 @@
 <link href="<?= $this->base($this->asset('/default.css')) ?>" rel="stylesheet" />
 <link href="https://unpkg.com/swiper/swiper-bundle.min.css" rel="stylesheet" />
 <link href="<?= $this->base($this->asset('/index.css')) ?>" rel="stylesheet" />
+<script src="<?= $this->base($this->asset('/default.js')) ?>"></script>
 <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
 </head>
 <body>
 
 <div id="app">
     <header>
-        <?php $this->insert('components/user_panel') ?>
+        <?php $this->insert('components/user_panel.php') ?>
         <div id="menu_mobile">
             <label>
                 <input type="checkbox" />
             </label>
         </div>
-        <?php $this->insert('components/nav') ?>
+        <?php $this->insert('components/nav.php') ?>
     </header>
     <section>
         <form action="movies" id="search">
@@ -48,31 +49,7 @@
 const container = document.querySelector('#movies_media');
 const template = document.querySelector('template');
 
-load_movies();
-
-function load_movies()
-{
-    fetch('api/v1/movies?order=random')
-    .then(response =>
-    {
-        if (!response.ok)
-        {
-            throw new Error(response.statusText);
-        }
-
-        return response.json();
-    })
-    .then(json =>
-    {
-        render_movies(json.movies)
-    })
-    .catch(error =>
-    {
-        console.error(error);
-    });
-}
-
-function render_movies(movies)
+const render = function(movies)
 {
     container.innerHTML = '';
 
@@ -99,6 +76,8 @@ function render_movies(movies)
         freeMode: true
     });
 }
+
+load_movies('api/v1/movies?order=random', render);
 
 </script>
 

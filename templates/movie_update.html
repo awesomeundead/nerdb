@@ -108,7 +108,7 @@ function update_movie(body)
 
 function render(item)
 {
-    media.src = (item.media == '') ? 'public/noimage.png' : `public/images/256/${item.media}.webp`;
+    media.src = item.media?.trim() ? `images/256/${item.media}.webp` : 'noimage.png';
     title_br.value = item.title_br,
     title_us.value = item.title_us,
     director.value = item.director,

@@ -7,18 +7,19 @@
 <base href="<?= $this->base('/') ?>" />
 <link href="<?= $this->base($this->asset('/layout.css')) ?>" rel="stylesheet" />
 <link href="<?= $this->base($this->asset('/default.css')) ?>" rel="stylesheet" />
+<script src="<?= $this->base($this->asset('/default.js')) ?>"></script>
 </head>
 <body>
 
 <div id="app">
     <header>
-        <?php $this->insert('components/user_panel') ?>
+        <?php $this->insert('components/user_panel.php') ?>
         <div id="menu_mobile">
             <label>
                 <input type="checkbox" />
             </label>
         </div>
-        <?php $this->insert('components/nav') ?>
+        <?php $this->insert('components/nav.php') ?>
         <div>
             <form action="movies" id="search">
                 <input name="q" placeholder="Pesquisar por título, diretor ou ano de lançamento" required="required" type="search" />

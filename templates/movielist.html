@@ -54,58 +54,9 @@
 const container = document.querySelector('#my_movie_list .grid');
 const template = document.querySelector('template');
 const filter = {};
+const url = 'api/v1/movie-list/my';
 
-document.querySelectorAll('#watchlist_checkbox, #watched_checkbox, #liked_checkbox, #rating_checkbox').forEach(item =>
-{
-    item.addEventListener('click', () =>
-    {
-        if (item.checked)
-        {
-            filter[item.dataset.filter] = 1;
-        }
-        else
-        {
-            delete filter[item.dataset.filter];
-        }
-
-        load_movies();
-    });
-});
-
-load_movies();
-
-function load_movies()
-{
-    let url = 'api/v1/movie-list/my';
-
-    if (Object.keys(filter).length)
-    {
-        url += '?' + new URLSearchParams(filter).toString();
-    }
-
-    console.log(url);
-
-    fetch(url)
-    .then(response =>
-    {
-        if (!response.ok)
-        {
-            throw new Error(response.statusText);
-        }
-
-        return response.json();
-    })
-    .then(json =>
-    {
-        render_movies(json.movies)
-    })
-    .catch(error =>
-    {
-        console.error(error);
-    });
-}
-
-function render_movies(movies)
+const render = function(movies)
 {
     if (!movies.length)
     {
@@ -121,7 +72,7 @@ function render_movies(movies)
         const clone = template.content.cloneNode(true);
 
         clone.querySelector('a').href = `movie/${item.id}`;        
-        clone.querySelector('img').src = (item.media == '') ? 'public/noimage.png' : `public/images/256/${item.media}.webp`;
+        clone.querySelector('img').src = item.media?.trim() ? `images/256/${item.media}.webp` : 'noimage.png';
         clone.querySelector('.title_br').textContent =  item.title_br;
 
         if (!item.watchlist || item.watched)
@@ -151,5 +102,33 @@ function render_movies(movies)
         container.appendChild(clone);
     });
 }
+
+document.querySelectorAll('#watchlist_checkbox, #watched_checkbox, #liked_checkbox, #rating_checkbox').forEach(item =>
+{
+    item.addEventListener('click', () =>
+    {
+        if (item.checked)
+        {
+            filter[item.dataset.filter] = 1;
+        }
+        else
+        {
+            delete filter[item.dataset.filter];
+        }
+
+        if (Object.keys(filter).length)
+        {
+            const params = new URLSearchParams(filter);
+            
+            load_movies(`${url}?${params.toString()}`, render);
+        }
+        else
+        {
+            load_movies(url, render);
+        }
+    });
+});
+
+load_movies(url, render);
 
 </script>

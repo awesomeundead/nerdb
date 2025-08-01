@@ -63,9 +63,9 @@
 
 const movie_id = '<?= $movie_id ?>';
 
-load_movies();
+load_movie();
 
-function load_movies()
+function load_movie()
 {
     fetch(`api/v1/movie/${movie_id}`)
     .then(response =>
@@ -181,7 +181,7 @@ function render(movie)
     });
 
     document.title = `${movie.title_br} (${movie.release_year})`;
-    document.querySelector('.image img').src = (movie.media == '') ? 'noimage.png' : `images/512/${movie.media}.webp`;
+    document.querySelector('.image img').src = movie.media?.trim() ? `images/512/${movie.media}.webp` : 'noimage.png';
     document.querySelector('.title_br').textContent =  movie.title_br;
     document.querySelector('.title_us').textContent =  movie.title_us;
     document.querySelector('.release_year').textContent =  movie.release_year;

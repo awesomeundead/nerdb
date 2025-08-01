@@ -48,6 +48,13 @@ elseif (isset($_GET['director']))
 
     $query = 'SELECT * FROM movies WHERE director LIKE :director ORDER BY release_year DESC';
 }
+elseif (isset($_GET['genre']))
+{
+    $genre = trim($_GET['genre']);
+    $params['genre'] = "%{$genre}%";
+
+    $query = 'SELECT * FROM movies WHERE genres LIKE :genre ORDER BY release_year DESC';
+}
 elseif (isset($_GET['search']))
 {
     $search = trim($_GET['search']);
