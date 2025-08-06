@@ -14,7 +14,41 @@ function notification(status, message)
     }, 1000 * 3);
 }
 
-function load_movie(url, render)
+function get_directors()
+{
+    fetch('directors.json')
+    .then(response => 
+    {
+        if (!response.ok)
+        {
+            throw new Error(response.statusText);
+        }
+
+        return response.json();
+    })
+    .then(json =>
+    {
+        const container = document.createElement('datalist');
+        container.setAttribute('id', 'directors');
+
+        json.directors.forEach(item =>
+        {
+            option = document.createElement('option');
+            option.textContent = item;
+
+            container.appendChild(option);
+        });
+
+        document.body.appendChild(container);
+
+    })
+    .catch(error =>
+    {
+        console.error('Erro ao carregar:', error);
+    });
+}
+
+function getJSON()
 {
     fetch(url)
     .then(response =>
@@ -36,24 +70,37 @@ function load_movie(url, render)
     });
 }
 
-function load_movies(url, render)
+function sendJSON(method, url, body)
 {
-    fetch(url)
-    .then(response =>
+    return new Promise((resolve, reject) =>
     {
-        if (!response.ok)
+        const options =
         {
-            throw new Error(response.statusText);
-        }
+            body: JSON.stringify(body),
+            headers:
+            {
+                'Content-Type': 'application/json'
+            },
+            method: method
+        };
 
-        return response.json();
-    })
-    .then(json =>
-    {
-        render(json.movies)
-    })
-    .catch(error =>
-    {
-        console.error(error);
+        fetch(url, options)
+        .then(response =>
+        {
+            if (!response.ok)
+            {
+                throw new Error(response.statusText);
+            }
+
+            return response.json();
+        })
+        .then(json =>
+        {
+            resolve(json);
+        })
+        .catch(error =>
+        {
+            reject(error);
+        });
     });
 }

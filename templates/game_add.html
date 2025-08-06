@@ -1,11 +1,9 @@
 <form class="forms">
-    <input name="title_br" placeholder="Título em português" required="required" type="text" />
-    <input name="title_us" placeholder="Título em inglês" required="required" type="text" />
-    <input name="director" list="directors" placeholder="Diretor" required="required" type="text" />
-    <textarea name="cast" placeholder="Elenco" rows="4"></textarea>
+    <input name="title" placeholder="Título" required="required" type="text" />
+    <input name="developer" placeholder="Desenvolvedor" required="required" type="text" />
     <input name="genres" placeholder="Gêneros" type="text" />
     <input name="release_year" placeholder="Ano de lançamento" required="required" type="number" />
-    <input name="imdb" placeholder="Link IMDB" type="text" />
+    <input name="steam" placeholder="Link Steam" type="text" />
     <button type="submit">Adicionar</button>
 </form>
 
@@ -19,7 +17,7 @@ form.addEventListener('submit', e =>
     e.preventDefault();
     submit.disabled = true;
 
-    sendJSON('post', 'api/v1/movie', Object.fromEntries(new FormData(form)))
+    sendJSON('post', 'api/v1/game', Object.fromEntries(new FormData(form)))
     .then(json =>
     {
         if (json.hasOwnProperty('status'))
@@ -40,7 +38,5 @@ form.addEventListener('submit', e =>
         console.error(error);
     });
 });
-
-get_directors();
 
 </script>

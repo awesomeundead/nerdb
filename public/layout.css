@@ -35,7 +35,7 @@ body
     margin: 0;
 }
 
-body, button, input, label, select
+body, button, input, label, select, textarea
 {
     font-size: var(--body-font-size);
 }
@@ -44,12 +44,12 @@ a
 {
     color: #FFF;
     text-decoration: none;
-}
 
-a:hover
-{
-    color: #999;
-    text-decoration: none;
+    &:hover
+    {
+        color: #999;
+        text-decoration: none;
+    }
 }
 
 button, input, select
@@ -67,22 +67,22 @@ button.icon
     display: flex;
     gap: 5px;
     padding: 5px;
-}
 
-button.icon.selected
-{
-    background-color: #333;
-}
+    &:hover
+    {
+        background-color: #486077;
+    }
 
-button.icon:hover
-{
-    background-color: #486077;
-}
+    & img
+    {
+        height: 32px;
+        width: 32px;
+    }
 
-button.icon img
-{
-    height: 32px;
-    width: 32px;
+    &.selected
+    {
+        background-color: #333;
+    }
 }
 
 button.star
@@ -93,16 +93,16 @@ button.star
     border-radius: 5px;
     height: 42px;
     width: 42px;
-}
 
-button.star.starred
-{
-    background-image: url('yellow_star.png');
-}
+    &:hover
+    {
+        background-color: #486077;
+    }
 
-button.star:hover
-{
-    background-color: #486077;
+    &.starred
+    {
+        background-image: url('yellow_star.png');
+    }
 }
 
 input[type="checkbox"]
@@ -127,22 +127,21 @@ label
     color: #CCC;
 }
 
-
 .flex_column
 {
     display: flex;
     flex-direction: row;
     gap: 5px;
-}
 
-.flex_column.hcenter
-{
-    justify-content: center;
-}
+    &.hcenter
+    {
+        justify-content: center;
+    }
 
-.flex_column.vcenter
-{
-    align-items: center;
+    &.vcenter
+    {
+        align-items: center;
+    }
 }
 
 .flex_row
@@ -150,16 +149,16 @@ label
     display: flex;
     flex-direction: column;
     gap: 5px;
-}
 
-.flex_row.hcenter
-{
-    align-items: center;
-}
+    &.hcenter
+    {
+        align-items: center;
+    }
 
-.flex_row.vcenter
-{
-    justify-content: center;
+    &.vcenter
+    {
+        justify-content: center;
+    }
 }
 
 .forms
@@ -170,26 +169,26 @@ label
     margin: auto;
     padding: var(--padding-side);
     width: var(--form-width);
-}
 
-.forms button
-{
-    background-color: #DDD;
-    border: none;
-    border-radius: 5px;
-}
+    button
+    {
+        background-color: #DDD;
+        border: none;
+        border-radius: 5px;
 
-.forms button:hover
-{
-    background-color: #CCC;
-}
+        &:hover
+        {
+            background-color: #CCC;
+        }
+    }
 
-.forms input
-{
-    background-color: #333;
-    border: 1px solid #999;
-    color: #FFF;
-    padding: 10px;
+    input, textarea
+    {
+        background-color: #333;
+        border: 1px solid #999;
+        color: #FFF;
+        padding: 10px;
+    }
 }
 
 #app
@@ -200,55 +199,30 @@ label
     min-height: 100svh;
 }
 
-#menu_mobile
-{
-    padding: 5px;
-}
-
-#menu_mobile label
-{
-    background: no-repeat center/32px url("icon_menu.png");
-    display: block;
-    height: 32px;
-    width: 32px;
-}
-
-#menu_mobile input, nav
-{
-    display: none;
-}
-
-#menu_mobile:has(input:checked) ~ nav
+nav.main
 {
     display: flex;
-    flex-direction: column;
-    gap: 2px;
-}
+    gap: 5px;
+    padding: 0 var(--padding-side);
 
-nav a
-{
-    background-color: #024;
-    font-weight: bold;
-    padding: 10px;
-}
+    a
+    {
+        background-color: #024;
+        font-weight: bold;
+        padding: 10px;
 
-nav a:hover
-{
-    background-color: #135;
-    color: #FFF;
+        &:hover
+        {
+            background-color: #135;
+            color: #FFF;
+        }
+    }
 }
 
 @media (min-width: 1600px)
 {
-    #menu_mobile
+    nav.main
     {
-        display: none;
-    }
-
-    nav
-    {
-        display: flex;
-        gap: 10px;
         margin: auto;
         width: var(--layout-width);
     }

@@ -13,38 +13,41 @@ if(!$logged_in)
     exit;
 }
 
-$movie_id = $vars['id'];
-$watchlist = $_GET['watchlist'] ?? null;
-$watched = $_GET['watched'] ?? null;
-$rating = $_GET['rating'] ?? null;
-$liked = $_GET['liked'] ?? null;
+$content = trim(file_get_contents('php://input'));
+$dados = json_decode($content, true);
+
+$game_id = $vars['id'];
+$playlist = $dados['playlist'] ?? null;
+$played = $dados['played'] ?? null;
+$rating = $dados['rating'] ?? null;
+$liked = $dados['liked'] ?? null;
 
 require ROOT_DIR . '/pdo.php';
 
 $params = [
     'user_id' => $_SESSION['user_id'],
-    'movie_id' => $movie_id
+    'game_id' => $game_id
 ];
-$query = 'SELECT id FROM user_movie_list WHERE user_id = :user_id AND movie_id = :movie_id';
+$query = 'SELECT id FROM user_game_list WHERE user_id = :user_id AND game_id = :game_id';
 $stmt = $pdo->prepare($query);
 $stmt->execute($params);
-$user_movie_list_id = $stmt->fetchColumn();
+$user_game_list_id = $stmt->fetchColumn();
 
-if (!$user_movie_list_id)
+if (!$user_game_list_id)
 {
-    $params['watchlist'] = 0;
-    $params['watched'] = 0;
+    $params['playlist'] = 0;
+    $params['played'] = 0;
     $params['rating'] = 0;
     $params['liked'] = 0;
 
-    if (!empty($watchlist))
+    if (!empty($playlist))
     {
-        $params['watchlist'] = $watchlist;
+        $params['playlist'] = $playlist;
     }
 
-    if (!empty($watched))
+    if (!empty($played))
     {
-        $params['watched'] = $watched; 
+        $params['played'] = $played; 
     }
 
     if (!empty($rating))
@@ -57,24 +60,24 @@ if (!$user_movie_list_id)
         $params['liked'] = $liked;
     }
 
-    $query = 'INSERT INTO user_movie_list (user_id, movie_id, watchlist, watched, rating, liked)
-              VALUES (:user_id, :movie_id, :watchlist, :watched, :rating, :liked)';
+    $query = 'INSERT INTO user_game_list (user_id, game_id, playlist, played, rating, liked)
+              VALUES (:user_id, :game_id, :playlist, :played, :rating, :liked)';
 }
 else
 {
-    $params = ['id' => $user_movie_list_id];
+    $params = ['id' => $user_game_list_id];
     $conditions = [];
 
-    if ($watchlist === '0' || $watchlist === '1')
+    if ($playlist === '0' || $playlist === '1')
     {
-        $conditions[] = 'watchlist = :watchlist';
-        $params['watchlist'] = $watchlist;
+        $conditions[] = 'playlist = :playlist';
+        $params['playlist'] = $playlist;
     }
 
-    if ($watched === '0' || $watched === '1')
+    if ($played === '0' || $played === '1')
     {
-        $conditions[] = 'watched = :watched';
-        $params['watched'] = $watched;
+        $conditions[] = 'played = :played';
+        $params['played'] = $played;
     }
 
     if (is_numeric($rating))
@@ -100,7 +103,7 @@ else
         $subquery = implode(', ', $conditions);
     }
 
-    $query = "UPDATE user_movie_list SET {$subquery} WHERE id = :id";
+    $query = "UPDATE user_game_list SET {$subquery} WHERE id = :id";
 }
 
 $stmt = $pdo->prepare($query);

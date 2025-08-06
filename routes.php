@@ -70,6 +70,16 @@ return function(RouteCollector $route)
         echo $template->render();
     });
 
+    $route->get('/friends/gamelist/{id:\d+}', function($vars) use ($check_login, $templates)
+    {
+        $check_login();
+
+        $template = $templates()->make('friends_gamelist.php');
+        $template->layout('layouts/default.php', ['title' => 'Amigos - Lista de jogos']);
+
+        echo $template->render(['friend_id' => $vars['id']]);
+    });
+
     $route->get('/friends/movielist/{id:\d+}', function($vars) use ($check_login, $templates)
     {
         $check_login();
@@ -78,6 +88,42 @@ return function(RouteCollector $route)
         $template->layout('layouts/default.php', ['title' => 'Amigos - Lista de filmes']);
 
         echo $template->render(['friend_id' => $vars['id']]);
+    });
+
+    $route->get('/game/{id:\d+}', function($vars) use ($templates)
+    {
+        $template = $templates()->make('game.php');
+        $template->layout('layouts/default.php');
+
+        echo $template->render(['game_id' => $vars['id']]);
+    });
+
+    $route->get('/game/add', function() use ($check_login, $templates)
+    {
+        $check_login();
+
+        $template = $templates()->make('game_add.html');
+        $template->layout('layouts/default.php', ['title' => 'Adicionar jogo']);
+
+        echo $template->render();
+    });
+
+    $route->get('/game/update/{id:\d+}', function($vars) use ($check_login, $templates)
+    {
+        $check_login();
+
+        $template = $templates()->make('game_update.php');
+        $template->layout('layouts/default.php', ['title' => 'Atualizar jogo']);
+
+        echo $template->render(['game_id' => $vars['id']]);
+    });
+
+    $route->get('/games', function() use ($templates)
+    {
+        $template = $templates()->make('games.html');
+        $template->layout('layouts/default.php', ['title' => 'Jogos']);
+
+        echo $template->render();
     });
 
     $route->get('/login', function() use ($session, $templates)
@@ -93,14 +139,19 @@ return function(RouteCollector $route)
         echo $template->render();
     });
 
-    $route->get('/movielist', function() use ($check_login, $templates)
+    $route->get('/logout', function() use ($session, $check_login)
     {
         $check_login();
 
-        $template = $templates()->make('movielist.html');
-        $template->layout('layouts/default.php', ['title' => 'Minha lista de filmes']);
+        if (isset($_COOKIE['login']))
+        {
+            setcookie('login', '', -1, '/');
+        }
 
-        echo $template->render();
+        session_unset();
+        session_destroy();
+
+        redirect('/?logout');
     });
 
     $route->get('/movie/{id:\d+}', function($vars) use ($templates)
@@ -131,6 +182,14 @@ return function(RouteCollector $route)
         echo $template->render(['movie_id' => $vars['id']]);
     });
 
+    $route->get('/movielist', function() use ($check_login, $templates)
+    {
+        $template = $templates()->make('movielist.html');
+        $template->layout('layouts/default.php', ['title' => 'Lista de filmes']);
+
+        echo $template->render();
+    });
+
     $route->get('/movies', function() use ($templates)
     {
         $template = $templates()->make('movies.html');
@@ -143,6 +202,26 @@ return function(RouteCollector $route)
     {
         $template = $templates()->make('movies_top.html');
         $template->layout('layouts/default.php', ['title' => 'Os 100 melhores filmes']);
+
+        echo $template->render();
+    });
+
+    $route->get('/mylist/games', function() use ($check_login, $templates)
+    {
+        $check_login();
+
+        $template = $templates()->make('mylist_games.html');
+        $template->layout('layouts/default.php', ['title' => 'Minha lista de filmes']);
+
+        echo $template->render();
+    });
+
+    $route->get('/mylist/movies', function() use ($check_login, $templates)
+    {
+        $check_login();
+
+        $template = $templates()->make('mylist_movies.html');
+        $template->layout('layouts/default.php', ['title' => 'Minha lista de filmes']);
 
         echo $template->render();
     });

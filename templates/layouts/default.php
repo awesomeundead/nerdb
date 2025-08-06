@@ -5,20 +5,15 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title><?= $title ?? '' ?></title>
 <base href="<?= $this->base('/') ?>" />
-<link href="<?= $this->base($this->asset('/layout.css')) ?>" rel="stylesheet" />
-<link href="<?= $this->base($this->asset('/default.css')) ?>" rel="stylesheet" />
-<script src="<?= $this->base($this->asset('/default.js')) ?>"></script>
+<link href="<?= $this->asset('layout.css') ?>" rel="stylesheet" />
+<link href="<?= $this->asset('default.css') ?>" rel="stylesheet" />
+<script src="<?= $this->asset('default.js') ?>"></script>
 </head>
 <body>
 
 <div id="app">
     <header>
         <?php $this->insert('components/user_panel.php') ?>
-        <div id="menu_mobile">
-            <label>
-                <input type="checkbox" />
-            </label>
-        </div>
         <?php $this->insert('components/nav.php') ?>
         <div>
             <form action="movies" id="search">

@@ -1,50 +1,119 @@
 .user_panel
 {
     display: flex;
-    gap: 10px;
+    gap: 5px;
     justify-content: end;
     margin: auto;
     padding: 5px;
     width: var(--layout-width);
+
+    & #menu_mobile
+    {
+        background-color: #FFF;
+        border-radius: 5px;
+        padding: 5px;
+
+        & label
+        {
+            background: no-repeat center/32px url("icon_menu.png");
+            display: block;
+            height: 32px;
+            width: 32px;
+        }
+
+        & input
+        {
+            display: none;
+        }
+
+        &:has(input:checked) ~ nav
+        {
+            background-color: #FFF;
+            display: flex;
+            flex-direction: column;
+            left: 0;
+            padding: 10px;
+            position: absolute;
+            top: 52px;
+            width: 100%;
+        }
+    }
+
+    & nav
+    {
+        display: none;
+        gap: 5px;
+    }
+
+    & a
+    {
+        align-items: center;
+        background-color: #024;
+        border-radius: 5px;
+        display: flex;
+        padding: 5px 10px;
+        
+        &:hover
+        {
+            background-color: #135;
+            color: #FFF;
+        }
+    }
+
+    & .steam_connected
+    {
+        align-items: center;
+        background-color: #136;
+        border-radius: 5px;
+        display: flex;
+        gap: 5px;
+        padding: 5px;
+
+        & .avatar
+        {
+            display: flex;
+            
+            & img
+            {
+                border-radius: 5px;
+                height: 32px;
+                width: 32px;
+            }
+        }
+
+        & .personaname
+        {
+            font-weight: bold;
+        }
+    }
+
+    & .logout
+    {
+        background-color: #555;
+    }
 }
 
-.user_panel .logout
-{
-    align-items: center;
-    background-color: #555;
-    border-radius: 5px;
-    display: flex;
-    padding: 5px 10px;
-}
-
-.steam_card
+.steam_disconnected
 {
     align-items: center;
     background-color: #136;
-    border: none;
     border-radius: 5px;
     color: #FFF;
     display: flex;
     font-weight: bold;
     gap: 5px;
-    height: 38px;
     padding: 5px;
-}
 
-.steam_card.connect:hover
-{
-    background-color: #247;
-    color: #FFF;
-}
+    &:hover
+    {
+        background-color: #247;
+        color: #FFF;
+    }
 
-.steam_card.connect img
-{
-    height: 100%;
-}
-
-.steam_card.connected img
-{
-    border-radius: 5px;
+    & img
+    {
+        height: 32px;
+    }
 }
 
 #search
@@ -53,71 +122,67 @@
     gap: 5px;
     margin: auto;
     padding: 10px var(--padding-side);
-    width: var(--layout-width);
+    width: var(--layout-width);    
+
+    & input
+    {
+        background-color: #222;
+        border: 1px solid #777;
+        color: #CCC;
+        padding: 10px;
+        width: 100%;
+    }
+
+    & button
+    {
+        border: none;
+        border-radius: 5px;
+        background-color: #777;
+        color: #FFF;
+        padding: 10px;
+
+        &:hover
+        {
+            background-color: #555;
+        }
+    }
 }
 
-#search input
-{
-    background-color: #222;
-    border: 1px solid #777;
-    color: #CCC;
-    padding: 10px;
-    width: 100%;
-}
-
-#search button
-{
-    border: none;
-    border-radius: 5px;
-    background-color: #777;
-    color: #FFF;
-    padding: 10px;
-}
-
-#search button:hover
-{
-    background-color: #555;
-}
-
-#movies, #movie, #friends
+#movies, #movie, #friends, .pagination
 {
     margin: auto;
     width: var(--layout-width);
 }
 
-#movies.flex
+#movies
 {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-}
+    &.grid
+    {
+        display: grid;
+        gap: 5px;
+        padding: 0 var(--padding-side);
+    }
 
-#movies.grid
-{
-    display: grid;
-    gap: 5px;
-    padding: 0 var(--padding-side);
-}
+    & .image
+    {
+        background-color: #000;
+        display: flex;
+        height: 128px;
+        justify-content: center;
+        width: 96px;
 
-#movies .image
-{
-    background-color: #000;
-    display: flex;
-    height: 128px;
-    justify-content: center;
-    width: 96px;
-}
+        & img
+        {
+            height: 128px;
+        }
+    }
 
-#movies .image img
-{
-    height: 128px;
-}
-
-#movies .info
-{
-    background-color: #333;
-    flex: 1;
-    padding: 5px;
+    & .info
+    {
+        background-color: #333;
+        flex: 1;
+        padding: 5px;
+    }
 }
 
 #my_movie_list
@@ -234,6 +299,19 @@
 
 @media (min-width: 1600px)
 {
+    .user_panel
+    {
+        & #menu_mobile
+        {
+            display: none;
+        }
+
+        & nav
+        {
+            display: flex;
+        }
+    }
+
     #movie
     {
         display: flex;

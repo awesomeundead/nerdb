@@ -41,7 +41,7 @@ function auto_login()
                 */
                 $response = update_user($player);
 
-                redirect('/movielist');
+                redirect('/mylist/movies');
             }
         }
     }
@@ -172,7 +172,7 @@ elseif (isset($_GET['login']))
     $login_url_params = [
         'openid.ns'         => 'http://specs.openid.net/auth/2.0',
         'openid.mode'       => 'checkid_setup',
-        'openid.return_to'  => HOST . BASE_PATH . '/auth.php',
+        'openid.return_to'  => HOST . BASE_PATH . '/auth',
         'openid.realm'      => HOST . BASE_PATH,
         'openid.identity'   => 'http://specs.openid.net/auth/2.0/identifier_select',
         'openid.claimed_id' => 'http://specs.openid.net/auth/2.0/identifier_select',
@@ -246,7 +246,7 @@ elseif (isset($_GET['openid_signed']))
         create_session($data);
         create_auto_login($data['id']);
 
-        redirect('/movielist?login=success');
+        redirect('/mylist/movies?login=success');
     }
 }
 

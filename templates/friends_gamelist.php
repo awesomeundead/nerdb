@@ -1,19 +1,19 @@
 <div class="flex_row" id="my_movie_list_checkbox">
     <div class="flex_column vcenter">
-        <input data-filter="watchlist" id="watchlist_checkbox" type="checkbox" />
-        <label for="watchlist_checkbox">Filmes que seu amigo quer assistir</label>
+        <input data-filter="playlist" id="playlist_checkbox" type="checkbox" />
+        <label for="playlist_checkbox">Quer jogar</label>
     </div>        
     <div class="flex_column vcenter">
-        <input data-filter="watched" id="watched_checkbox" type="checkbox" />
-        <label for="watched_checkbox">Filmes que seu amigo assistiu</label>
+        <input data-filter="played" id="played_checkbox" type="checkbox" />
+        <label for="played_checkbox">Jogou</label>
     </div>
     <div class="flex_column vcenter">
         <input data-filter="liked" id="liked_checkbox" type="checkbox" />
-        <label for="liked_checkbox">Filmes que seu amigo gostou</label>
+        <label for="liked_checkbox">Gostou</label>
     </div>
     <div class="flex_column vcenter">
         <input data-filter="rating" id="rating_checkbox" type="checkbox" />
-        <label for="rating_checkbox">Filmes que seu amigo melhor avaliou</label>
+        <label for="rating_checkbox">Melhor avaliou</label>
     </div>
 </div>
 <div id="my_movie_list">
@@ -30,19 +30,19 @@
 
             <div class="flex_row">
                 <div class="flex_column">
-                    <div aria-label="Quer assistir" class="icon friend friend_watchlist" title="Quer assistir">
+                    <div aria-label="Quer jogar" class="icon friend friend_playlist" title="Quer jogar">
                         <img alt="" src="saved.png" />
                     </div>
-                    <div aria-label="Quero assistir" class="icon watchlist" title="Quero assistir">
+                    <div aria-label="Quero jogar" class="icon playlist" title="Quero jogar">
                         <img alt="" src="saved.png" />
                     </div>
                 </div>
 
                 <div class="flex_column">
-                    <div aria-label="Já assistiu" class="icon friend friend_watched" title="Já assistiu">
+                    <div aria-label="Já jogou" class="icon friend friend_played" title="Já jogou">
                         <img alt="" src="watched.png" />
                     </div>
-                    <div aria-label="Já assisti" class="icon watched" title="Já assisti">
+                    <div aria-label="Joguei" class="icon played" title="Joguei">
                         <img alt="" src="watched.png" />
                     </div>
                 </div>
@@ -64,7 +64,7 @@
         </div>
         <div class="flex_row">
             <div>
-                <div class="title_br"></div>
+                <div class="title"></div>
             </div>
         </div>
     </div>
@@ -75,12 +75,12 @@
 const friend_id = '<?= $friend_id ?>';
 const container = document.querySelector('#my_movie_list .grid');
 const template = document.querySelector('template');
-const url = new URL(`api/v1/userlist/movies/${friend_id}`, document.baseURI);
+const url = new URL(`api/v1/userlist/games/${friend_id}`, document.baseURI);
 const searchParams = url.searchParams;
 
-const render = function({ movies })
+const render = function({ games })
 {
-    if (!movies.length)
+    if (!games.length)
     {
         container.innerHTML = '<div class="centralizado">Não foram encontrados filmes nesta lista.</div>';
 
@@ -99,20 +99,20 @@ const render = function({ movies })
         }
     }
 
-    movies.forEach(item =>
+    games.forEach(item =>
     {
         const clone = template.content.cloneNode(true);
 
-        clone.querySelector('a').href = `movie/${item.id}`;
+        clone.querySelector('a').href = `game/${item.id}`;
         clone.querySelector('.image img').src = item.media?.trim() ? `images/256/${item.media}.webp` : 'noimage.png';
-        clone.querySelector('.title_br').textContent =  item.title_br;
+        clone.querySelector('.title').textContent =  item.title;
 
-        if (!item.watchlist)
+        if (!item.playlist)
         {
-            disable(clone, '.friend_watchlist');
+            disable(clone, '.friend_playlist');
         }
 
-        disable(clone, '.friend_watched', !item.watched);
+        disable(clone, '.friend_played', !item.played);
         disable(clone, '.friend_liked', !item.liked);
 
         if (item.rating)
@@ -126,17 +126,17 @@ const render = function({ movies })
 
         /* minha lista */
 
-        if (!item.ml_watchlist || item.ml_watched)
+        if (!item.gl_playlist || item.gl_played)
         {
-            disable(clone, '.watchlist');
+            disable(clone, '.playlist');
         }
 
-        disable(clone, '.watched', !item.ml_watched);
-        disable(clone, '.liked', !item.ml_liked);
+        disable(clone, '.played', !item.gl_played);
+        disable(clone, '.liked', !item.gl_liked);
 
-        if (item.ml_rating)
+        if (item.gl_rating)
         {
-            clone.querySelector('.rating').textContent = item.ml_rating;
+            clone.querySelector('.rating').textContent = item.gl_rating;
         }
         else
         {
@@ -147,7 +147,7 @@ const render = function({ movies })
     });
 }
 
-document.querySelectorAll('#watchlist_checkbox, #watched_checkbox, #liked_checkbox, #rating_checkbox').forEach(item =>
+document.querySelectorAll('#playlist_checkbox, #played_checkbox, #liked_checkbox, #rating_checkbox').forEach(item =>
 {
     item.addEventListener('click', () =>
     {

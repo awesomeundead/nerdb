@@ -36,8 +36,9 @@
 
 const container = document.querySelector('#movies');
 const template = document.querySelector('template');
+const url = new URL('api/v1/top-movies', document.baseURI);
 
-const render = function(movies)
+const render = function({ movies })
 {
     container.innerHTML = '';
 
@@ -66,6 +67,6 @@ const render = function(movies)
     });
 }
 
-load_movies('api/v1/top-movies', render);
+getJSON();
 
 </script>

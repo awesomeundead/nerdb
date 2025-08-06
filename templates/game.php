@@ -4,11 +4,7 @@
     </div>
     <div class="flex_row">
         <div>
-            <div class="title_br"></div>
-        </div>
-        <div class="flex_column">
-            <div>Título em inglês:</div>
-            <div class="title_us"></div>
+            <div class="title"></div>
         </div>
         <div class="flex_column">
             <div>Gêneros:</div>
@@ -18,21 +14,21 @@
             <div>Lançamento:</div>
             <div class="release_year"></div>
         </div>
-        <div class="imdb">
-            <a href="" target="_blank">IMDB</a>
+        <div class="steam">
+            <a target="_blank">Steam</a>
         </div>
         <?php if ($session->logged_in ?? false): ?>
         <div class="update">
             <a href="">Editar</a>
         </div>
         <div class="toggle flex_column">
-            <button aria-label="Quero assistir" class="icon" data-action="watchlist" type="button">
+            <button aria-label="Quero assistir" class="icon" data-action="playlist" type="button">
                 <img alt="" src="saved.png" />
-                <span>Quero assistir</span>
+                <span>Quero jogar</span>
             </button>
-            <button aria-label="Já assisti" class="icon" data-action="watched" type="button">
+            <button aria-label="Já assisti" class="icon" data-action="played" type="button">
                 <img alt="" src="watched.png" />
-                <span>Já assisti</span>
+                <span>Joguei</span>
             </button>
             <button aria-label="Gostei" class="icon" data-action="liked" type="button">
                 <img alt="" src="liked.png" />
@@ -51,66 +47,55 @@
             <button class="star" data-value="9" title="9 estrelas" type="button"></button>
             <button class="star" data-value="10" title="10 estrelas" type="button"></button>
         </div>
-        <div class="platforms flex_column"></div>
         <?php endif ?>
         <div class="flex_column">
-            <div>Diretor:</div>
-            <div class="director flex_row"></div>
-        </div>
-        <div class="flex_column">
-            <div>Elenco:</div>
-            <div class="cast flex_row"></div>
+            <div>Desenvolvedor:</div>
+            <div class="developer flex_row"></div>
         </div>
     </div>
 </div>
 <script>
 
-const movie_id = '<?= $movie_id ?>';
-const url = new URL(`api/v1/movie/${movie_id}`, document.baseURI);
+const game_id = '<?= $game_id ?>';
+const url = new URL(`api/v1/game/${game_id}`, document.baseURI);
 
-const render = function(movie)
+const render = function(game)
 {
-    const directors = movie.director.split(';');
+    const developers = game.developer.split(';');
 
-    directors.forEach(director =>
+    developers.forEach(developer =>
     {
         const element = document.createElement('a');
-        element.href = `movies?q=diretor:${director}`;
-        element.textContent = director;
-        document.querySelector('.director').appendChild(element);
+       // element.href = `games?q=desenvolvedor:${developer}`;
+        element.textContent = developer;
+        document.querySelector('.developer').appendChild(element);
     });
 
-    const cast = movie.cast.split(';');
-
-    cast.forEach(actor =>
-    {
-        const element = document.createElement('a');
-        element.href = `movies?q=ator:${actor}`;
-        element.textContent = actor;
-        document.querySelector('.cast').appendChild(element);
-    });
-
-    const genres = movie.genres.split(';');
+    const genres = game.genres.split(';');
 
     genres.forEach(genre =>
     {
         const element = document.createElement('a');
-        element.href = `movies?q=genero:${genre}`;
+        //element.href = `games?q=genero:${genre}`;
         element.textContent = genre;
         document.querySelector('.genres').appendChild(element);
     });
 
-    document.title = `${movie.title_br} (${movie.release_year})`;
-    document.querySelector('.image img').src = movie.media?.trim() ? `images/512/${movie.media}.webp` : 'noimage.png';
-    document.querySelector('.title_br').textContent =  movie.title_br;
-    document.querySelector('.title_us').textContent =  movie.title_us;
-    document.querySelector('.release_year').textContent =  movie.release_year;
-    document.querySelector('.imdb a').href =  `https://www.imdb.com/pt/title/${movie.imdb}/`;
-    document.querySelector('.update a').href =  `movie/update/${movie.id}`;
+    document.title = `${game.title} (${game.release_year})`;
+    document.querySelector('.image img').src = game.media?.trim() ? `images/512/${game.media}.webp` : 'noimage.png';
+    document.querySelector('.title').textContent =  game.title;
+    document.querySelector('.release_year').textContent =  game.release_year;
+    document.querySelector('.steam a').href =  `https://steampowered.com./app/${game.steam}/`;
+    document.querySelector('.update a').href =  `game/update/${game.id}`;
+
+    if (!game.steam)
+    {
+        document.querySelector('.steam').remove();
+    }
 
     document.querySelectorAll('.toggle button').forEach(item =>
     {
-        if (movie[item.dataset.action])
+        if (game[item.dataset.action])
         {            
             item.classList.add('selected');
             item.dataset.value = 0;
@@ -128,27 +113,18 @@ const render = function(movie)
 
     document.querySelectorAll('.rating button').forEach(item =>
     {
-        if (movie.rating >= item.dataset.value)
+        if (game.rating >= item.dataset.value)
         {
             item.classList.add('starred');
         }
 
         item.addEventListener('click', () =>
         {
-            const value = (movie.rating == item.dataset.value) ? 0 : item.dataset.value;
-            movie.rating = value;
+            const value = (game.rating == item.dataset.value) ? 0 : item.dataset.value;
+            game.rating = value;
 
             rating(value);
         });
-    });
-
-    movie.platforms.forEach(platform =>
-    {
-        const element = document.createElement('a');
-        element.href = get_platform(platform.platform_name, platform.platform_link);
-        element.setAttribute('target', '_blank');
-        element.textContent = platform.platform_name;
-        document.querySelector('.platforms').appendChild(element);
     });
 }
 
@@ -159,7 +135,7 @@ function reaction(button)
     const action = button.dataset.action;
     const value = button.dataset.value;
 
-    sendJSON('post', `api/v1/mylist/movie/${movie_id}`,
+    sendJSON('post', `api/v1/mylist/game/${game_id}`,
     {
         [action]: value
     })
@@ -179,7 +155,7 @@ function reaction(button)
 
 function rating(value)
 {
-    sendJSON('post', `api/v1/mylist/movie/${movie_id}`,
+    sendJSON('post', `api/v1/mylist/game/${game_id}`,
     {
         rating: value
     })
@@ -205,16 +181,6 @@ function rating(value)
     {
         console.error(error);
     });
-}
-
-function get_platform(name, link)
-{
-    const platforms = {
-        'Prime Video': `https://www.primevideo.com/detail/${link}`,
-        'HBO Max': `https://play.hbomax.com/movie/${link}`
-    }
-
-    return platforms[name];
 }
 
 </script>

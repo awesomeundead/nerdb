@@ -1,0 +1,68 @@
+<div class="grid" id="movies"></div>
+<template>
+    <div class="item flex_column">
+        <div class="image">
+            <a>
+                <img />
+            </a>
+        </div>
+        <div class="info flex_row">
+            <div>
+                <div class="title"></div>
+            </div>
+            <div class="flex_column">
+                <div>Desenvolvedor:</div>
+                <div class="developer flex_column"></div>
+            </div>
+            <div class="flex_column">
+                <div>Lançamento:</div>
+                <div class="release_year"></div>
+            </div>
+            <div class="steam">
+                <a target="_blank">Steam</a>
+            </div>
+        </div>
+    </div>
+</template>
+
+<script>
+
+const container = document.querySelector('#movies');
+const template = document.querySelector('template');
+const url = new URL('api/v1/games', document.baseURI);
+
+const render = function({ games })
+{
+    container.innerHTML = '';
+
+    games.forEach(item =>
+    {
+        const clone = template.content.cloneNode(true);
+        const developers = item.developer.split(';');
+
+        developers.forEach(developer =>
+        {
+            const element = document.createElement('a');
+            //element.href = `games?q=desenvolvedor:${developer}`;
+            element.textContent = developer;
+            clone.querySelector('.developer').appendChild(element);
+        });
+
+        clone.querySelector('a').href = `game/${item.id}`;
+        clone.querySelector('img').src = item.media?.trim() ? `images/256/${item.media}.webp` : 'noimage.png';
+        clone.querySelector('.title').textContent =  item.title;
+        clone.querySelector('.release_year').textContent =  item.release_year;
+        clone.querySelector('.steam a').href =  `https://steampowered.com/app/${item.steam}/`;
+
+        if (!item.steam)
+        {
+            clone.querySelector('.steam').remove();
+        }
+
+        container.appendChild(clone);
+    });
+}
+
+getJSON();
+
+</script>

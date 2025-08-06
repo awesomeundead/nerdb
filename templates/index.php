@@ -4,11 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Início</title>
-<link href="<?= $this->base($this->asset('/layout.css')) ?>" rel="stylesheet" />
-<link href="<?= $this->base($this->asset('/default.css')) ?>" rel="stylesheet" />
+<base href="<?= $this->base('/') ?>" />
+<link href="<?= $this->asset('layout.css') ?>" rel="stylesheet" />
+<link href="<?= $this->asset('default.css') ?>" rel="stylesheet" />
 <link href="https://unpkg.com/swiper/swiper-bundle.min.css" rel="stylesheet" />
-<link href="<?= $this->base($this->asset('/index.css')) ?>" rel="stylesheet" />
-<script src="<?= $this->base($this->asset('/default.js')) ?>"></script>
+<link href="<?= $this->asset('index.css') ?>" rel="stylesheet" />
+<script src="<?= $this->asset('default.js') ?>"></script>
 <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
 </head>
 <body>
@@ -16,11 +17,6 @@
 <div id="app">
     <header>
         <?php $this->insert('components/user_panel.php') ?>
-        <div id="menu_mobile">
-            <label>
-                <input type="checkbox" />
-            </label>
-        </div>
         <?php $this->insert('components/nav.php') ?>
     </header>
     <section>
@@ -48,8 +44,9 @@
 
 const container = document.querySelector('#movies_media');
 const template = document.querySelector('template');
+const url = new URL('api/v1/movies', document.baseURI);
 
-const render = function(movies)
+const render = function({ movies })
 {
     container.innerHTML = '';
 
@@ -77,7 +74,8 @@ const render = function(movies)
     });
 }
 
-load_movies('api/v1/movies?order=random', render);
+url.searchParams.set('order', 'random');
+getJSON();
 
 </script>
 

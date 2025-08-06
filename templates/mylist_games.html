@@ -1,0 +1,125 @@
+<div class="flex_row" id="my_movie_list_checkbox">
+    <div class="flex_column vcenter">
+        <input data-filter="playlist" id="playlist_checkbox" type="checkbox" />
+        <label for="playlist_checkbox">Quero jogar</label>
+    </div>        
+    <div class="flex_column vcenter">
+        <input data-filter="played" id="played_checkbox" type="checkbox" />
+        <label for="played_checkbox">Joguei</label>
+    </div>
+    <div class="flex_column vcenter">
+        <input data-filter="liked" id="liked_checkbox" type="checkbox" />
+        <label for="liked_checkbox">Jogos que eu gostei</label>
+    </div>
+    <div class="flex_column vcenter">
+        <input data-filter="rating" id="rating_checkbox" type="checkbox" />
+        <label for="rating_checkbox">Jogos que eu melhor avaliei</label>
+    </div>
+</div>
+<div id="my_movie_list">
+    <div class="grid"></div>
+</div>
+
+<template>
+    <div class="item flex_row">
+        <div class="flex_column">
+            <div class="image">
+                <a>
+                    <img />
+                </a>
+            </div>
+            <div class="flex_row">
+                <div aria-label="Quero jogar" class="icon playlist" title="Quero jogar">
+                    <img alt="" src="saved.png" />
+                </div>
+                <div aria-label="Joguei" class="icon played" title="Joguei">
+                    <img alt="" src="watched.png" />
+                </div>
+                <div aria-label="Gostei" class="icon liked" title="Gostei">
+                    <img alt="" src="liked.png" />
+                </div>
+                <div aria-label="Minha avaliação" class="icon_rating rating" title="Minha avaliação"></div>
+            </div>
+        </div>
+        <div class="flex_row">
+            <div>
+                <div class="title"></div>
+            </div>
+        </div>
+    </div>
+</template>
+
+<script>
+
+const container = document.querySelector('#my_movie_list .grid');
+const template = document.querySelector('template');
+const url = new URL('api/v1/mylist/games', document.baseURI);
+const searchParams = url.searchParams;
+
+const render = function({ games })
+{
+    if (!games.length)
+    {
+        container.innerHTML = '<div class="centralizado">Não foram encontrados filmes nesta lista.</div>';
+
+        return;
+    }
+    
+    container.innerHTML = '';
+
+    games.forEach(item =>
+    {
+        const clone = template.content.cloneNode(true);
+
+        clone.querySelector('a').href = `game/${item.id}`;        
+        clone.querySelector('img').src = item.media?.trim() ? `images/256/${item.media}.webp` : 'noimage.png';
+        clone.querySelector('.title').textContent =  item.title;
+
+        if (!item.playlist)
+        {
+            clone.querySelector('.playlist').remove();
+        }
+
+        if (!item.played)
+        {
+            clone.querySelector('.played').remove();
+        }
+
+        if (!item.liked)
+        {
+            clone.querySelector('.liked').remove();
+        }
+
+        if (item.rating)
+        {
+            clone.querySelector('.rating').textContent = item.rating;
+        }
+        else
+        {
+            clone.querySelector('.rating').remove();
+        }
+
+        container.appendChild(clone);
+    });
+}
+
+document.querySelectorAll('#playlist_checkbox, #played_checkbox, #liked_checkbox, #rating_checkbox').forEach(item =>
+{
+    item.addEventListener('click', () =>
+    {
+        if (item.checked)
+        {
+            searchParams.set(item.dataset.filter, 1);
+        }
+        else
+        {
+            searchParams.delete(item.dataset.filter);
+        }
+
+        getJSON();
+    });
+});
+
+getJSON();
+
+</script>

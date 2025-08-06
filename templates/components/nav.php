@@ -1,7 +1,6 @@
-<nav>
-    <a href="<?= $this->base('/') ?>">Início</a>
-    <a href="<?= $this->base('/movies/top') ?>">Top filmes</a>
-    <a href="<?= $this->base('/movielist') ?>">Minha lista de filmes</a>
-    <a href="<?= $this->base('/friends') ?>">Meus amigos</a>
-    <a href="<?= $this->base('/movie/add') ?>">Adicionar filme</a>
+<nav class="main">
+    <a href="">Início</a>
+    <a href="movies/top">Top filmes</a>
+    <a href="movielist">Lista de filmes</a>
+    <a href="games">Lista de jogos</a>
 </nav>

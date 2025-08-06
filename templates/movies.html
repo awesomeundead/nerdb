@@ -35,9 +35,10 @@ const query = new URLSearchParams(window.location.search);
 const container = document.querySelector('#movies');
 const template = document.querySelector('template');
 const search = document.querySelector('#search');
-const url = 'api/v1/movies';
+const url = new URL('api/v1/movies', document.baseURI);
+const searchParams = url.searchParams;
 
-const render = function(movies)
+const render = function({ movies })
 {
     container.innerHTML = '';
 
@@ -83,32 +84,32 @@ if (query.has('q'))
 }
 else
 {
-    load_movies(`${url}?order=random`);
+    searchParams.set('order', 'random');
+    getJSON();
 
     document.title = 'Filmes aleatórios';
 }
 
 function search_movie(value)
 {
-    const filter = {'diretor': 'director', 'genero': 'genre'};
-    const match = value.match(/^(diretor|genero):(.+)/);
-    const params = new URLSearchParams();
+    const filter = {'ator': 'actor', 'diretor': 'director', 'genero': 'genre'};
+    const match = value.match(/^(ator|diretor|genero):(.+)/);
     
     if (match)
     {
-        params.append(filter[match[1]], match[2]);
+        searchParams.set(filter[match[1]], match[2]);
         value = match[2];
     }
     else if (/^\d{4}$/.test(value))
     {
-        params.append('release', value);
+        searchParams.set('release', value);
     }   
     else
     {
-        params.append('search', value);
+        searchParams.set('search', value);
     }
 
-    load_movies(`${url}?${params.toString()}`, render);
+    getJSON();
     document.title = value;
 }
 
