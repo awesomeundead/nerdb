@@ -82,7 +82,7 @@ const render = function(game)
     });
 
     document.title = `${game.title} (${game.release_year})`;
-    document.querySelector('.image img').src = game.media?.trim() ? `images/512/${game.media}.webp` : 'noimage.png';
+    document.querySelector('.image img').src = game.media?.trim() ? `images/games/512/${game.media}.webp` : 'noimage.png';
     document.querySelector('.title').textContent =  game.title;
     document.querySelector('.release_year').textContent =  game.release_year;
     document.querySelector('.steam a').href =  `https://steampowered.com./app/${game.steam}/`;

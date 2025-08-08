@@ -5,53 +5,60 @@ header('Content-Type: application/json; charset=utf-8');
 require ROOT_DIR . '/pdo.php';
 
 $params = [];
+$query = 'SELECT * FROM movies';
 
-if (isset($_GET['release']) && preg_match('/^\d{4}$/', $_GET['release']))
-{
-    $params['release_year'] = $_GET['release'];
+$actor = $_GET['actor'] ?? null;
+$director = $_GET['director'] ?? null;
+$genre = $_GET['genre'] ?? null;
+$release = $_GET['release'] ?? null;
+$search = $_GET['search'] ?? null;
 
-    $query = 'SELECT * FROM movies WHERE release_year = :release_year';
-}
-elseif (isset($_GET['actor']))
+$conditions = [];
+
+if (!empty($actor))
 {
-    $actor = trim($_GET['actor']);
+    $conditions[] = 'cast LIKE :actor';
     $params['actor'] = "%{$actor}%";
-
-    $query = 'SELECT * FROM movies WHERE cast LIKE :actor ORDER BY release_year DESC';
 }
-elseif (isset($_GET['director']))
+
+if (!empty($director))
 {
-    $director = trim($_GET['director']);
+    $conditions[] = 'director LIKE :director';
     $params['director'] = "%{$director}%";
-
-    $query = 'SELECT * FROM movies WHERE director LIKE :director ORDER BY release_year DESC';
 }
-elseif (isset($_GET['genre']))
+
+if (!empty($genre))
 {
-    $genre = trim($_GET['genre']);
+    $conditions[] = 'genres LIKE :genre';
     $params['genre'] = "%{$genre}%";
-
-    $query = 'SELECT * FROM movies WHERE genres LIKE :genre ORDER BY release_year DESC';
 }
-elseif (isset($_GET['search']))
-{
-    $search = trim($_GET['search']);
-    $params['search'] = $search;
 
-    $query = 'SELECT * FROM movies WHERE MATCH(title_br, title_us, director) AGAINST(:search)';
+if (!empty($release) && preg_match('/^\d{4}$/', $release))
+{
+    $conditions[] = 'release_year = :release';
+    $params['release'] = $release;
+}
+
+if (!empty($search))
+{
+    $conditions[] = 'MATCH(title_br, title_us, director) AGAINST(:search)';
+    $params['search'] = $search;
+}
+
+if (!empty($conditions))
+{
+    $query .= ' WHERE ' . implode(' AND ', $conditions);
 }
 else
 {
-    $query = 'SELECT * FROM movies';
-    
     if (isset($_GET['order']) && $_GET['order'] == 'random')
     {
-        $query = 'SELECT * FROM movies WHERE media != "" ORDER BY rand() LIMIT 20';
+        $query .= ' WHERE media != "" ORDER BY rand() LIMIT 20';
     }
     elseif (isset($_GET['offset']) && is_numeric($_GET['offset']))
     {
         $offset = $_GET['offset'];
-        $query = "SELECT * FROM movies LIMIT {$offset}, 100";
+        $query .= " LIMIT {$offset}, 100";
     }
 }
 

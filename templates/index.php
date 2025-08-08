@@ -17,7 +17,7 @@
 <div id="app">
     <header>
         <?php $this->insert('components/user_panel.php') ?>
-        <?php $this->insert('components/nav.php') ?>
+        <?php $this->insert('components/nav.html') ?>
     </header>
     <section>
         <form action="movies" id="search">

@@ -122,7 +122,7 @@
     gap: 5px;
     margin: auto;
     padding: 10px var(--padding-side);
-    width: var(--layout-width);    
+    width: var(--layout-width);
 
     & input
     {
@@ -145,6 +145,14 @@
         {
             background-color: #555;
         }
+    }
+
+    & select
+    {
+        background-color: #222;
+        border: 1px solid #777;
+        color: #CCC;
+        padding: 10px;
     }
 }
 

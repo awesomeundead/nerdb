@@ -53,10 +53,7 @@ if (!empty($conditions))
               INNER JOIN games ON games.id = list.game_id
               WHERE list.user_id = :user_id';
 
-    if (!empty($conditions))
-    {
-        $query .= ' AND ' . implode(' AND ', $conditions);
-    }
+    $query .= ' AND ' . implode(' AND ', $conditions);
 
     if ($rating == 1)
     {

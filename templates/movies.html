@@ -34,7 +34,6 @@
 const query = new URLSearchParams(window.location.search);
 const container = document.querySelector('#movies');
 const template = document.querySelector('template');
-const search = document.querySelector('#search');
 const url = new URL('api/v1/movies', document.baseURI);
 const searchParams = url.searchParams;
 
@@ -68,19 +67,24 @@ const render = function({ movies })
 
 search.addEventListener('submit', e =>
 {
-    e.preventDefault();
+    if (search.action == 'movies')
+    {
+        e.preventDefault();
 
-    const url = new URL(window.location);
-    url.search = `q=${search.q.value}`;
-    window.history.replaceState({}, '', url);
+        const url = new URL(window.location);
+        url.searchParams.set('q', search.q.value);
+        window.history.replaceState({}, '', url);
 
-    search_movie(search.q.value);
+        document.title = search_movie(search.q.value);
+        getJSON();
+    }
 });
 
 if (query.has('q'))
 {
     search.q.value = query.get('q');
-    search_movie(query.get('q'));
+    document.title = search_movie(query.get('q'));
+    getJSON();
 }
 else
 {
@@ -92,25 +96,29 @@ else
 
 function search_movie(value)
 {
-    const filter = {'ator': 'actor', 'diretor': 'director', 'genero': 'genre'};
-    const match = value.match(/^(ator|diretor|genero):(.+)/);
+    const filters =
+    {
+        'ator': 'actor',
+        'diretor': 'director',
+        'genero': 'genre'
+    };
+
+    const match = value.match(/^(\w+):(.+)/);
     
-    if (match)
+    if (match && filters[match[1]])
     {
-        searchParams.set(filter[match[1]], match[2]);
-        value = match[2];
-    }
-    else if (/^\d{4}$/.test(value))
-    {
-        searchParams.set('release', value);
-    }   
-    else
-    {
-        searchParams.set('search', value);
+        searchParams.set(filters[match[1]], match[2]);
+        return match[2];
     }
 
-    getJSON();
-    document.title = value;
+    if (/^\d{4}$/.test(value))
+    {
+        searchParams.set('release', value);
+        return value;
+    }
+
+    searchParams.set('search', value);
+    return value;
 }
 
 </script>

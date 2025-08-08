@@ -14,7 +14,7 @@
     </nav>
     <div class="steam_connected">
         <div class="avatar">
-            <img alt="" src="https://avatars.steamstatic.com/<?= $session->avatarhash ?>.jpg" />
+            <img alt="Imagem do seu avatar" src="https://avatars.steamstatic.com/<?= $session->avatarhash ?>.jpg" />
         </div>
         <div class="personaname"><?= $session->personaname ?></div>
     </div>
@@ -22,7 +22,7 @@
     <?php else: ?>
     <a class="steam_disconnected" href="auth?login" title="Entrar com a Steam">
         <span>Entrar com a</span>
-        <img alt="" src="logo_steam.svg" />
+        <img alt="Link para se conectar via Steam" src="logo_steam.svg" />
     </a>
     <?php endif ?>
 </div>

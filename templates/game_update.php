@@ -21,7 +21,7 @@ const submit = form.querySelector('[type="submit"]');
 
 const render = function(item)
 {
-    media.src = item.media?.trim() ? `images/256/${item.media}.webp` : 'noimage.png';
+    media.src = item.media?.trim() ? `images/games/256/${item.media}.webp` : 'noimage.png';
     form.elements['title'].value = item.title,
     form.elements['developer'].value = item.developer,
     form.elements['genres'].value = item.genres,

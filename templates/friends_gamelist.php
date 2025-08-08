@@ -82,7 +82,7 @@ const render = function({ games })
 {
     if (!games.length)
     {
-        container.innerHTML = '<div class="centralizado">Não foram encontrados filmes nesta lista.</div>';
+        container.innerHTML = '<div class="centralizado">Não foram encontrados jogos nesta lista.</div>';
 
         return;
     }
@@ -104,7 +104,7 @@ const render = function({ games })
         const clone = template.content.cloneNode(true);
 
         clone.querySelector('a').href = `game/${item.id}`;
-        clone.querySelector('.image img').src = item.media?.trim() ? `images/256/${item.media}.webp` : 'noimage.png';
+        clone.querySelector('.image img').src = item.media?.trim() ? `images/games/256/${item.media}.webp` : 'noimage.png';
         clone.querySelector('.title').textContent =  item.title;
 
         if (!item.playlist)

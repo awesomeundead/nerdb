@@ -22,7 +22,11 @@ return function(RouteCollector $route)
     $route->post('/movie', 'handlers/post/movie.php');
     $route->put('/movie/{id:\d+}', 'handlers/put/movie.php');
 
-    $route->get('/movies', 'handlers/get/movies.php'); // (Query String) actor|director|genre|release|search={title_br|title_us|director}
+    /*
+     * url: /movies?actor=Bale&director=Nolan&genre=Ação&release=2005&search=Batman
+     * url: /movies?limit=20&offset=100&order=random
+     */
+    $route->get('/movies', 'handlers/get/movies.php');
     $route->get('/movies/count', 'handlers/get/movies_count.php');
 
     $route->get('/user[/{id:\d+}]', 'handlers/get/user.php'); // (Query String) steamid={steamid}
