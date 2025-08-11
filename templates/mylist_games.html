@@ -1,4 +1,4 @@
-<div class="flex_row" id="my_movie_list_checkbox">
+<div class="flex_row" id="userlist_checkbox">
     <div class="flex_column vcenter">
         <input data-filter="playlist" id="playlist_checkbox" type="checkbox" />
         <label for="playlist_checkbox">Quero jogar</label>
@@ -16,7 +16,7 @@
         <label for="rating_checkbox">Jogos que eu melhor avaliei</label>
     </div>
 </div>
-<div id="my_movie_list">
+<div id="userlist">
     <div class="grid"></div>
 </div>
 
@@ -51,7 +51,7 @@
 
 <script>
 
-const container = document.querySelector('#my_movie_list .grid');
+const container = document.querySelector('#userlist .grid');
 const template = document.querySelector('template');
 const url = new URL('api/v1/mylist/games', document.baseURI);
 const searchParams = url.searchParams;

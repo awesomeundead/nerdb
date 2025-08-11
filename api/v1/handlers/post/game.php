@@ -58,6 +58,10 @@ if ($result)
 
     $stmt = $pdo->prepare($query);
     $result = $stmt->execute($params);
+
+    $query = 'UPDATE score SET add_game = add_game + 1 WHERE id = :id';
+    $stmt = $pdo->prepare($query);
+    $stmt->execute(['id' => $user_id]);
 }
 
 $json['status'] = $result ? 'success' : 'failure';

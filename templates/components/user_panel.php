@@ -9,6 +9,7 @@
         <a href="mylist/movies">Minha lista de filmes</a>
         <a href="mylist/games">Minha lista de jogos</a>
         <a href="friends">Amigos</a>
+        <a href="achievements">Conquistas</a>
         <a href="movie/add">Adicionar filme</a>
         <a href="game/add">Adicionar jogo</a>
     </nav>

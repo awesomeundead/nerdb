@@ -12,7 +12,7 @@ function redirect($path)
     exit;
 }
 
-return function(RouteCollector $route)
+return function(RouteCollector $route) use ($uri)
 {
     require ROOT . '/session.php';
 
@@ -23,11 +23,15 @@ return function(RouteCollector $route)
         'avatarhash'  => $_SESSION['avatarhash'] ?? null
     ];
 
-    $check_login = function() use ($session)
+    $check_login = function() use ($session, $uri)
     {
         if (!$session->logged_in)
         {
-            redirect('login');
+            //$path = isset($return) ? "auth?redirect={$return}" : 'login';
+
+            //redirect($path);
+
+            redirect("auth?redirect={$uri}");
         }
     };
 
@@ -57,6 +61,16 @@ return function(RouteCollector $route)
     {
         echo $templates()->render('index.php');
     });
+    
+    $route->get('/achievements', function() use ($check_login, $templates)
+    {
+        $check_login();
+
+        $template = $templates()->make('achievements.html');
+        $template->layout('layouts/default.php', ['title' => 'Minhas conquistas']);
+
+        echo $template->render();
+    });
 
     $route->get('/auth', 'auth.php');
 
@@ -76,6 +90,16 @@ return function(RouteCollector $route)
 
         $template = $templates()->make('friends_gamelist.php');
         $template->layout('layouts/default.php', ['title' => 'Amigos - Lista de jogos']);
+
+        echo $template->render(['friend_id' => $vars['id']]);
+    });
+
+    $route->get('/friends/achievements/{id:\d+}', function($vars) use ($check_login, $templates)
+    {
+        $check_login();
+
+        $template = $templates()->make('friends_achievements.php');
+        $template->layout('layouts/default.php', ['title' => 'Amigos - Conquistas']);
 
         echo $template->render(['friend_id' => $vars['id']]);
     });

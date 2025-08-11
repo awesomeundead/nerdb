@@ -29,9 +29,12 @@ return function(RouteCollector $route)
     $route->get('/movies', 'handlers/get/movies.php');
     $route->get('/movies/count', 'handlers/get/movies_count.php');
 
+    $route->get('/score', 'handlers/get/score.php');
+
     $route->get('/user[/{id:\d+}]', 'handlers/get/user.php'); // (Query String) steamid={steamid}
     $route->post('/user', 'handlers/post/user.php');
     $route->get('/user/friends', 'handlers/get/user_friends.php');
+    $route->get('/user/score/{id:\d+}', 'handlers/get/user_score.php');
 
     $route->get('/userlist/games/{id:\d+}', 'handlers/get/userlist_games.php');
     $route->get('/userlist/movies/{id:\d+}', 'handlers/get/userlist_movies.php');

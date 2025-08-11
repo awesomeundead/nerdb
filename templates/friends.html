@@ -9,11 +9,16 @@
             <div>
                 <div class="personaname"></div>
             </div>
-            <div class="movies">
-                <a>Filmes</a>
-            </div>
-            <div class="games">
-                <a>Jogos</a>
+            <div class="flex_column">
+                <div class="movies">
+                    <a>Filmes</a>
+                </div>
+                <div class="games">
+                    <a>Jogos</a>
+                </div>
+                <div class="achievements">
+                    <a>Conquistas</a>
+                </div>
             </div>
         </div>
     </div>
@@ -39,6 +44,7 @@ function render({ friends })
         clone.querySelector('.personaname').textContent = item.personaname;
         clone.querySelector('.movies a').href = `friends/movielist/${item.id}`;
         clone.querySelector('.games a').href = `friends/gamelist/${item.id}`;
+        clone.querySelector('.achievements a').href = `friends/achievements/${item.id}`;
 
         container.appendChild(clone);
     });

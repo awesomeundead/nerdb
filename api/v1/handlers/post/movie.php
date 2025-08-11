@@ -62,6 +62,10 @@ if ($result)
 
     $stmt = $pdo->prepare($query);
     $result = $stmt->execute($params);
+
+    $query = 'UPDATE score SET add_movie = add_movie + 1 WHERE id = :id';
+    $stmt = $pdo->prepare($query);
+    $stmt->execute(['id' => $user_id]);
 }
 
 $json['status'] = $result ? 'success' : 'failure';

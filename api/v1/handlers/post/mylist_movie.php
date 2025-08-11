@@ -16,6 +16,7 @@ if(!$logged_in)
 $content = trim(file_get_contents('php://input'));
 $dados = json_decode($content, true);
 
+$user_id = $_SESSION['user_id'];
 $movie_id = $vars['id'];
 $watchlist = $dados['watchlist'] ?? null;
 $watched = $dados['watched'] ?? null;
@@ -25,7 +26,7 @@ $liked = $dados['liked'] ?? null;
 require ROOT_DIR . '/pdo.php';
 
 $params = [
-    'user_id' => $_SESSION['user_id'],
+    'user_id' => $user_id,
     'movie_id' => $movie_id
 ];
 $query = 'SELECT id FROM user_movie_list WHERE user_id = :user_id AND movie_id = :movie_id';
@@ -33,7 +34,7 @@ $stmt = $pdo->prepare($query);
 $stmt->execute($params);
 $user_movie_list_id = $stmt->fetchColumn();
 
-if (!$user_movie_list_id)
+if ($user_movie_list_id === false)
 {
     $params['watchlist'] = 0;
     $params['watched'] = 0;
@@ -108,6 +109,13 @@ else
 
 $stmt = $pdo->prepare($query);
 $result = $stmt->execute($params);
+
+if ($result && $user_movie_list_id === false)
+{
+    $query = 'UPDATE score SET rating_movie = rating_movie + 1 WHERE id = :id';
+    $stmt = $pdo->prepare($query);
+    $stmt->execute(['id' => $user_id]);
+}
 
 $json['status'] = $result ? 'success' : 'failure';
 

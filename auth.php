@@ -1,9 +1,5 @@
 <?php
 
-$protocol = !empty($_SERVER['HTTPS']) ? 'https' : 'http';
-
-define('HOST', "{$protocol}://{$_SERVER['HTTP_HOST']}");
-
 function auto_login()
 {
     $token = htmlspecialchars($_COOKIE['login']);
@@ -41,7 +37,12 @@ function auto_login()
                 */
                 $response = update_user($player);
 
-                redirect('/mylist/movies');
+                if (isset($_GET['redirect']))
+                {
+                    redirect($_GET['redirect']);
+                }
+
+                redirect('/');
             }
         }
     }

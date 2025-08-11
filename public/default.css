@@ -149,6 +149,7 @@
 
     & select
     {
+        appearance: none;
         background-color: #222;
         border: 1px solid #777;
         color: #CCC;
@@ -156,7 +157,20 @@
     }
 }
 
-#movies, #movie, #friends, .pagination
+.item
+{
+    .label
+    {
+        color: #999;
+    }
+
+    .title
+    {
+        font-weight: bold;
+    }
+}
+
+#movies, #movie, #friends, .pagination, #achievements
 {
     margin: auto;
     width: var(--layout-width);
@@ -171,7 +185,7 @@
         padding: 0 var(--padding-side);
     }
 
-    & .image
+    .image
     {
         background-color: #000;
         display: flex;
@@ -179,113 +193,120 @@
         justify-content: center;
         width: 96px;
 
-        & img
+        img
         {
             height: 128px;
         }
     }
 
-    & .info
+    .info
     {
         background-color: #333;
         flex: 1;
         padding: 5px;
     }
+
+    .director
+    {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+    }
 }
 
-#my_movie_list
+#userlist
 {
     margin: auto;
     width: var(--layout-width);
+
+    .grid
+    {
+        display: grid;
+        grid-template-columns: repeat(var(--columns), 1fr);
+        gap: 10px;
+        padding: 0 var(--padding-side);
+    }
+
+    .title
+    {
+        font-size: var(--min-font-size);
+    }
+
+    .image
+    {
+        background-color: #000;
+        display: flex;
+    }
+
+    .image a
+    {
+        display: flex;
+        justify-content: center;
+        width: 120px;
+
+        img
+        {
+            height: 160px;
+        }
+    }
+
+    .icon
+    {
+        align-items: center;
+        background-color: #EB0;
+        border-radius: 5px;
+        display: flex;
+        gap: 5px;
+        padding: 5px;
+        text-align: center;
+
+        &.friend
+        {
+            background-color: #CCC;
+        }
+
+        img
+        {
+            height: 16px;
+            width: 16px;
+        }
+    }
+
+    .icon_rating
+    {
+        background-color: #EB0;
+        border-radius: 5px;
+        color: #000;
+        font-weight: bold;
+        height: 26px;
+        padding: 5px;
+        text-align: center;
+        width: 26px;
+
+        &.friend
+        {
+            background-color: #CCC;
+        }
+    }
+
+    .disable
+    {
+        opacity: 0.1;
+        pointer-events: none;
+    }
 }
 
-#my_movie_list .grid
-{
-    display: grid;
-    grid-template-columns: repeat(var(--columns), 1fr);
-    gap: 10px;
-    padding: 0 var(--padding-side);
-}
-
-#my_movie_list .title_br
-{
-    font-size: var(--min-font-size);
-}
-
-#my_movie_list .image
-{
-    background-color: #000;
-    display: flex;
-}
-
-#my_movie_list .image a
-{
-    display: flex;
-    justify-content: center;
-    width: 120px;
-}
-
-#my_movie_list img
-{
-    height: 160px;
-}
-
-#my_movie_list .icon
-{
-    align-items: center;
-    background-color: #EB0;
-    border-radius: 5px;
-    display: flex;
-    gap: 5px;
-    padding: 5px;
-    text-align: center;
-}
-
-#my_movie_list .icon.friend
-{
-    background-color: #CCC;
-}
-
-#my_movie_list .icon img
-{
-    height: 16px;
-    width: 16px;
-}
-
-#my_movie_list .icon_rating
-{
-    background-color: #EB0;
-    border-radius: 5px;
-    color: #000;
-    font-weight: bold;
-    height: 26px;
-    padding: 5px;
-    text-align: center;
-    width: 26px;
-}
-
-#my_movie_list .icon_rating.friend
-{
-    background-color: #CCC;
-}
-
-#my_movie_list .disable
-{
-    opacity: 0.1;
-    pointer-events: none;
-}
-
-#my_movie_list_checkbox
+#userlist_checkbox
 {
     margin: auto;
     padding: 5px 0;
     width: var(--layout-width);
-}
 
-#my_movie_list_checkbox div
-{
-    background-color: #333;
-    padding: 5px;
+    div
+    {
+        background-color: #333;
+        padding: 5px;
+    }
 }
 
 #friends
@@ -293,28 +314,82 @@
     display: flex;
     flex-direction: column;
     gap: 5px;
+
+    .item
+    {
+        background-color: #333;
+    }
+
+    .item .image
+    {
+        display: flex;
+
+        img
+        {
+            height: 64px;
+            width: 64px;
+        }
+    }
 }
 
-#friends .item
+#achievements
 {
-    background-color: #333;
-}
+    .item
+    {
+        background-color: #333;
+        padding: 5px;
 
-#friends .item .image
-{
-    display: flex;
+        .title
+        {
+            font-weight: bold;
+        }
+
+        .description
+        {
+            color: #CCC;
+        }
+    }
+
+    img
+    {
+        border-radius: 5px;
+        filter: saturate(0);
+        height: 64px;
+        width: 64px;
+    }
+
+    progress
+    {
+        appearance: none;
+        width: 100%;
+
+        &::-moz-progress-bar
+        {
+            background-color: #358;
+        }
+
+        &::-webkit-progress-value
+        {
+            background-color: #358;
+        }
+    }
+
+    .unlock img
+    {
+        filter: saturate(1);
+    }
 }
 
 @media (min-width: 1600px)
 {
     .user_panel
     {
-        & #menu_mobile
+        #menu_mobile
         {
             display: none;
         }
 
-        & nav
+        nav
         {
             display: flex;
         }
@@ -329,5 +404,10 @@
     #movies.grid
     {
         grid-template-columns: repeat(2, 1fr);
+    }
+
+    #achievements
+    {
+        
     }
 }

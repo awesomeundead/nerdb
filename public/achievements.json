@@ -1,0 +1,92 @@
+{
+    "achievements": [
+        {
+            "title": "Aliado da Comunidade",
+            "description": "Você deu os primeiros passos para tornar a comunidade mais forte!",
+            "icon": "community.png",
+            "goal_type": "total",
+            "goal": 1,
+            "show": false
+        },
+        {
+            "title": "Estreante nas Telas",
+            "description": "Você adicionou seus primeiros 10 filmes! O show está só começando.",
+            "icon": "movie10.png",
+            "goal_type": "add_movie",
+            "goal": 10,
+            "show": true
+        },
+        {
+            "title": "Crítico em Ascensão",
+            "description": "Já está com 50 filmes no currículo. Seu gosto começa a ganhar respeito!",
+            "icon": "movie50.png",
+            "goal_type": "add_movie",
+            "goal": 50,
+            "show": true
+        },
+        {
+            "title": "Cinéfilo Oficial",
+            "description": "100 filmes adicionados! Você respira cinema. Que venha o próximo!",
+            "icon": "movie100.png",
+            "goal_type": "add_movie",
+            "goal": 100,
+            "show": true
+        },
+        {
+            "title": "Curador de Catálogo",
+            "description": "Com 500 títulos, seu perfil virou uma verdadeira videoteca.",
+            "icon": "movie500.png",
+            "goal_type": "add_movie",
+            "goal": 500,
+            "show": true
+        },
+        {
+            "title": "Lenda do Cinema",
+            "description": "1000 filmes? Você é uma enciclopédia ambulante do cinema.",
+            "icon": "movie1000.png",
+            "goal_type": "add_movie",
+            "goal": 1000,
+            "show": true
+        },
+        {
+            "title": "Noob Curioso",
+            "description": "Seus primeiros 10 jogos adicionados! A jornada gamer começou.",
+            "icon": "game10.png",
+            "goal_type": "add_game",
+            "goal": 10,
+            "show": true
+        },
+        {
+            "title": "Acabar o Jogo",
+            "description": "50 jogos no inventário! Você já tem XP suficiente pra subir de nível.",
+            "icon": "game50.png",
+            "goal_type": "add_game",
+            "goal": 50,
+            "show": true
+        },
+        {
+            "title": "Colecionador de Quests",
+            "description": "100 jogos adicionados! Seu backlog virou uma missão épica.",
+            "icon": "game100.png",
+            "goal_type": "add_game",
+            "goal": 100,
+            "show": true
+        },
+        {
+            "title": "Mestre do Catálogo",
+            "description": "Com 500 títulos, seu perfil é digno de um chefão final.",
+            "icon": "game500.png",
+            "goal_type": "add_game",
+            "goal": 500,
+            "show": true
+        },
+        {
+            "title": "Lendário Gamer",
+            "description": "1000 jogos? Você desbloqueou o troféu supremo. Respeito eterno!",
+            "icon": "game1000.png",
+            "goal_type": "add_game",
+            "goal": 1000,
+            "show": true
+        }
+    ]
+}

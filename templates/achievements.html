@@ -1,0 +1,200 @@
+<div id="achievements" class="flex_row">
+    <div class="flex_row">
+        <div class="item community flex_row" data-value="1">
+            <div class="flex_column">
+                <div class="flex_row">
+                    <img src="images/achievements/community.png" />
+                </div>
+                <div class="flex_row flex">
+                    <div class="title">Aliado da Comunidade</div>
+                    <div class="description">Você deu os primeiros passos para tornar a comunidade mais forte!</div>
+                </div>
+            </div>
+            <progress></progress>
+        </div>
+        <div class="item movie flex_row" data-value="10">
+            <div class="flex_column">
+                <div class="flex_row">
+                    <img src="images/achievements/movie10.png" />
+                </div>
+                <div class="flex_row flex">
+                    <div class="title">Estreante nas Telas</div>
+                    <div class="description">Você adicionou seus primeiros 10 filmes! O show está só começando.</div>
+                </div>
+                <span class="flex_row vcenter"></span>
+            </div>
+            <progress></progress>
+        </div>
+        <div class="item movie flex_row" data-value="50">
+            <div class="flex_column">
+                <div class="flex_row">
+                    <img src="images/achievements/movie50.png" />
+                </div>
+                <div class="flex_row flex">
+                    <div class="title">Crítico em Ascensão</div>
+                    <div class="description">Já está com 50 filmes no currículo. Seu gosto começa a ganhar respeito!</div>
+                </div>
+                <span class="flex_row vcenter"></span>
+            </div>
+            <progress></progress>
+        </div>
+        <div class="item movie flex_row" data-value="100">
+            <div class="flex_column">
+            <div class="flex_row">
+                <img src="images/achievements/movie100.png" />
+            </div>
+                <div class="flex_row flex">
+                    <div class="title">Cinéfilo Oficial</div>
+                    <div class="description">100 filmes adicionados! Você respira cinema. Que venha o próximo!</div>
+                </div>
+                <span class="flex_row vcenter"></span>
+            </div>
+            <progress></progress>
+        </div>
+        <div class="item movie flex_row" data-value="500">
+            <div class="flex_column">
+                <div class="flex_row">
+                    <img src="images/achievements/movie500.png" />
+                </div>
+                <div class="flex_row flex">
+                    <div class="title">Curador de Catálogo</div>
+                    <div class="description">Com 500 títulos, seu perfil virou uma verdadeira videoteca.</div>
+                </div>
+                <span class="flex_row vcenter"></span>
+            </div>
+            <progress></progress>
+        </div>
+        <div class="item movie flex_row" data-value="1000">
+            <div class="flex_column">
+                <div class="flex_row">
+                    <img src="images/achievements/movie1000.png" />
+                </div>
+                <div class="flex_row flex">
+                    <div class="title">Lenda do Cinema</div>
+                    <div class="description">1000 filmes? Você é uma enciclopédia ambulante do cinema.</div>
+                </div>
+                <span class="flex_row vcenter"></span>
+            </div>
+            <progress></progress>
+        </div>
+    </div>
+    <div class="flex_row">
+        <div class="item game flex_row" data-value="10">
+            <div class="flex_column">
+                <div class="flex_row">
+                    <img src="images/achievements/game10.png" />
+                </div>
+                <div class="flex_row flex">
+                    <div class="title">Noob Curioso</div>
+                    <div class="description">Seus primeiros 10 jogos adicionados! A jornada gamer começou.</div>
+                </div>
+                <span class="flex_row vcenter"></span>
+            </div>
+            <progress></progress>
+        </div>
+        <div class="item game flex_row" data-value="50">
+            <div class="flex_column">
+                <div class="flex_row">
+                    <img src="images/achievements/game50.png" />
+                </div>
+                <div class="flex_row flex">
+                    <div class="title">Acabar o Jogo</div>
+                    <div class="description">50 jogos no inventário! Você já tem XP suficiente pra subir de nível.</div>
+                </div>
+                <span class="flex_row vcenter"></span>
+            </div>
+            <progress></progress>
+        </div>
+        <div class="item game flex_row" data-value="100">
+            <div class="flex_column">
+                <div class="flex_row">
+                    <img src="images/achievements/game100.png" />
+                </div>
+                <div class="flex_row flex">
+                    <div class="title">Colecionador de Quests</div>
+                    <div class="description">100 jogos adicionados! Seu backlog virou uma missão épica.</div>
+                </div>
+                <span class="flex_row vcenter"></span>
+            </div>
+            <progress></progress>
+        </div>
+        <div class="item game flex_row" data-value="500">
+            <div class="flex_column">
+                <div class="flex_row">
+                    <img src="images/achievements/game500.png" />
+                </div>
+                <div class="flex_row flex">
+                    <div class="title">Mestre do Catálogo</div>
+                    <div class="description">Com 500 títulos, seu perfil é digno de um chefão final.</div>
+                </div>
+                <span class="flex_row vcenter"></span>
+            </div>
+            <progress></progress>
+        </div>
+        <div class="item game flex_row" data-value="1000">
+            <div class="flex_column">
+                <div class="flex_row">
+                    <img src="images/achievements/game1000.png" />
+                </div>
+                <div class="flex_row flex">
+                    <div class="title">Lendário Gamer</div>
+                    <div class="description">1000 jogos? Você desbloqueou o troféu supremo. Respeito eterno!</div>
+                </div>
+                <span class="flex_row vcenter"></span>
+            </div>
+            <progress></progress>
+        </div>
+    </div>
+</div>
+
+<script>
+
+const url = new URL(`api/v1/score`, document.baseURI);
+
+const render = function(item)
+{
+    document.querySelectorAll('.item.community').forEach(card =>
+    {
+        const value = card.dataset.value;
+        const progress = card.querySelector('progress');
+        progress.max = value;
+        progress.value = item.add_game;
+
+        if (item.total >= value)
+        {
+            card.classList.add('unlock');
+        }
+    });
+    
+    document.querySelectorAll('.item.movie').forEach(card =>
+    {
+        const value = card.dataset.value;
+        const progress = card.querySelector('progress');
+        progress.max = value;
+        progress.value = item.add_movie;
+        card.querySelector('span').textContent = `${item.add_movie}/${value} filmes`;
+
+        if (item.add_movie >= value)
+        {
+            card.classList.add('unlock');
+        }
+    });
+
+    document.querySelectorAll('.item.game').forEach(card =>
+    {
+        const value = card.dataset.value;
+        const progress = card.querySelector('progress');
+        progress.max = value;
+        progress.value = item.add_game;
+        card.querySelector('span').textContent = `${item.add_game}/${value} jogos`;
+
+        if (item.add_game >= value)
+        {
+            card.classList.add('unlock');
+        }
+    });
+}
+
+getJSON();
+
+</script>

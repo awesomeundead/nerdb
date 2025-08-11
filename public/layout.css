@@ -133,6 +133,16 @@ label
     flex-direction: row;
     gap: 5px;
 
+    &.sbetween
+    {
+        justify-content: space-between;
+    }
+
+    &.flex
+    {
+        flex: 1;
+    }
+
     &.hcenter
     {
         justify-content: center;
@@ -149,6 +159,11 @@ label
     display: flex;
     flex-direction: column;
     gap: 5px;
+
+    &.flex
+    {
+        flex: 1;
+    }
 
     &.hcenter
     {

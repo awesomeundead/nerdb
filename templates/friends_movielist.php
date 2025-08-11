@@ -1,4 +1,4 @@
-<div class="flex_row" id="my_movie_list_checkbox">
+<div class="flex_row" id="userlist_checkbox">
     <div class="flex_column vcenter">
         <input data-filter="watchlist" id="watchlist_checkbox" type="checkbox" />
         <label for="watchlist_checkbox">Filmes que seu amigo quer assistir</label>
@@ -16,7 +16,7 @@
         <label for="rating_checkbox">Filmes que seu amigo melhor avaliou</label>
     </div>
 </div>
-<div id="my_movie_list">
+<div id="userlist">
     <div class="grid"></div>
 </div>
 <template>
@@ -64,7 +64,7 @@
         </div>
         <div class="flex_row">
             <div>
-                <div class="title_br"></div>
+                <div class="title title_br"></div>
             </div>
         </div>
     </div>
@@ -73,7 +73,7 @@
 <script>
 
 const friend_id = '<?= $friend_id ?>';
-const container = document.querySelector('#my_movie_list .grid');
+const container = document.querySelector('#userlist .grid');
 const template = document.querySelector('template');
 const url = new URL(`api/v1/userlist/movies/${friend_id}`, document.baseURI);
 const searchParams = url.searchParams;
