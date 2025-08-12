@@ -34,6 +34,10 @@ $query = 'SELECT *,
 
 $stmt = $pdo->prepare($query);
 $stmt->execute($params);
-$result = $stmt->fetch(PDO::FETCH_ASSOC);
+$result['user_score'] = $stmt->fetch(PDO::FETCH_ASSOC);
+
+$stmt = $pdo->prepare($query);
+$stmt->execute(['id' => $my_user_id]);
+$result['my_score'] = $stmt->fetch(PDO::FETCH_ASSOC);
 
 echo json_encode($result, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);

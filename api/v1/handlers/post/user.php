@@ -24,6 +24,14 @@ $query = 'INSERT INTO users (steamid, personaname, avatarhash, name, created_dat
 $stmt = $pdo->prepare($query);
 $result = $stmt->execute($params);
 
+if ($result)
+{
+    $query = 'INSERT INTO score (add_movie, add_game, update_movie, update_game, rating_movie, rating_game) VALUES (0, 0, 0, 0, 0, 0)';
+
+    $stmt = $pdo->prepare($query);
+    $result = $stmt->execute();
+}
+
 $json['status'] = $result ? 'success' : 'failure';
 
 echo json_encode($json);

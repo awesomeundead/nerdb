@@ -34,6 +34,12 @@ getJSON();
 
 function render({ friends })
 {
+    if (!friends.length)
+    {
+        container.innerHTML = 'Os serviços da Steam podem estar fora do ar ou o seu perfil está bloqueando a visualização de amigos.';
+        return;
+    }
+
     container.innerHTML = '';
 
     friends.forEach(item =>

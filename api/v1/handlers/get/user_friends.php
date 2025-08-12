@@ -4,17 +4,6 @@ header('Content-Type: application/json; charset=utf-8');
 
 $steam_api_key = (require ROOT_DIR . '/../../config.php')['steam_api_key'];
 
-/*
-$steamid = $_GET['steamid'] ?? false;
-
-if (!$steamid)
-{
-    http_response_code(400);
-    echo 'BAD REQUEST';
-    exit;
-}
-*/
-
 require ROOT_DIR . '/../../session.php';
 
 $logged_in = $_SESSION['logged_in'] ?? false;
@@ -38,7 +27,7 @@ $list = $data['friendslist']['friends'] ?? false;
 
 if (!$list)
 {
-    echo '{friends: []}';
+    echo '{"friends": []}';
     exit;
 }
 

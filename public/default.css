@@ -36,6 +36,7 @@
             position: absolute;
             top: 52px;
             width: 100%;
+            z-index: 9999;
         }
     }
 
@@ -358,19 +359,17 @@
         width: 64px;
     }
 
-    progress
+    .progress
     {
-        appearance: none;
-        width: 100%;
+        background-color: #777;
+        border-radius: 5px;
 
-        &::-moz-progress-bar
+        .progress_bar
         {
-            background-color: #358;
-        }
-
-        &::-webkit-progress-value
-        {
-            background-color: #358;
+            border-radius: 5px;
+            height: 20px;
+            padding: 2px 5px;
+            text-align: center;
         }
     }
 

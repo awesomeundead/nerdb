@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 193.203.175.58
--- Tempo de geração: 05/08/2025 às 16:41
+-- Tempo de geração: 12/08/2025 às 22:15
 -- Versão do servidor: 10.11.10-MariaDB-log
 -- Versão do PHP: 8.4.10
 
@@ -34,7 +34,9 @@ CREATE TABLE `games` (
   `genres` varchar(255) NOT NULL,
   `release_year` year(4) NOT NULL,
   `steam` varchar(255) NOT NULL,
-  `media` char(32) NOT NULL
+  `media` char(32) NOT NULL,
+  `first_user_id` int(10) UNSIGNED NOT NULL,
+  `last_user_id` int(10) UNSIGNED NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -84,6 +86,22 @@ CREATE TABLE `movie_platforms` (
   `movie_id` int(10) UNSIGNED NOT NULL,
   `platform_name` enum('Prime Video','HBO Max') NOT NULL,
   `platform_link` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura para tabela `score`
+--
+
+CREATE TABLE `score` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `add_movie` mediumint(8) UNSIGNED NOT NULL,
+  `add_game` mediumint(8) UNSIGNED NOT NULL,
+  `update_movie` smallint(5) UNSIGNED NOT NULL,
+  `update_game` smallint(5) UNSIGNED NOT NULL,
+  `rating_movie` smallint(5) UNSIGNED NOT NULL,
+  `rating_game` smallint(5) UNSIGNED NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -142,6 +160,7 @@ CREATE TABLE `user_movie_list` (
 --
 ALTER TABLE `games`
   ADD PRIMARY KEY (`id`);
+ALTER TABLE `games` ADD FULLTEXT KEY `title` (`title`,`developer`);
 
 --
 -- Índices de tabela `login_log`
@@ -162,6 +181,12 @@ ALTER TABLE `movies` ADD FULLTEXT KEY `title_br` (`title_br`,`title_us`,`directo
 ALTER TABLE `movie_platforms`
   ADD PRIMARY KEY (`id`),
   ADD KEY `movie_id` (`movie_id`) USING BTREE;
+
+--
+-- Índices de tabela `score`
+--
+ALTER TABLE `score`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Índices de tabela `users`
@@ -211,6 +236,12 @@ ALTER TABLE `movies`
 -- AUTO_INCREMENT de tabela `movie_platforms`
 --
 ALTER TABLE `movie_platforms`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de tabela `score`
+--
+ALTER TABLE `score`
   MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
