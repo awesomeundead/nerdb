@@ -84,42 +84,42 @@ return function(RouteCollector $route) use ($uri)
         echo $template->render();
     });
 
-    $route->get('/friends/gamelist/{id:\d+}', function($vars) use ($check_login, $templates)
+    $route->get('/friends/gamelist/{id:\d+}', function() use ($check_login, $templates)
     {
         $check_login();
 
-        $template = $templates()->make('friends_gamelist.php');
+        $template = $templates()->make('friends_gamelist.html');
         $template->layout('layouts/default.php', ['title' => 'Amigos - Lista de jogos']);
 
-        echo $template->render(['friend_id' => $vars['id']]);
+        echo $template->render();
     });
 
-    $route->get('/friends/achievements/{id:\d+}', function($vars) use ($check_login, $templates)
+    $route->get('/friends/achievements/{id:\d+}', function() use ($check_login, $templates)
     {
         $check_login();
 
-        $template = $templates()->make('friends_achievements.php');
+        $template = $templates()->make('friends_achievements.html');
         $template->layout('layouts/default.php', ['title' => 'Amigos - Conquistas']);
 
-        echo $template->render(['friend_id' => $vars['id']]);
+        echo $template->render();
     });
 
-    $route->get('/friends/movielist/{id:\d+}', function($vars) use ($check_login, $templates)
+    $route->get('/friends/movielist/{id:\d+}', function() use ($check_login, $templates)
     {
         $check_login();
 
-        $template = $templates()->make('friends_movielist.php');
+        $template = $templates()->make('friends_movielist.html');
         $template->layout('layouts/default.php', ['title' => 'Amigos - Lista de filmes']);
 
-        echo $template->render(['friend_id' => $vars['id']]);
+        echo $template->render();
     });
 
-    $route->get('/game/{id:\d+}', function($vars) use ($templates)
+    $route->get('/game/{id:\d+}', function() use ($templates)
     {
-        $template = $templates()->make('game.php');
+        $template = $templates()->make('game.html');
         $template->layout('layouts/default.php');
 
-        echo $template->render(['game_id' => $vars['id']]);
+        echo $template->render();
     });
 
     $route->get('/game/add', function() use ($check_login, $templates)
@@ -132,14 +132,14 @@ return function(RouteCollector $route) use ($uri)
         echo $template->render();
     });
 
-    $route->get('/game/update/{id:\d+}', function($vars) use ($check_login, $templates)
+    $route->get('/game/update/{id:\d+}', function() use ($check_login, $templates)
     {
         $check_login();
 
-        $template = $templates()->make('game_update.php');
+        $template = $templates()->make('game_update.html');
         $template->layout('layouts/default.php', ['title' => 'Atualizar jogo']);
 
-        echo $template->render(['game_id' => $vars['id']]);
+        echo $template->render();
     });
 
     $route->get('/games', function() use ($templates)
@@ -178,12 +178,12 @@ return function(RouteCollector $route) use ($uri)
         redirect('/?logout');
     });
 
-    $route->get('/movie/{id:\d+}', function($vars) use ($templates)
+    $route->get('/movie/{id:\d+}', function() use ($templates)
     {
-        $template = $templates()->make('movie.php');
+        $template = $templates()->make('movie.html');
         $template->layout('layouts/default.php');
 
-        echo $template->render(['movie_id' => $vars['id']]);
+        echo $template->render();
     });
 
     $route->get('/movie/add', function() use ($check_login, $templates)
@@ -196,14 +196,14 @@ return function(RouteCollector $route) use ($uri)
         echo $template->render();
     });
 
-    $route->get('/movie/update/{id:\d+}', function($vars) use ($check_login, $templates)
+    $route->get('/movie/update/{id:\d+}', function() use ($check_login, $templates)
     {
         $check_login();
 
-        $template = $templates()->make('movie_update.php');
+        $template = $templates()->make('movie_update.html');
         $template->layout('layouts/default.php', ['title' => 'Atualizar filme']);
 
-        echo $template->render(['movie_id' => $vars['id']]);
+        echo $template->render();
     });
 
     $route->get('/movielist', function() use ($check_login, $templates)

@@ -2,35 +2,31 @@
     <div class="image">
         <img alt="" height="256" id="media" src="" />
     </div>
-    <input name="title_br" placeholder="Título em português" type="text" />
-    <input name="title_us" placeholder="Título em inglês" type="text" />
-    <input name="director" list="directors" placeholder="Diretor" type="text" />
-    <textarea name="cast" placeholder="Elenco" rows="4"></textarea>
+    <input name="title" placeholder="Título" type="text" />
+    <input name="developer" placeholder="Desenvolvedor" type="text" />
     <input name="genres" placeholder="Gêneros" type="text" />
     <input name="release_year" placeholder="Ano de lançamento" type="number" />
-    <input name="imdb" placeholder="Link IMDB" type="text" />
+    <input name="steam" placeholder="Link Steam" type="text" />
     <button type="submit">Atualizar</button>
 </form>
 
 
 <script>
 
-const movie_id = '<?= $movie_id ?>';
-const url = new URL(`api/v1/movie/${movie_id}`, document.baseURI);
+const game_id = routeSegments[1];
+const url = new URL(`api/v1/game/${game_id}`, document.baseURI);
 const media = document.querySelector('#media');
 const form = document.querySelector('form.forms');
 const submit = form.querySelector('[type="submit"]');
 
 const render = function(item)
 {
-    media.src = item.media?.trim() ? `images/256/${item.media}.webp` : 'noimage.png';
-    form.elements['title_br'].value = item.title_br,
-    form.elements['title_us'].value = item.title_us,
-    form.elements['director'].value = item.director,
-    form.elements['cast'].value = item.cast,
+    media.src = item.media?.trim() ? `images/games/256/${item.media}.webp` : 'noimage.png';
+    form.elements['title'].value = item.title,
+    form.elements['developer'].value = item.developer,
     form.elements['genres'].value = item.genres,
     form.elements['release_year'].value = item.release_year,
-    form.elements['imdb'].value = item.imdb;
+    form.elements['steam'].value = item.steam;
 }
 
 form.addEventListener('submit', e =>
@@ -38,7 +34,7 @@ form.addEventListener('submit', e =>
     e.preventDefault();
     submit.disabled = true;
 
-    sendJSON('put', `api/v1/movie/${movie_id}`, Object.fromEntries(new FormData(form)))
+    sendJSON('put', `api/v1/game/${game_id}`, Object.fromEntries(new FormData(form)))
     .then(json =>
     {
         if (json.hasOwnProperty('status'))
@@ -56,6 +52,5 @@ form.addEventListener('submit', e =>
 });
 
 getJSON();
-get_directors();
 
 </script>

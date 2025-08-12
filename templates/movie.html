@@ -65,7 +65,7 @@
 </div>
 <script>
 
-const movie_id = '<?= $movie_id ?>';
+const movie_id = routeSegments[1];
 const url = new URL(`api/v1/movie/${movie_id}`, document.baseURI);
 
 const render = function(movie)

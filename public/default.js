@@ -129,3 +129,6 @@ function requestJSON(url)
         });
     })
 }
+
+const relativePath = window.location.href.substring(document.baseURI.length);
+const routeSegments = relativePath ? relativePath.split('/') : [];

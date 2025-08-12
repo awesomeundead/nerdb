@@ -56,7 +56,7 @@
 </div>
 <script>
 
-const game_id = '<?= $game_id ?>';
+const game_id = routeSegments[1];
 const url = new URL(`api/v1/game/${game_id}`, document.baseURI);
 
 const render = function(game)

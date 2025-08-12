@@ -72,7 +72,7 @@
 
 <script>
 
-const friend_id = '<?= $friend_id ?>';
+const friend_id = routeSegments[2];
 const container = document.querySelector('#userlist .grid');
 const template = document.querySelector('template');
 const url = new URL(`api/v1/userlist/movies/${friend_id}`, document.baseURI);
