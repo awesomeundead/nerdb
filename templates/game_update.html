@@ -13,11 +13,10 @@
 
 <script>
 
-const game_id = routeSegments[1];
+const game_id = routeSegments[2];
 const url = new URL(`api/v1/game/${game_id}`, document.baseURI);
 const media = document.querySelector('#media');
 const form = document.querySelector('form.forms');
-const submit = form.querySelector('[type="submit"]');
 
 const render = function(item)
 {
@@ -29,28 +28,7 @@ const render = function(item)
     form.elements['steam'].value = item.steam;
 }
 
-form.addEventListener('submit', e =>
-{
-    e.preventDefault();
-    submit.disabled = true;
-
-    sendJSON('put', `api/v1/game/${game_id}`, Object.fromEntries(new FormData(form)))
-    .then(json =>
-    {
-        if (json.hasOwnProperty('status'))
-        {
-            notification(json.status, {success: 'Sucesso.', failure: 'Falha.'});
-        }
-
-        submit.disabled = false;
-    })
-    .catch(error =>
-    {
-        submit.disabled = false;
-        console.error(error);
-    });
-});
-
+updateForm(form);
 getJSON();
 
 </script>

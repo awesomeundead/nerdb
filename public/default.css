@@ -174,7 +174,37 @@
 #movies, #movie, #friends, .pagination, #achievements
 {
     margin: auto;
+    padding: var(--padding-side);
     width: var(--layout-width);
+}
+
+#movie
+{
+    .title, .title_br
+    {
+        font-size: 18px;
+    }
+
+    .cast_container
+    {
+        background-color: #333;
+        padding: 5px;
+
+        .actor
+        {
+            width: 96px;
+
+            .image img
+            {
+                border-radius: 5px;
+            }
+
+            .character
+            {
+                color: #999;
+            }
+        }
+    }
 }
 
 #movies
@@ -394,19 +424,8 @@
         }
     }
 
-    #movie
-    {
-        display: flex;
-        gap: 10px;
-    }
-
     #movies.grid
     {
         grid-template-columns: repeat(2, 1fr);
-    }
-
-    #achievements
-    {
-        
     }
 }

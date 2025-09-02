@@ -17,8 +17,12 @@ $conditions = [];
 
 if (!empty($actor))
 {
-    $conditions[] = 'cast LIKE :actor';
-    $params['actor'] = "%{$actor}%";
+    $query = 'SELECT movies.* FROM movies
+              INNER JOIN movies_cast ON movies_cast.movie_id = movies.id
+              INNER JOIN people ON people.id = movies_cast.person_id';
+
+    $conditions[] = 'people.name = :actor';
+    $params['actor'] = $actor;
 }
 
 if (!empty($director))

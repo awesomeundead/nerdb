@@ -3,9 +3,9 @@
 header('Content-Type: application/json; charset=utf-8');
 
 require ROOT_DIR . '/pdo.php';
-require ROOT_DIR . '/../../session.php';
 
-$logged_in = $_SESSION['logged_in'] ?? false;
+
+$logged_in = Session::get('logged_in');
 $id = $vars['id'];
 $params = ['id' => $id];
 
@@ -26,9 +26,17 @@ $stmt = $pdo->prepare($query);
 $stmt->execute($params);
 $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
-if(true)
+if($result)
 {
     $params = ['id' => $id];
+
+    $query = 'SELECT movies_cast.id, name, movie_character, media FROM movies_cast
+              INNER JOIN people ON people.id = movies_cast.person_id
+              WHERE movie_id = :id';
+    $stmt = $pdo->prepare($query);
+    $stmt->execute($params);
+    $result['cast'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    
     $query = 'SELECT platform_name, platform_link FROM movie_platforms WHERE movie_id = :id';
     $stmt = $pdo->prepare($query);
     $stmt->execute($params);

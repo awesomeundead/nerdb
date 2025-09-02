@@ -12,161 +12,150 @@ function redirect($path)
     exit;
 }
 
-return function(RouteCollector $route) use ($uri)
+function authMiddleware($handler)
 {
-    require ROOT . '/session.php';
-
-    $session = (object) [
-        'logged_in'   => $_SESSION['logged_in'] ?? false,
-        'steamid'     => $_SESSION['steamid'] ?? null,
-        'personaname' => $_SESSION['personaname'] ?? null,
-        'avatarhash'  => $_SESSION['avatarhash'] ?? null
-    ];
-
-    $check_login = function() use ($session, $uri)
+    return function($vars) use ($handler)
     {
-        if (!$session->logged_in)
-        {
-            //$path = isset($return) ? "auth?redirect={$return}" : 'login';
+        $logged_in = Session::get('logged_in');
 
-            //redirect($path);
+        if (!$logged_in)
+        {
+            $uri = substr_replace(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH), '', 0, strlen(BASE_PATH));
 
             redirect("auth?redirect={$uri}");
         }
+
+        $handler($vars);
     };
+};
 
-    $templates = function() use ($session)
+function templates(): Engine
+{
+    $engine = new Engine(ROOT . '/templates');
+    $engine->setFileExtension(null);
+    $engine->loadExtension(new Asset(ROOT . '/public'));
+    $engine->loadExtension(new URI(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH)));
+
+    $engine->registerFunction('base', function($path = null)
     {
-        $engine = new Engine(ROOT . '/templates');
-        $engine->setFileExtension(null);
-        $engine->loadExtension(new Asset(ROOT . '/public'));
-        $engine->loadExtension(new URI(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH)));
-
-        $engine->registerFunction('base', function($path = null)
+        if (isset($path))
         {
-            if (isset($path))
-            {
-                $path = '/' . ltrim($path, '/');
-            }
-            
-            return BASE_PATH . $path;
-        });
+            $path = '/' . ltrim($path, '/');
+        }
+        
+        return BASE_PATH . $path;
+    });
 
-        $engine->addData(['session' => $session]);
+    $session = (object) [
+        'logged_in'   => Session::get('logged_in'),
+        'steamid'     => Session::get('steamid'),
+        'personaname' => Session::get('personaname'),
+        'avatarhash'  => Session::get('avatarhash')
+    ];
 
-        return $engine;
-    };
+    $engine->addData(['session' => $session]);
 
-    $route->get('/', function() use ($templates)
+    return $engine;
+};
+
+return function(RouteCollector $route)
+{
+    $route->get('/', function()
     {
-        echo $templates()->render('index.php');
+        echo templates()->render('index.php');
     });
     
-    $route->get('/achievements', function() use ($check_login, $templates)
+    $route->get('/achievements', authMiddleware(function()
     {
-        $check_login();
-
-        $template = $templates()->make('achievements.html');
+        $template = templates()->make('achievements.html');
         $template->layout('layouts/default.php', ['title' => 'Minhas conquistas']);
 
         echo $template->render();
-    });
+    }));
 
     $route->get('/auth', 'auth.php');
 
-    $route->get('/friends', function() use ($check_login, $templates)
+    $route->get('/friends', authMiddleware(function()
     {
-        $check_login();
-
-        $template = $templates()->make('friends.html');
+        $template = templates()->make('friends.html');
         $template->layout('layouts/default.php', ['title' => 'Meus amigos']);
 
         echo $template->render();
-    });
+    }));
 
-    $route->get('/friends/gamelist/{id:\d+}', function() use ($check_login, $templates)
+    $route->get('/friends/gamelist/{id:\d+}', authMiddleware(function()
     {
-        $check_login();
-
-        $template = $templates()->make('friends_gamelist.html');
+        $template = templates()->make('friends_gamelist.html');
         $template->layout('layouts/default.php', ['title' => 'Amigos - Lista de jogos']);
 
         echo $template->render();
-    });
+    }));
 
-    $route->get('/friends/achievements/{id:\d+}', function() use ($check_login, $templates)
+    $route->get('/friends/achievements/{id:\d+}', authMiddleware(function()
     {
-        $check_login();
-
-        $template = $templates()->make('friends_achievements.html');
+        $template = templates()->make('friends_achievements.html');
         $template->layout('layouts/default.php', ['title' => 'Amigos - Conquistas']);
 
         echo $template->render();
-    });
+    }));
 
-    $route->get('/friends/movielist/{id:\d+}', function() use ($check_login, $templates)
+    $route->get('/friends/movielist/{id:\d+}', authMiddleware(function()
     {
-        $check_login();
-
-        $template = $templates()->make('friends_movielist.html');
+        $template = templates()->make('friends_movielist.html');
         $template->layout('layouts/default.php', ['title' => 'Amigos - Lista de filmes']);
 
         echo $template->render();
-    });
+    }));
 
-    $route->get('/game/{id:\d+}', function() use ($templates)
+    $route->get('/game/{id:\d+}', function()
     {
-        $template = $templates()->make('game.html');
+        $template = templates()->make('game.php');
         $template->layout('layouts/default.php');
 
         echo $template->render();
     });
 
-    $route->get('/game/add', function() use ($check_login, $templates)
+    $route->get('/game/add', authMiddleware(function()
     {
-        $check_login();
-
-        $template = $templates()->make('game_add.html');
+        $template = templates()->make('game_add.html');
         $template->layout('layouts/default.php', ['title' => 'Adicionar jogo']);
 
         echo $template->render();
-    });
+    }));
 
-    $route->get('/game/update/{id:\d+}', function() use ($check_login, $templates)
+    $route->get('/game/update/{id:\d+}', authMiddleware(function()
     {
-        $check_login();
-
-        $template = $templates()->make('game_update.html');
+        $template = templates()->make('game_update.html');
         $template->layout('layouts/default.php', ['title' => 'Atualizar jogo']);
 
         echo $template->render();
-    });
+    }));
 
-    $route->get('/games', function() use ($templates)
+    $route->get('/games', function()
     {
-        $template = $templates()->make('games.html');
+        $template = templates()->make('games.html');
         $template->layout('layouts/default.php', ['title' => 'Jogos']);
 
         echo $template->render();
     });
 
-    $route->get('/login', function() use ($session, $templates)
+    $route->get('/login', function()
     {
-        if ($session->logged_in)
+        $logged_in = Session::get('logged_in');
+
+        if (!$logged_in)
         {
             redirect('/');
         }
 
-        $template = $templates()->make('login.html');
+        $template = templates()->make('login.html');
         $template->layout('layouts/default.php', ['title' => 'Login']);
 
         echo $template->render();
     });
 
-    $route->get('/logout', function() use ($session, $check_login)
+    $route->get('/logout', authMiddleware(function()
     {
-        $check_login();
-
         if (isset($_COOKIE['login']))
         {
             setcookie('login', '', -1, '/');
@@ -176,76 +165,76 @@ return function(RouteCollector $route) use ($uri)
         session_destroy();
 
         redirect('/?logout');
-    });
+    }));
 
-    $route->get('/movie/{id:\d+}', function() use ($templates)
+    $route->get('/movie/{id:\d+}', function()
     {
-        $template = $templates()->make('movie.html');
+        $template = templates()->make('movie.php');
         $template->layout('layouts/default.php');
 
         echo $template->render();
     });
 
-    $route->get('/movie/add', function() use ($check_login, $templates)
+    $route->get('/movie/add', authMiddleware(function()
     {
-        $check_login();
-
-        $template = $templates()->make('movie_add.html');
+        $template = templates()->make('movie_add.html');
         $template->layout('layouts/default.php', ['title' => 'Adicionar filme']);
 
         echo $template->render();
-    });
+    }));
 
-    $route->get('/movie/update/{id:\d+}', function() use ($check_login, $templates)
+    $route->get('/movie/update/{id:\d+}', authMiddleware(function()
     {
-        $check_login();
-
-        $template = $templates()->make('movie_update.html');
+        $template = templates()->make('movie_update.html');
         $template->layout('layouts/default.php', ['title' => 'Atualizar filme']);
 
         echo $template->render();
-    });
+    }));
 
-    $route->get('/movielist', function() use ($check_login, $templates)
+    $route->get('/movielist', function()
     {
-        $template = $templates()->make('movielist.html');
+        $template = templates()->make('movielist.html');
         $template->layout('layouts/default.php', ['title' => 'Lista de filmes']);
 
         echo $template->render();
     });
 
-    $route->get('/movies', function() use ($templates)
+    $route->get('/movies', function()
     {
-        $template = $templates()->make('movies.html');
+        $template = templates()->make('movies.html');
         $template->layout('layouts/default.php');
 
         echo $template->render();
     });
 
-    $route->get('/movies/top', function() use ($templates)
+    $route->get('/movies/top', function()
     {
-        $template = $templates()->make('movies_top.html');
+        $template = templates()->make('movies_top.html');
         $template->layout('layouts/default.php', ['title' => 'Os 100 melhores filmes']);
 
         echo $template->render();
     });
 
-    $route->get('/mylist/games', function() use ($check_login, $templates)
+    $route->get('/mygamelist', authMiddleware(function()
     {
-        $check_login();
-
-        $template = $templates()->make('mylist_games.html');
+        $template = templates()->make('mylist_games.html');
         $template->layout('layouts/default.php', ['title' => 'Minha lista de filmes']);
 
         echo $template->render();
-    });
+    }));
 
-    $route->get('/mylist/movies', function() use ($check_login, $templates)
+    $route->get('/mymovielist', authMiddleware(function()
     {
-        $check_login();
-
-        $template = $templates()->make('mylist_movies.html');
+        $template = templates()->make('mylist_movies.html');
         $template->layout('layouts/default.php', ['title' => 'Minha lista de filmes']);
+
+        echo $template->render();
+    }));
+
+    $route->get('/store', function()
+    {
+        $template = templates()->make('store.html');
+        $template->layout('layouts/default.php', ['title' => 'Loja']);
 
         echo $template->render();
     });

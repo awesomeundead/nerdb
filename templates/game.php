@@ -1,58 +1,54 @@
 <div id="movie">
-    <div class="image">
-        <img alt="" height="512" src="" />
+    <div class="flex_column wrap">
+        <div class="image">
+            <img alt="" height="512" src="" />
+        </div>
+        <div class="flex_row">
+            <div>
+                <div class="title"></div>
+            </div>
+            <div class="flex_column">
+                <div>Gêneros:</div>
+                <div class="genres flex_column"></div>
+            </div>
+            <div class="flex_column">
+                <div>Lançamento:</div>
+                <div class="release_year"></div>
+            </div>
+            <div class="steam">
+                <a target="_blank">Steam</a>
+            </div>
+            <div class="flex_column">
+                <div>Desenvolvedor:</div>
+                <div class="developer flex_row"></div>
+            </div>
+            <?php if ($session->logged_in ?? false): ?>
+            <div class="toggle flex_column">
+                <button aria-label="Quero jogar" class="icon watchlist" data-action="playlist" title="Quero jogar" type="button"></button>
+                <button aria-label="Já joguei" class="icon watched" data-action="played" title="Já joguei" type="button"></button>
+                <button aria-label="Gostei" class="icon like" data-action="liked" title="Gostei" type="button"></button>
+            </div>
+            <div>Minha avaliação</div>
+            <div class="rating flex_column">
+                <button class="star" data-value="1" title="1 estrela" type="button"></button>
+                <button class="star" data-value="2" title="2 estrelas" type="button"></button>
+                <button class="star" data-value="3" title="3 estrelas" type="button"></button>
+                <button class="star" data-value="4" title="4 estrelas" type="button"></button>
+                <button class="star" data-value="5" title="5 estrelas" type="button"></button>
+                <button class="star" data-value="6" title="6 estrelas" type="button"></button>
+                <button class="star" data-value="7" title="7 estrelas" type="button"></button>
+                <button class="star" data-value="8" title="8 estrelas" type="button"></button>
+                <button class="star" data-value="9" title="9 estrelas" type="button"></button>
+                <button class="star" data-value="10" title="10 estrelas" type="button"></button>
+            </div>
+            <?php endif ?>
+        </div>
     </div>
-    <div class="flex_row">
-        <div>
-            <div class="title"></div>
-        </div>
-        <div class="flex_column">
-            <div>Gêneros:</div>
-            <div class="genres flex_column"></div>
-        </div>
-        <div class="flex_column">
-            <div>Lançamento:</div>
-            <div class="release_year"></div>
-        </div>
-        <div class="steam">
-            <a target="_blank">Steam</a>
-        </div>
-        <?php if ($session->logged_in ?? false): ?>
+    <?php if ($session->logged_in ?? false): ?>
         <div class="update">
-            <a href="">Editar</a>
+            <a href="">Editar jogo</a>
         </div>
-        <div class="toggle flex_column">
-            <button aria-label="Quero assistir" class="icon" data-action="playlist" type="button">
-                <img alt="" src="saved.png" />
-                <span>Quero jogar</span>
-            </button>
-            <button aria-label="Já assisti" class="icon" data-action="played" type="button">
-                <img alt="" src="watched.png" />
-                <span>Joguei</span>
-            </button>
-            <button aria-label="Gostei" class="icon" data-action="liked" type="button">
-                <img alt="" src="liked.png" />
-                <span>Gostei</span>
-            </button>
-        </div>
-        <div class="rating flex_column">
-            <button class="star" data-value="1" title="1 estrela" type="button"></button>
-            <button class="star" data-value="2" title="2 estrelas" type="button"></button>
-            <button class="star" data-value="3" title="3 estrelas" type="button"></button>
-            <button class="star" data-value="4" title="4 estrelas" type="button"></button>
-            <button class="star" data-value="5" title="5 estrelas" type="button"></button>
-            <button class="star" data-value="6" title="6 estrelas" type="button"></button>
-            <button class="star" data-value="7" title="7 estrelas" type="button"></button>
-            <button class="star" data-value="8" title="8 estrelas" type="button"></button>
-            <button class="star" data-value="9" title="9 estrelas" type="button"></button>
-            <button class="star" data-value="10" title="10 estrelas" type="button"></button>
-        </div>
-        <?php endif ?>
-        <div class="flex_column">
-            <div>Desenvolvedor:</div>
-            <div class="developer flex_row"></div>
-        </div>
-    </div>
+    <?php endif ?>
 </div>
 <script>
 
@@ -135,7 +131,7 @@ function reaction(button)
     const action = button.dataset.action;
     const value = button.dataset.value;
 
-    sendJSON('post', `api/v1/mylist/game/${game_id}`,
+    requestJSON(`api/v1/mylist/game/${game_id}`, 'post',
     {
         [action]: value
     })
@@ -155,7 +151,7 @@ function reaction(button)
 
 function rating(value)
 {
-    sendJSON('post', `api/v1/mylist/game/${game_id}`,
+    requestJSON(`api/v1/mylist/game/${game_id}`, 'post',
     {
         rating: value
     })

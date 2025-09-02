@@ -2,9 +2,9 @@
 
 header('Content-Type: application/json; charset=utf-8');
 
-require ROOT_DIR . '/../../session.php';
 
-$logged_in = $_SESSION['logged_in'] ?? false;
+
+$logged_in = Session::get('logged_in');
 
 if(!$logged_in)
 {
@@ -49,7 +49,6 @@ if ($result)
         'title_br' => $title_br,
         'title_us' => $title_us,
         'director' => $director,
-        'cast' => $cast,
         'genres' => $genres,
         'release_year' => $release_year,
         'imdb' => $imdb,
@@ -57,8 +56,8 @@ if ($result)
         'last_user_id' => $user_id
     ];
 
-    $query = 'INSERT INTO movies (title_br, title_us, director, cast, genres, release_year, imdb, first_user_id, last_user_id)
-              VALUES (:title_br, :title_us, :director, :cast, :genres, :release_year, :imdb, :first_user_id, :last_user_id)';
+    $query = 'INSERT INTO movies (title_br, title_us, director, genres, release_year, imdb, first_user_id, last_user_id)
+              VALUES (:title_br, :title_us, :director, :genres, :release_year, :imdb, :first_user_id, :last_user_id)';
 
     $stmt = $pdo->prepare($query);
     $result = $stmt->execute($params);

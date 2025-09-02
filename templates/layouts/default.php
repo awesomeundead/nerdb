@@ -43,7 +43,9 @@ search.querySelector('select').addEventListener('change', e =>
     <section>
         <?= $this->section('content') ?>
     </section>
-    <footer class="flex_column hcenter vcenter">Projeto em desenvolvimento</footer>
+    <footer class="flex_column hcenter vcenter">
+        <a href="https://github.com/awesomeundead/projeto_abigo" target="_blank">Projeto em desenvolvimento</a>
+    </footer>
 </div>
 
 </body>

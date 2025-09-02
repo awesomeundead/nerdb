@@ -1,0 +1,107 @@
+<style>
+
+#store
+{
+    .item
+    {
+        background-color: #555;
+        border-radius: 5px;
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+        padding: 10px;
+
+        img
+        {
+            border-radius: 5px;
+            height: 256px;
+            width: 256px;
+        }
+
+        .buy
+        {
+            background-color: brown;
+            border-radius: 5px;
+            color: #FFF;
+            font-weight: bold;
+            padding: 5px;
+            text-align: center;
+
+            &:hover
+            {
+                background-color: crimson;
+            }
+        }
+
+        .price
+        {
+            text-align: right;   
+            
+            .current
+            {
+                font-size: 24px;
+            }
+
+            .discount
+            {
+                color: rgb(0, 255, 0);
+                font-size: 24px;
+            }
+
+            .original
+            {
+                font-size: 18px;
+                text-decoration: line-through;
+            }
+        }
+    }
+}
+
+</style>
+
+<div id="store">
+    <div class="flex_column">
+        <div class="item">
+            <div>Cartão Netflix pré-pago digital</div>
+            <div>
+                <img src="images/netflix_giftcard_70.png" />
+            </div>
+            <a class="buy" href="#">Comprar</a>
+            <div class="price">
+                <div class="original">R$ 70,00</div>
+                <div class="discount">R$ 60,00</div>
+                <div>À vista no PIX com 5% de desconto</div>
+                <div class="current">R$ 63,16</div>
+                <div>No cartão</div>
+            </div>
+        </div>
+        <div class="item">
+            <div>Cartão Netflix pré-pago digital</div>
+            <div>
+                <img src="images/netflix_giftcard_70.png" />
+            </div>
+            <a class="buy" href="#">Comprar</a>
+            <div class="price">
+                <div class="original">R$ 70,00</div>
+                <div class="discount">R$ 60,00</div>
+                <div>À vista no PIX com 5% de desconto</div>
+                <div class="current">R$ 63,16</div>
+                <div>No cartão</div>
+            </div>
+        </div>
+        <div class="item">
+            <div>Cartão Netflix pré-pago digital</div>
+            <div>
+                <img src="images/netflix_giftcard_70.png" />
+            </div>
+            <a class="buy" href="#">Comprar</a>
+            <div class="price">
+                <div class="original">R$ 70,00</div>
+                <div class="discount">R$ 60,00</div>
+                <div>À vista no PIX com 5% de desconto</div>
+                <div class="current">R$ 63,16</div>
+                <div>No cartão</div>
+            </div>
+        </div>
+    </div>
+</div>

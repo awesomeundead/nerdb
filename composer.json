@@ -1,4 +1,9 @@
 {
+    "autoload": {
+        "classmap": [
+            "src/Session.php"
+        ]
+    },
     "require": {
         "nikic/fast-route": "^1.3",
         "league/plates": "^3.6"

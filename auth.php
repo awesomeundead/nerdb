@@ -84,13 +84,11 @@ function create_auto_login($user_id)
 
 function create_session($data)
 {
-    require __DIR__ . '/session.php';
-
-    $_SESSION['logged_in'] = true;
-    $_SESSION['user_id'] = $data['id'];
-    $_SESSION['steamid'] = $data['steamid'];
-    $_SESSION['personaname'] = $data['personaname'];
-    $_SESSION['avatarhash'] = $data['avatarhash'];
+    Session::set('logged_in', true);
+    Session::set('user_id', $data['id']);
+    Session::set('steamid', $data['steamid']);
+    Session::set('personaname', $data['personaname']);
+    Session::set('avatarhash', $data['avatarhash']);
 }
 
 function get_steam_user($steamid64)

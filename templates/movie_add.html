@@ -2,7 +2,6 @@
     <input name="title_br" placeholder="Título em português" required="required" type="text" />
     <input name="title_us" placeholder="Título em inglês" required="required" type="text" />
     <input name="director" list="directors" placeholder="Diretor" required="required" type="text" />
-    <textarea name="cast" placeholder="Elenco" rows="4"></textarea>
     <input name="genres" placeholder="Gêneros" type="text" />
     <input name="release_year" placeholder="Ano de lançamento" required="required" type="number" />
     <input name="imdb" placeholder="Link IMDB" type="text" />
@@ -11,36 +10,10 @@
 
 <script>
 
+const url = new URL(`api/v1/movie`, document.baseURI);
 const form = document.querySelector('form.forms');
-const submit = form.querySelector('[type="submit"]');
 
-form.addEventListener('submit', e =>
-{
-    e.preventDefault();
-    submit.disabled = true;
-
-    sendJSON('post', 'api/v1/movie', Object.fromEntries(new FormData(form)))
-    .then(json =>
-    {
-        if (json.hasOwnProperty('status'))
-        {
-            notification(json.status, {success: 'Sucesso.', failure: 'Falha.'});
-
-            if (json.status == 'success')
-            {
-                form.reset();
-            }
-        }
-
-        submit.disabled = false;
-    })
-    .catch(error =>
-    {
-        submit.disabled = false;
-        console.error(error);
-    });
-});
-
+addForm(form);
 get_directors();
 
 </script>

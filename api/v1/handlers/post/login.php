@@ -2,7 +2,7 @@
 
 header('Content-Type: application/json; charset=utf-8');
 
-require ROOT_DIR . '/../../session.php';
+
 
 $content = trim(file_get_contents('php://input'));
 $dados = json_decode($content, true);

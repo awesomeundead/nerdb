@@ -2,9 +2,9 @@
 
 header('Content-Type: application/json; charset=utf-8');
 
-require ROOT_DIR . '/../../session.php';
 
-$logged_in = $_SESSION['logged_in'] ?? false;
+
+$logged_in = Session::get('logged_in');
 
 if(!$logged_in)
 {
@@ -52,7 +52,6 @@ if ($result)
         'title_br' => $title_br,
         'title_us' => $title_us,
         'director' => $director,
-        'cast' => $cast,
         'genres' => $genres,
         'release_year' => $release_year,
         'imdb' => $imdb,
@@ -63,7 +62,6 @@ if ($result)
             title_br = :title_br,
             title_us = :title_us,
             director = :director,
-            cast = :cast,
             genres = :genres,
             release_year = :release_year,
             imdb = :imdb,

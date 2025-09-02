@@ -2,9 +2,9 @@
 
 header('Content-Type: application/json; charset=utf-8');
 
-require ROOT_DIR . '/../../session.php';
 
-$logged_in = $_SESSION['logged_in'] ?? false;
+
+$logged_in = Session::get('logged_in');
 
 if(!$logged_in)
 {

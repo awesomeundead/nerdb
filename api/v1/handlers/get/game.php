@@ -3,9 +3,9 @@
 header('Content-Type: application/json; charset=utf-8');
 
 require ROOT_DIR . '/pdo.php';
-require ROOT_DIR . '/../../session.php';
 
-$logged_in = $_SESSION['logged_in'] ?? false;
+
+$logged_in = Session::get('logged_in');
 $game_id = $vars['id'];
 $params = ['id' => $game_id];
 $query = 'SELECT * FROM games WHERE id = :id';

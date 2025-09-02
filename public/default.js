@@ -14,18 +14,46 @@ function notification(status, message)
     }, 1000 * 3);
 }
 
-function get_directors()
+function requestJSON(url, method = 'get', body = null)
 {
-    fetch('directors.json')
-    .then(response => 
+    return new Promise((resolve, reject) =>
     {
-        if (!response.ok)
+        if (body instanceof Object)
         {
-            throw new Error(response.statusText);
+            body = JSON.stringify(body);
         }
 
-        return response.json();
+        const options =
+        {
+            body: body,
+            headers: { 'Content-Type': 'application/json; charset=utf-8' },
+            method: method
+        };
+
+        fetch(url, options)
+        .then(response =>
+        {
+            if (!response.ok)
+            {
+                throw new Error(response.statusText);
+            }
+
+            return response.json();
+        })
+        .then(json =>
+        {
+            resolve(json);
+        })
+        .catch(error =>
+        {
+            reject(error);
+        });
     })
+}
+
+function get_directors()
+{
+    requestJSON('directors.json')
     .then(json =>
     {
         const container = document.createElement('datalist');
@@ -48,87 +76,81 @@ function get_directors()
     });
 }
 
+function get_people()
+{
+    requestJSON('api/v1/people')
+    .then(json =>
+    {
+        const container = document.createElement('datalist');
+        container.setAttribute('id', 'people');
+
+        json.people.forEach(item =>
+        {
+            option = document.createElement('option');
+            option.dataset.id = item.id;
+            option.value = item.name;
+
+            container.appendChild(option);
+        });
+
+        document.body.appendChild(container);
+
+    })
+    .catch(error =>
+    {
+        console.error('Erro ao carregar:', error);
+    });
+}
+
 function getJSON()
 {
-    fetch(url)
-    .then(response =>
-    {
-        if (!response.ok)
-        {
-            throw new Error(response.statusText);
-        }
-
-        return response.json();
-    })
+    requestJSON(url)
     .then(json =>
     {
         render(json)
     })
     .catch(error =>
     {
-        console.error(error);
+        console.error('Erro ao carregar:', error);
     });
 }
 
-function sendJSON(method, url, body)
+function sendForm(form, method)
 {
-    return new Promise((resolve, reject) =>
+    const submit = form.querySelector('[type="submit"]');
+    
+    form.addEventListener('submit', e =>
     {
-        const options =
-        {
-            body: JSON.stringify(body),
-            headers:
-            {
-                'Content-Type': 'application/json'
-            },
-            method: method
-        };
+        e.preventDefault();
+        submit.disabled = true;
 
-        fetch(url, options)
-        .then(response =>
-        {
-            if (!response.ok)
-            {
-                throw new Error(response.statusText);
-            }
-
-            return response.json();
-        })
+        let body = Object.fromEntries(new FormData(form));
+        
+        requestJSON(url, method, body)
         .then(json =>
         {
-            resolve(json);
+            if (json.hasOwnProperty('status'))
+            {
+                notification(json.status, {success: 'Sucesso.', failure: 'Falha.'});
+
+                if (method == 'post' && json.status == 'success')
+                {
+                    form.reset();
+                }
+            }
+
+            submit.disabled = false;
         })
         .catch(error =>
         {
-            reject(error);
+            submit.disabled = false;
+            console.error('Erro ao carregar:', error);
         });
     });
 }
 
-function requestJSON(url)
-{
-    return new Promise((resolve, reject) =>
-    {
-        fetch(url)
-        .then(response =>
-        {
-            if (!response.ok)
-            {
-                throw new Error(response.statusText);
-            }
-
-            return response.json();
-        })
-        .then(json =>
-        {
-            resolve(json);
-        })
-        .catch(error =>
-        {
-            reject(error);
-        });
-    })
-}
+const addForm = (form) => sendForm(form, 'post');
+const updateForm = (form) => sendForm(form, 'put');
 
 const relativePath = window.location.href.substring(document.baseURI.length);
 const routeSegments = relativePath ? relativePath.split('/') : [];

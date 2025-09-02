@@ -9,34 +9,9 @@
 
 <script>
 
+const url = new URL(`api/v1/game`, document.baseURI);
 const form = document.querySelector('form.forms');
-const submit = form.querySelector('[type="submit"]');
 
-form.addEventListener('submit', e =>
-{
-    e.preventDefault();
-    submit.disabled = true;
-
-    sendJSON('post', 'api/v1/game', Object.fromEntries(new FormData(form)))
-    .then(json =>
-    {
-        if (json.hasOwnProperty('status'))
-        {
-            notification(json.status, {success: 'Sucesso.', failure: 'Falha.'});
-
-            if (json.status == 'success')
-            {
-                form.reset();
-            }
-        }
-
-        submit.disabled = false;
-    })
-    .catch(error =>
-    {
-        submit.disabled = false;
-        console.error(error);
-    });
-});
+addForm(form);
 
 </script>
