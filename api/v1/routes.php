@@ -4,11 +4,14 @@ use FastRoute\RouteCollector;
 
 return function(RouteCollector $route)
 {
+    $route->get('/friendship/{id:\d+}', 'handlers/get/friendship.php'); // (Query String) steamid={selector}
+
     $route->get('/game/{id:\d+}', 'handlers/get/game.php');
     $route->post('/game', 'handlers/post/game.php');
     $route->put('/game/{id:\d+}', 'handlers/put/game.php');
     
     $route->get('/games', 'handlers/get/games.php');
+    $route->get('/games/best-rated', 'handlers/get/games_best_rated.php');
 
     $route->get('/login', 'handlers/get/login.php'); // (Query String) selector={selector}
     $route->post('/login', 'handlers/post/login.php');    
@@ -28,6 +31,7 @@ return function(RouteCollector $route)
      * url: /movies?limit=20&offset=100&order=random
      */
     $route->get('/movies', 'handlers/get/movies.php');
+    $route->get('/movies/best-rated', 'handlers/get/movies_best_rated.php');
     $route->get('/movies/count', 'handlers/get/movies_count.php');
 
     $route->get('/people', 'handlers/get/people.php');

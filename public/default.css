@@ -171,172 +171,287 @@
     }
 }
 
-#movies, #movie, #friends, .pagination, #achievements
+#movies, #movie, #game, #games, #friends, .pagination, #achievements, #userlist
 {
     margin: auto;
     padding: var(--padding-side);
     width: var(--layout-width);
 }
 
-#movie
+#game, #movie
 {
-    .title, .title_br
+    .grid
     {
-        font-size: 18px;
+        display: grid;
+        grid-template-columns: 1fr;
+
+        .title, .title_br
+        {
+            font-size: 18px;
+            margin: 5px 0;
+        }
+
+        .listing
+        {
+            background-color: #444;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            padding: 10px;
+        }
+
+        .services .container
+        {
+            display: flex;
+            gap: 5px;
+
+            a
+            {
+                display: flex;
+
+                img
+                {
+                    height: 42px;
+                    width: 42px;
+                }
+            }
+        }
     }
 
-    .cast_container
+    .label
     {
-        background-color: #333;
-        padding: 5px;
+        font-weight: bold;
+    }
 
-        .actor
+    .cast
+    {
+        margin: 10px 0;
+
+        .container
         {
-            width: 96px;
+            background-color: #333;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            padding: 10px;
 
-            .image img
+            .actor
             {
+                width: 96px;
+
+                .image img
+                {
+                    border-radius: 5px;
+
+                    &:hover
+                    {
+                        box-shadow: 0 0 5px 2px #FFF;
+                        filter: brightness(115%);
+                        filter: contrast(115%);
+                    }
+                }
+
+                .character
+                {
+                    color: #999;
+                }
+            }
+        }
+    }
+
+    .friends
+    {
+        margin: 10px 0;
+
+        .container
+        {
+            background-color: #234;
+            padding: 10px;
+
+            .image
+            {
+                img
+                {
+                    border-radius: 5px;
+                    height: 128px;
+                    width: 128px;
+                }
+            }
+
+            .icon
+            {
+                align-items: center;
+                background-color: #EB0;
                 border-radius: 5px;
-            }
+                display: flex;
+                gap: 5px;
+                padding: 5px;
+                text-align: center;
 
-            .character
-            {
-                color: #999;
+                &.friend
+                {
+                    background-color: #CCC;
+                }
+
+                img
+                {
+                    height: 16px;
+                    width: 16px;
+                }
             }
+        }
+
+        .icon_rating
+        {
+            background-color: #EB0;
+            border-radius: 5px;
+            color: #000;
+            font-weight: bold;
+            height: 26px;
+            padding: 5px;
+            text-align: center;
+            width: 26px;
+
+            &.friend
+            {
+                background-color: #CCC;
+            }
+        }
+
+        .disable
+        {
+            opacity: 0.1;
+            pointer-events: none;
         }
     }
 }
 
-#movies
+#games, #movies
 {
-    &.grid
+    .container
     {
         display: grid;
         gap: 5px;
         padding: 0 var(--padding-side);
-    }
 
-    .image
-    {
-        background-color: #000;
-        display: flex;
-        height: 128px;
-        justify-content: center;
-        width: 96px;
-
-        img
+        .image
         {
+            background-color: #000;
+            display: flex;
             height: 128px;
+            justify-content: center;
+            width: 96px;
+
+            img
+            {
+                height: 128px;
+            }
         }
-    }
 
-    .info
-    {
-        background-color: #333;
-        flex: 1;
-        padding: 5px;
-    }
+        .info
+        {
+            background-color: #333;
+            flex: 1;
+            padding: 5px;
+        }
 
-    .director
-    {
-        display: flex;
-        flex-direction: column;
-        gap: 5px;
+        .director
+        {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
     }
 }
 
 #userlist
 {
-    margin: auto;
-    width: var(--layout-width);
+    .filter
+    {
+        margin: auto;
+        padding: 5px 0;
+        width: var(--layout-width);
 
-    .grid
+        div
+        {
+            background-color: #333;
+            padding: 5px;
+        }
+    }
+
+    .container
     {
         display: grid;
         grid-template-columns: repeat(var(--columns), 1fr);
         gap: 10px;
-        padding: 0 var(--padding-side);
-    }
 
-    .title
-    {
-        font-size: var(--min-font-size);
-    }
-
-    .image
-    {
-        background-color: #000;
-        display: flex;
-    }
-
-    .image a
-    {
-        display: flex;
-        justify-content: center;
-        width: 120px;
-
-        img
+        .title
         {
-            height: 160px;
-        }
-    }
-
-    .icon
-    {
-        align-items: center;
-        background-color: #EB0;
-        border-radius: 5px;
-        display: flex;
-        gap: 5px;
-        padding: 5px;
-        text-align: center;
-
-        &.friend
-        {
-            background-color: #CCC;
+            font-size: var(--min-font-size);
         }
 
-        img
+        .image
         {
-            height: 16px;
-            width: 16px;
+            background-color: #000;
+            display: flex;
         }
-    }
 
-    .icon_rating
-    {
-        background-color: #EB0;
-        border-radius: 5px;
-        color: #000;
-        font-weight: bold;
-        height: 26px;
-        padding: 5px;
-        text-align: center;
-        width: 26px;
-
-        &.friend
+        .image a
         {
-            background-color: #CCC;
+            display: flex;
+            justify-content: center;
+            width: 120px;
+
+            img
+            {
+                height: 160px;
+            }
         }
-    }
 
-    .disable
-    {
-        opacity: 0.1;
-        pointer-events: none;
-    }
-}
+        .icon
+        {
+            align-items: center;
+            background-color: #EB0;
+            border-radius: 5px;
+            display: flex;
+            gap: 5px;
+            padding: 5px;
+            text-align: center;
 
-#userlist_checkbox
-{
-    margin: auto;
-    padding: 5px 0;
-    width: var(--layout-width);
+            &.friend
+            {
+                background-color: #CCC;
+            }
 
-    div
-    {
-        background-color: #333;
-        padding: 5px;
+            img
+            {
+                height: 16px;
+                width: 16px;
+            }
+        }
+
+        .icon_rating
+        {
+            background-color: #EB0;
+            border-radius: 5px;
+            color: #000;
+            font-weight: bold;
+            height: 26px;
+            padding: 5px;
+            text-align: center;
+            width: 26px;
+
+            &.friend
+            {
+                background-color: #CCC;
+            }
+        }
+
+        .disable
+        {
+            opacity: 0.1;
+            pointer-events: none;
+        }
     }
 }
 
@@ -409,7 +524,41 @@
     }
 }
 
-@media (min-width: 1600px)
+#best-rated
+{
+    margin: auto;
+    padding: var(--padding-side);
+    width: min-content;
+
+    .container
+    {
+        display: grid;
+        gap: 10px;
+        grid-template-columns: repeat(2, 192px);
+
+        .item
+        {
+            width: 192px;
+
+            .image
+            {
+                img:hover
+                {
+                    box-shadow: 0 0 8px 2px #FFF;
+                    filter: brightness(115%);
+                    filter: contrast(115%);
+                }
+            }
+
+            .title
+            {
+                font-size: 12px;
+            }
+        }
+    }
+}
+
+@media (min-width: 1280px)
 {
     .user_panel
     {
@@ -424,8 +573,41 @@
         }
     }
 
-    #movies.grid
+    #best-rated
     {
-        grid-template-columns: repeat(2, 1fr);
+        .container
+        {
+            grid-template-columns: repeat(6, 192px);
+        }
+    }
+
+    #game, #movie
+    {
+        .grid
+        {
+            gap: 10px;
+            grid-template-columns: 384px auto;
+        }
+    }
+
+    #games, #movies
+    {
+        .container
+        {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    #userlist
+    {
+        .container
+        {
+            grid-template-columns: repeat(8, 1fr);
+        }
+
+        .container.compare
+        {
+            grid-template-columns: repeat(6, 1fr);
+        }
     }
 }

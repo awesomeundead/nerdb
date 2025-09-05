@@ -16,29 +16,15 @@
         <?php $this->insert('components/user_panel.php') ?>
         <?php $this->insert('components/nav.html') ?>
         <div>
-            <form action="movies" id="search">
+            <form id="search">
                 <select>
-                    <option data-placeholder="Pesquisar por título, diretor ou ano de lançamento" selected="selected" value="movies">Filmes</option>
-                    <option data-placeholder="Pesquisar por título, desenvolvedor ou ano de lançamento" value="games">Jogos</option>
+                    <option selected="selected" value="movies">Filmes</option>
+                    <option value="games">Jogos</option>
                 </select>
-                <input name="q" placeholder="Pesquisar por título, diretor ou ano de lançamento" required="required" type="search" />
+                <input name="q" required="required" type="search" />
                 <button type="submit">Pesquisar</button>
             </form>
         </div>
-<script>
-
-const search = document.querySelector('#search');
-
-search.querySelector('select').addEventListener('change', e =>
-{
-    const select = e.target;
-
-    search.action = select.value;
-    search.querySelector('[type="search"]').placeholder = select.querySelector(`[value="${select.value}"]`).dataset.placeholder;
-});
-    
-</script>
-
     </header>
     <section>
         <?= $this->section('content') ?>
@@ -47,6 +33,40 @@ search.querySelector('select').addEventListener('change', e =>
         <a href="https://github.com/awesomeundead/projeto_abigo" target="_blank">Projeto em desenvolvimento</a>
     </footer>
 </div>
+
+<script>
+
+function main_search()
+{
+    const search = document.querySelector('#search');
+    const input = search.querySelector('input');
+    const select = search.querySelector('select');
+    const placeholder =
+    {
+        'games': 'Pesquisar por título, desenvolvedor ou ano de lançamento',
+        'movies': 'Pesquisar por título, diretor ou ano de lançamento'
+    };
+    const update = () =>
+    {
+        search.action = `${select.value}/search`;
+        input.placeholder = placeholder[select.value];
+    };
+    
+    select.addEventListener('change', update);
+    
+    const pattern = /^game[s]?$/
+
+    if (pattern.test(routeSegments[0]))
+    {
+        select.value = 'games';
+    }
+
+    update();
+}
+
+main_search();
+    
+</script>
 
 </body>
 </html>

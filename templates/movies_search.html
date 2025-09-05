@@ -1,4 +1,6 @@
-<div class="grid" id="movies"></div>
+<div id="movies">
+    <div class="container"></div>
+</div>
 <template>
     <div class="item flex_column">
         <div class="image">
@@ -7,17 +9,12 @@
             </a>
         </div>
         <div class="info flex_row">
-            <div class="flex_column">
-                <div class="ranking"></div>
+            <div>
                 <div class="title title_br"></div>
             </div>
             <div class="flex_column">
                 <div class="label">Título em inglês:</div>
                 <div class="title_us"></div>
-            </div>
-            <div class="flex_column">
-                <div class="label">Ano de lançamento:</div>
-                <div class="release_year"></div>
             </div>
             <div class="flex_column">
                 <div class="label">Diretor:</div>
@@ -32,15 +29,17 @@
 
 <script>
 
-const container = document.querySelector('#movies');
+const query = new URLSearchParams(window.location.search);
+const container = document.querySelector('#movies .container');
 const template = document.querySelector('template');
-const url = new URL('api/v1/top-movies', document.baseURI);
+const url = new URL('api/v1/movies', document.baseURI);
+const searchParams = url.searchParams;
 
 const render = function({ movies })
 {
     container.innerHTML = '';
 
-    movies.forEach((item, index) =>
+    movies.forEach(item =>
     {
         const clone = template.content.cloneNode(true);
         const directors = item.director.split(';');
@@ -55,16 +54,68 @@ const render = function({ movies })
 
         clone.querySelector('a').href = `movie/${item.id}`;
         clone.querySelector('img').src = item.media?.trim() ? `images/256/${item.media}.webp` : 'noimage.png';
-        clone.querySelector('.ranking').textContent =  `#${++index}`;
-        clone.querySelector('.title_br').textContent =  item.title_br;
+        clone.querySelector('.title_br').textContent =  `${item.title_br} (${item.release_year})`;
         clone.querySelector('.title_us').textContent =  item.title_us;
-        clone.querySelector('.release_year').textContent =  item.release_year;
         clone.querySelector('.imdb a').href =  `https://www.imdb.com/pt/title/${item.imdb}/`;
 
         container.appendChild(clone);
     });
 }
 
-getJSON();
+search.addEventListener('submit', e =>
+{
+    if (search.action == 'movies')
+    {
+        e.preventDefault();
+
+        const url = new URL(window.location);
+        url.searchParams.set('q', search.q.value);
+        window.history.replaceState({}, '', url);
+
+        document.title = search_movie(search.q.value);
+        getJSON();
+    }
+});
+
+if (query.has('q'))
+{
+    search.q.value = query.get('q');
+    document.title = search_movie(query.get('q'));
+    getJSON();
+}
+else
+{
+    searchParams.set('order', 'random');
+    getJSON();
+
+    document.title = 'Filmes aleatórios';
+}
+
+function search_movie(value)
+{
+    const filters =
+    {
+        'ator': 'actor',
+        'diretor': 'director',
+        'genero': 'genre'
+    };
+
+    const match = value.match(/^(\w+):(.+)/);
+    
+    if (match && filters[match[1]])
+    {
+        searchParams.set(filters[match[1]], match[2]);
+        return match[2];
+    }
+
+    if (/^\d{4}$/.test(value))
+    {
+        searchParams.set('release', value);
+        return value;
+    }
+
+    searchParams.set('search', value);
+    return value;
+}
 
 </script>

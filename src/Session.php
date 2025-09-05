@@ -56,7 +56,8 @@ class Session
 
         if ($_SESSION['user_agent'] != $user_agent || $_SESSION['address'] != $address)
         {
-            self::destroy();
+            $_SESSION = [];
+            session_destroy();
             
             throw new RuntimeException('Sessão potencialmente sequestrada.');
         }

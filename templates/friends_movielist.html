@@ -1,23 +1,23 @@
-<div class="flex_row" id="userlist_checkbox">
-    <div class="flex_column vcenter">
-        <input data-filter="watchlist" id="watchlist_checkbox" type="checkbox" />
-        <label for="watchlist_checkbox">Filmes que seu amigo quer assistir</label>
-    </div>        
-    <div class="flex_column vcenter">
-        <input data-filter="watched" id="watched_checkbox" type="checkbox" />
-        <label for="watched_checkbox">Filmes que seu amigo assistiu</label>
-    </div>
-    <div class="flex_column vcenter">
-        <input data-filter="liked" id="liked_checkbox" type="checkbox" />
-        <label for="liked_checkbox">Filmes que seu amigo gostou</label>
-    </div>
-    <div class="flex_column vcenter">
-        <input data-filter="rating" id="rating_checkbox" type="checkbox" />
-        <label for="rating_checkbox">Filmes que seu amigo melhor avaliou</label>
-    </div>
-</div>
 <div id="userlist">
-    <div class="grid"></div>
+    <div class="filter flex_row">
+        <div class="flex_column vcenter">
+            <input data-filter="watchlist" id="watchlist_checkbox" type="checkbox" />
+            <label for="watchlist_checkbox">Filmes que seu amigo quer assistir</label>
+        </div>        
+        <div class="flex_column vcenter">
+            <input data-filter="watched" id="watched_checkbox" type="checkbox" />
+            <label for="watched_checkbox">Filmes que seu amigo assistiu</label>
+        </div>
+        <div class="flex_column vcenter">
+            <input data-filter="liked" id="liked_checkbox" type="checkbox" />
+            <label for="liked_checkbox">Filmes que seu amigo gostou</label>
+        </div>
+        <div class="flex_column vcenter">
+            <input data-filter="rating" id="rating_checkbox" type="checkbox" />
+            <label for="rating_checkbox">Filmes que seu amigo melhor avaliou</label>
+        </div>
+    </div>
+    <div class="container compare"></div>
 </div>
 <template>
     <div class="item flex_row">
@@ -73,7 +73,7 @@
 <script>
 
 const friend_id = routeSegments[2];
-const container = document.querySelector('#userlist .grid');
+const container = document.querySelector('#userlist .container');
 const template = document.querySelector('template');
 const url = new URL(`api/v1/userlist/movies/${friend_id}`, document.baseURI);
 const searchParams = url.searchParams;

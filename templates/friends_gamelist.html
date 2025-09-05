@@ -1,23 +1,23 @@
-<div class="flex_row" id="userlist_checkbox">
-    <div class="flex_column vcenter">
-        <input data-filter="playlist" id="playlist_checkbox" type="checkbox" />
-        <label for="playlist_checkbox">Quer jogar</label>
-    </div>        
-    <div class="flex_column vcenter">
-        <input data-filter="played" id="played_checkbox" type="checkbox" />
-        <label for="played_checkbox">Jogou</label>
-    </div>
-    <div class="flex_column vcenter">
-        <input data-filter="liked" id="liked_checkbox" type="checkbox" />
-        <label for="liked_checkbox">Gostou</label>
-    </div>
-    <div class="flex_column vcenter">
-        <input data-filter="rating" id="rating_checkbox" type="checkbox" />
-        <label for="rating_checkbox">Melhor avaliou</label>
-    </div>
-</div>
 <div id="userlist">
-    <div class="grid"></div>
+    <div class="filter flex_row">
+        <div class="flex_column vcenter">
+            <input data-filter="playlist" id="playlist_checkbox" type="checkbox" />
+            <label for="playlist_checkbox">Quer jogar</label>
+        </div>        
+        <div class="flex_column vcenter">
+            <input data-filter="played" id="played_checkbox" type="checkbox" />
+            <label for="played_checkbox">Jogou</label>
+        </div>
+        <div class="flex_column vcenter">
+            <input data-filter="liked" id="liked_checkbox" type="checkbox" />
+            <label for="liked_checkbox">Gostou</label>
+        </div>
+        <div class="flex_column vcenter">
+            <input data-filter="rating" id="rating_checkbox" type="checkbox" />
+            <label for="rating_checkbox">Melhor avaliou</label>
+        </div>
+    </div>
+    <div class="container compare"></div>
 </div>
 <template>
     <div class="item flex_row">
@@ -73,7 +73,7 @@
 <script>
 
 const friend_id = routeSegments[2];
-const container = document.querySelector('#userlist .grid');
+const container = document.querySelector('#userlist .container');
 const template = document.querySelector('template');
 const url = new URL(`api/v1/userlist/games/${friend_id}`, document.baseURI);
 const searchParams = url.searchParams;

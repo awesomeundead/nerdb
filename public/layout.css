@@ -14,14 +14,14 @@
     --padding-side: 5px;
 }
 
-@media (min-width: 1600px)
+@media (min-width: 1280px)
 {
     :root
     {
         --body-font-size: 14px;
         --columns: 8;
         --form-width: 400px;
-        --layout-width: 1600px;
+        --layout-width: 1280px;
         --min-font-size: 12px;
         --padding-side: 0;
     }

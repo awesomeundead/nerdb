@@ -134,7 +134,7 @@ return function(RouteCollector $route)
     $route->get('/games', function()
     {
         $template = templates()->make('games.html');
-        $template->layout('layouts/default.php', ['title' => 'Jogos']);
+        $template->layout('layouts/default.php', ['title' => 'Melhores jogos avaliados por usuários do site']);
 
         echo $template->render();
     });
@@ -202,7 +202,7 @@ return function(RouteCollector $route)
     $route->get('/movies', function()
     {
         $template = templates()->make('movies.html');
-        $template->layout('layouts/default.php');
+        $template->layout('layouts/default.php', ['title' => 'Melhores filmes avaliados por usuários do site']);
 
         echo $template->render();
     });
@@ -217,7 +217,7 @@ return function(RouteCollector $route)
 
     $route->get('/mygamelist', authMiddleware(function()
     {
-        $template = templates()->make('mylist_games.html');
+        $template = templates()->make('mygamelist.html');
         $template->layout('layouts/default.php', ['title' => 'Minha lista de filmes']);
 
         echo $template->render();
@@ -225,11 +225,27 @@ return function(RouteCollector $route)
 
     $route->get('/mymovielist', authMiddleware(function()
     {
-        $template = templates()->make('mylist_movies.html');
+        $template = templates()->make('mymovielist.html');
         $template->layout('layouts/default.php', ['title' => 'Minha lista de filmes']);
 
         echo $template->render();
-    }));
+    }));    
+
+    $route->get('/games/search', function()
+    {
+        $template = templates()->make('games_search.html');
+        $template->layout('layouts/default.php', ['title' => 'Jogos']);
+
+        echo $template->render();
+    });
+
+    $route->get('/movies/search', function()
+    {
+        $template = templates()->make('movies_search.html');
+        $template->layout('layouts/default.php', ['title' => 'Filmes']);
+
+        echo $template->render();
+    });
 
     $route->get('/store', function()
     {

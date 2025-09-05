@@ -21,9 +21,14 @@
     </div>
     <a class="logout" href="logout">Sair</a>
     <?php else: ?>
-    <a class="steam_disconnected" href="auth?login" title="Entrar com a Steam">
+    <a class="steam_disconnected" href="auth?redirect=movie/1" title="Entrar com a Steam">
         <span>Entrar com a</span>
         <img alt="Link para se conectar via Steam" src="logo_steam.svg" />
     </a>
+    <script>
+
+    document.querySelector('.steam_disconnected').href = `auth?redirect=${relativePath}`;
+
+    </script>
     <?php endif ?>
 </div>

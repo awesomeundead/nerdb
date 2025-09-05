@@ -1,26 +1,31 @@
-<div id="movie">
-    <div class="flex_column wrap">
-        <div class="image">
+<div id="game">
+    <div class="grid">
+        <div class="image flex">
             <img alt="" height="512" src="" />
         </div>
         <div class="flex_row">
             <div>
-                <div class="title"></div>
+                <h1 class="title"></h1>
             </div>
-            <div class="flex_column">
-                <div>Gêneros:</div>
+            <div class="listing">
+                <div>Gêneros</div>
                 <div class="genres flex_column"></div>
             </div>
-            <div class="flex_column">
-                <div>Lançamento:</div>
+            <div class="listing">
+                <div>Lançamento</div>
                 <div class="release_year"></div>
             </div>
-            <div class="steam">
-                <a target="_blank">Steam</a>
-            </div>
-            <div class="flex_column">
-                <div>Desenvolvedor:</div>
+            <div class="listing">
+                <div>Desenvolvedor</div>
                 <div class="developer flex_row"></div>
+            </div>
+            <div class="listing services">
+                <div>Serviços</div>
+                <div class="container">
+                    <a class="steam" target="_blank">
+                        <img src="icon_steam_logo.png" />
+                    </a>
+                </div>
             </div>
             <?php if ($session->logged_in ?? false): ?>
             <div class="toggle flex_column">
@@ -62,7 +67,7 @@ const render = function(game)
     developers.forEach(developer =>
     {
         const element = document.createElement('a');
-       // element.href = `games?q=desenvolvedor:${developer}`;
+        element.href = `games/search?q=desenvolvedor:${developer}`;
         element.textContent = developer;
         document.querySelector('.developer').appendChild(element);
     });
@@ -72,7 +77,7 @@ const render = function(game)
     genres.forEach(genre =>
     {
         const element = document.createElement('a');
-        //element.href = `games?q=genero:${genre}`;
+        element.href = `games/search?q=genero:${genre}`;
         element.textContent = genre;
         document.querySelector('.genres').appendChild(element);
     });
@@ -81,7 +86,7 @@ const render = function(game)
     document.querySelector('.image img').src = game.media?.trim() ? `images/games/512/${game.media}.webp` : 'noimage.png';
     document.querySelector('.title').textContent =  game.title;
     document.querySelector('.release_year').textContent =  game.release_year;
-    document.querySelector('.steam a').href =  `https://steampowered.com./app/${game.steam}/`;
+    document.querySelector('.steam').href =  `https://steampowered.com./app/${game.steam}/`;
     document.querySelector('.update a').href =  `game/update/${game.id}`;
 
     if (!game.steam)

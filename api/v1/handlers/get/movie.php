@@ -4,7 +4,6 @@ header('Content-Type: application/json; charset=utf-8');
 
 require ROOT_DIR . '/pdo.php';
 
-
 $logged_in = Session::get('logged_in');
 $id = $vars['id'];
 $params = ['id' => $id];
@@ -37,10 +36,43 @@ if($result)
     $stmt->execute($params);
     $result['cast'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
     
-    $query = 'SELECT platform_name, platform_link FROM movie_platforms WHERE movie_id = :id';
+    $query = 'SELECT platform_name, platform_id FROM movie_platforms WHERE movie_id = :id';
     $stmt = $pdo->prepare($query);
     $stmt->execute($params);
     $result['platforms'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    $result['friends'] = [];
+
+    if($logged_in)
+    {
+        $query = 'SELECT IF(user_id1 = :user_id, user_id2, user_id1) AS id
+                  FROM friendship WHERE :user_id IN (user_id1, user_id2)';
+        $stmt = $pdo->prepare($query);
+        $stmt->execute(['user_id' => $user_id]);
+        $list = $stmt->fetchAll(PDO::FETCH_COLUMN);
+        
+        if (!empty($list))
+        {
+            $params = ['movie_id' => $id];
+        
+            foreach ($list as $index => $item)
+            {
+                $key = ":placeholder_{$index}";
+                $keys[] = $key;
+                $params[$key] = $item;
+            }
+
+            $placeholders = implode(', ', $keys);
+
+            $query = "SELECT personaname, avatarhash, user_movie_list.*
+                    FROM user_movie_list
+                    LEFT JOIN users ON users.id = user_movie_list.user_id
+                    WHERE user_movie_list.movie_id = :movie_id AND users.id IN ({$placeholders})";
+            $stmt = $pdo->prepare($query);
+            $stmt->execute($params);
+            $result['friends'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        }
+    }
 }
 
 echo json_encode($result, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);

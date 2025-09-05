@@ -36,6 +36,7 @@ function auto_login()
                 * atualiza usuário
                 */
                 $response = update_user($player);
+                friendship($data['id'], $steamid64);
 
                 if (isset($_GET['redirect']))
                 {
@@ -89,6 +90,11 @@ function create_session($data)
     Session::set('steamid', $data['steamid']);
     Session::set('personaname', $data['personaname']);
     Session::set('avatarhash', $data['avatarhash']);
+}
+
+function friendship($user_id, $steamid64)
+{
+    file_get_contents(HOST . BASE_PATH . "/api/v1/friendship/{$user_id}?steamid={$steamid64}");
 }
 
 function get_steam_user($steamid64)
@@ -166,22 +172,6 @@ if (isset($_COOKIE['login']))
 {
     auto_login();
 }
-elseif (isset($_GET['login']))
-{
-    $login_url_params = [
-        'openid.ns'         => 'http://specs.openid.net/auth/2.0',
-        'openid.mode'       => 'checkid_setup',
-        'openid.return_to'  => HOST . BASE_PATH . '/auth',
-        'openid.realm'      => HOST . BASE_PATH,
-        'openid.identity'   => 'http://specs.openid.net/auth/2.0/identifier_select',
-        'openid.claimed_id' => 'http://specs.openid.net/auth/2.0/identifier_select',
-    ];
-
-    $steam_login_url = 'https://steamcommunity.com/openid/login' . '?' . http_build_query($login_url_params, '', '&');
-
-    header("location: {$steam_login_url}");
-    exit;
-}
 elseif (isset($_GET['openid_signed']))
 {
     $params = [
@@ -244,9 +234,31 @@ elseif (isset($_GET['openid_signed']))
 
         create_session($data);
         create_auto_login($data['id']);
+        friendship($data['id'], $steamid64);
 
-        redirect('/mylist/movies?login=success');
+        if (isset($_GET['redirect']))
+        {
+            redirect($_GET['redirect']);
+        }
+
+        redirect('/');
     }
+}
+else
+{
+    $login_url_params = [
+        'openid.ns'         => 'http://specs.openid.net/auth/2.0',
+        'openid.mode'       => 'checkid_setup',
+        'openid.return_to'  => HOST . BASE_PATH . '/auth?redirect=' . $_GET['redirect'],
+        'openid.realm'      => HOST . BASE_PATH,
+        'openid.identity'   => 'http://specs.openid.net/auth/2.0/identifier_select',
+        'openid.claimed_id' => 'http://specs.openid.net/auth/2.0/identifier_select',
+    ];
+
+    $steam_login_url = 'https://steamcommunity.com/openid/login' . '?' . http_build_query($login_url_params, '', '&');
+
+    header("location: {$steam_login_url}");
+    exit;
 }
 
 redirect('/login?login=failure');
