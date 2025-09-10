@@ -28,7 +28,7 @@ const render = function({ movies })
     {
         const clone = template.content.cloneNode(true);
 
-        clone.querySelector('a').href = `movie/${item.id}`;
+        clone.querySelector('a').href = `movie/${item.id}/${item.title_br}`;
         clone.querySelector('img').alt = `Cartaz do filme ${item.title_br}`;
         clone.querySelector('img').src = `images/512/${item.media}.webp`;
 

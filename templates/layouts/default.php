@@ -6,7 +6,7 @@
 <?php foreach ($open_graph as $property => $content): ?>
 <meta content="<?= $this->e($content) ?>"property="og:<?= $property ?>" />
 <?php endforeach ?>
-<title><?= $title ? "{$title} | NERDB" : 'NERDB' ?></title>
+<title><?= empty($title) ? 'NERDB' : "{$title} | NERDB" ?></title>
 <base href="<?= $this->base('/') ?>" />
 <link href="<?= $this->asset('layout.css') ?>" rel="stylesheet" />
 <link href="<?= $this->asset('default.css') ?>" rel="stylesheet" />

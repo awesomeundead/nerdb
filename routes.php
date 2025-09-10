@@ -64,8 +64,8 @@ return function(RouteCollector $route)
 {
     $route->get('/', function()
     {
-        $template = templates()->make('index.php');
-        $template->layout('layouts/default.php', ['title' => '']);
+        $template = templates()->make('index.html');
+        $template->layout('layouts/default.php');
 
         echo $template->render();
     });
