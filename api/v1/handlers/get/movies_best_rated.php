@@ -2,11 +2,11 @@
 
 header('Content-Type: application/json; charset=utf-8');
 
-require ROOT_DIR . '/pdo.php';
+$pdo = Database::connect();
 
 $query = 'SELECT movies.*, SUM(rating) as rating FROM user_movie_list
           INNER JOIN movies ON movies.id = user_movie_list.movie_id
-          WHERE rating >= 1 GROUP BY movie_id ORDER BY rating DESC LIMIT 42';
+          WHERE rating >= 1 GROUP BY movie_id ORDER BY rating DESC LIMIT 60';
 
 $stmt = $pdo->prepare($query);
 $stmt->execute();

@@ -11,7 +11,7 @@
     --form-width: 100%;
     --layout-width: 100%;
     --min-font-size: 16px;
-    --padding-side: 5px;
+    --padding-side: 10px;
 }
 
 @media (min-width: 1280px)
@@ -40,6 +40,11 @@ body, button, input, label, select, textarea
     font-size: var(--body-font-size);
 }
 
+h1
+{
+    margin: 5px 0;
+}
+
 a
 {
     color: #FFF;
@@ -56,76 +61,6 @@ button, input, select
 {
     border: 1px solid #CCC;
     padding: 10px 5px;
-}
-
-button.icon
-{
-    align-items: center;
-    background: #999 no-repeat center/32px;
-    border: none;
-    border-radius: 5px;
-    height: 42px;
-    width: 42px;
-
-    &.selected
-    {
-        background: #DDD no-repeat center/32px;
-    }
-
-    &.like
-    {
-        background-image: url('like_empty.png');
-
-        &.selected
-        {
-            background-image: url('like_full.png');
-        }
-    }
-
-    &.watched
-    {
-        background-image: url('watched_empty.png');
-
-        &.selected
-        {
-            background-image: url('watched_full.png');
-        }
-    }
-
-    &.watchlist
-    {
-        background-image: url('saved_empty.png');
-
-        &.selected
-        {
-            background-image: url('saved_full.png');
-        }
-    }
-
-    &:hover
-    {
-        background-color: #486077;
-    }
-}
-
-button.star
-{
-    align-items: center;
-    background: #999 no-repeat center/28px url('star_empty.png');
-    border: none;
-    border-radius: 5px;
-    height: 32px;
-    width: 32px;
-
-    &.starred
-    {
-        background: #DDD no-repeat center/28px url('star_full.png');
-    }
-
-    &:hover
-    {
-        background-color: #486077;
-    }
 }
 
 input[type="checkbox"]
@@ -242,29 +177,194 @@ label
     min-height: 100svh;
 }
 
-nav.main
+header.main
+{
+    padding: 0 var(--padding-side);
+
+    nav.main
+    {
+        align-items: center;
+        display: flex;
+        gap: 5px;
+
+        a
+        {
+            background-color: #024;
+            font-weight: bold;
+            padding: 10px;
+
+            &:hover
+            {
+                background-color: #135;
+                color: #FFF;
+            }
+        }
+    }
+}
+
+
+
+.user_panel
 {
     display: flex;
     gap: 5px;
-    padding: 0 var(--padding-side);
+    justify-content: end;
+    margin: auto;
+    padding: 5px 0;
 
-    a
+    & #menu_mobile
     {
-        background-color: #024;
-        font-weight: bold;
-        padding: 10px;
+        background-color: #FFF;
+        border-radius: 5px;
+        padding: 5px;
 
+        & label
+        {
+            background: no-repeat center/32px url("icon_menu.png");
+            display: block;
+            height: 32px;
+            width: 32px;
+        }
+
+        & input
+        {
+            display: none;
+        }
+
+        &:has(input:checked) ~ nav
+        {
+            background-color: #FFF;
+            display: flex;
+            flex-direction: column;
+            left: 0;
+            padding: 10px;
+            position: absolute;
+            top: 52px;
+            width: 100%;
+            z-index: 9999;
+        }
+    }
+
+    & nav
+    {
+        display: none;
+        gap: 5px;
+    }
+
+    & a
+    {
+        align-items: center;
+        background-color: #024;
+        border-radius: 5px;
+        display: flex;
+        padding: 5px 10px;
+        
         &:hover
         {
             background-color: #135;
             color: #FFF;
         }
     }
+
+    & .steam_connected
+    {
+        align-items: center;
+        background-color: #136;
+        border-radius: 5px;
+        display: flex;
+        gap: 5px;
+        padding: 5px;
+
+        & .avatar
+        {
+            display: flex;
+            
+            & img
+            {
+                border-radius: 5px;
+                height: 32px;
+                width: 32px;
+            }
+        }
+
+        & .personaname
+        {
+            font-weight: bold;
+        }
+    }
+
+    & .logout
+    {
+        background-color: #555;
+    }
+}
+
+.steam_disconnected
+{
+    align-items: center;
+    background-color: #136;
+    border-radius: 5px;
+    color: #FFF;
+    display: flex;
+    font-weight: bold;
+    gap: 5px;
+    padding: 5px;
+
+    &:hover
+    {
+        background-color: #247;
+        color: #FFF;
+    }
+
+    & img
+    {
+        height: 32px;
+    }
+}
+
+#search
+{
+    display: flex;
+    gap: 5px;
+    margin: auto;
+    padding: 10px 0;
+
+    & input
+    {
+        background-color: #222;
+        border: 1px solid #777;
+        color: #CCC;
+        padding: 10px;
+        width: 100%;
+    }
+
+    & button
+    {
+        border: none;
+        border-radius: 5px;
+        background-color: #777;
+        color: #FFF;
+        padding: 10px;
+
+        &:hover
+        {
+            background-color: #555;
+        }
+    }
+
+    & select
+    {
+        appearance: none;
+        background-color: #222;
+        border: 1px solid #777;
+        color: #CCC;
+        padding: 10px;
+    }
 }
 
 @media (min-width: 1600px)
 {
-    nav.main
+    header.main
     {
         margin: auto;
         width: var(--layout-width);

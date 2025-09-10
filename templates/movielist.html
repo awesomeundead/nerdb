@@ -1,13 +1,15 @@
-<div class="pagination">
-    <button class="previous" type="button">Anterior</button>
-    <button class="next" type="button">Próximo</button>
+<div id="movielist">
+    <div class="pagination">
+        <button class="previous" type="button">Anterior</button>
+        <button class="next" type="button">Próximo</button>
+    </div>
+    <div class="container"></div>
 </div>
-<div class="flex_row" id="movies"></div>
 <template>
-    <div class="info flex_column">
+    <div class="item flex_column">
         <div class="image">
-            <a href="">
-                <img alt="" src="" />
+            <a>
+                <img />
             </a>
         </div>
         <div class="flex_row">
@@ -15,17 +17,19 @@
             <div class="title_br"></div>
             <div class="director"></div>
             <div class="release_year"></div>
-            <a class="update" href="" target="_blank">Editar</a>
+            <a class="update" target="_blank">Editar</a>
         </div>
     </div>
 </template>
 
 <script>
 
-const container = document.querySelector('#movies');
+const query = new URLSearchParams(location.search);
+const container = document.querySelector('#movielist .container');
 const template = document.querySelector('template');
 const url = new URL('api/v1/movies', document.baseURI);
 const searchParams = url.searchParams;
+var offset = query.has('offset') ? Number(query.get('offset')) : 0;
 
 const render = function({ movies })
 {
@@ -52,7 +56,6 @@ async function main()
     const response = await fetch('api/v1/movies/count');
     const { total } = await response.json();
     const PAGE_SIZE = 100;
-    let offset = 0;
 
     document.querySelectorAll('.pagination button').forEach(item =>
     {
@@ -80,13 +83,17 @@ async function main()
                 }
             }
             
+            const url = new URL(window.location.href);
+            url.searchParams.set('offset', offset);
+            history.pushState({}, '', url.toString());
+
             searchParams.set('offset', offset);
             getJSON();
         });
     });
 }
 
-searchParams.set('offset', 0);
+searchParams.set('offset', offset);
 getJSON();
 main();
 

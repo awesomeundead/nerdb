@@ -2,7 +2,7 @@
 
 header('Content-Type: application/json; charset=utf-8');
 
-require ROOT_DIR . '/pdo.php';
+$pdo = Database::connect();
 
 $user_id = $vars['id'] ?? false;
 $steamid = $_GET['steamid'] ?? false;

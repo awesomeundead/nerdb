@@ -14,7 +14,7 @@ $token = $selector . ':' . $validator;
 $hashed_validator = password_hash($validator, PASSWORD_DEFAULT);
 $expire_date = strtotime('+1 month');
 
-require ROOT_DIR . '/pdo.php';
+$pdo = Database::connect();
 
 $params = [
     'user_id' => $dados['user_id'],

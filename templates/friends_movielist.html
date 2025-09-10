@@ -30,35 +30,23 @@
 
             <div class="flex_row">
                 <div class="flex_column">
-                    <div aria-label="Quer assistir" class="icon friend friend_watchlist" title="Quer assistir">
-                        <img alt="" src="saved.png" />
-                    </div>
-                    <div aria-label="Quero assistir" class="icon watchlist" title="Quero assistir">
-                        <img alt="" src="saved.png" />
-                    </div>
+                    <div aria-label="Quer assistir" class="icon watchlist friend" title="Quer assistir"></div>
+                    <div aria-label="Quero assistir" class="icon watchlist me" title="Quero assistir"></div>
                 </div>
 
                 <div class="flex_column">
-                    <div aria-label="Já assistiu" class="icon friend friend_watched" title="Já assistiu">
-                        <img alt="" src="watched.png" />
-                    </div>
-                    <div aria-label="Já assisti" class="icon watched" title="Já assisti">
-                        <img alt="" src="watched.png" />
-                    </div>
+                    <div aria-label="Já assistiu" class="icon watched friend" title="Já assistiu"></div>
+                    <div aria-label="Já assisti" class="icon watched me" title="Já assisti"></div>
                 </div>
 
                 <div class="flex_column">
-                    <div aria-label="Gostou" class="icon friend friend_liked" title="Gostou">
-                        <img alt="" src="liked.png" />
-                    </div>
-                    <div aria-label="Gostei" class="icon liked" title="Gostei">
-                        <img alt="" src="liked.png" />
-                    </div>
+                    <div aria-label="Gostou" class="icon liked friend" title="Gostou"></div>
+                    <div aria-label="Gostei" class="icon liked me" title="Gostei"></div>
                 </div>
 
                 <div class="flex_column">
-                    <div aria-label="Avaliação" class="icon_rating friend friend_rating" title="Avaliação"></div>
-                    <div aria-label="Minha avaliação" class="icon_rating rating" title="Minha avaliação"></div>
+                    <div aria-label="Avaliação" class="icon rating friend" title="Avaliação"></div>
+                    <div aria-label="Minha avaliação" class="icon rating me" title="Minha avaliação"></div>
                 </div>
             </div>
         </div>
@@ -109,38 +97,38 @@ const render = function({ movies })
 
         if (!item.watchlist)
         {
-            disable(clone, '.friend_watchlist');
+            disable(clone, '.watchlist.friend');
         }
 
-        disable(clone, '.friend_watched', !item.watched);
-        disable(clone, '.friend_liked', !item.liked);
+        disable(clone, '.watched.friend', !item.watched);
+        disable(clone, '.liked.friend', !item.liked);
 
         if (item.rating)
         {
-            clone.querySelector('.friend_rating').textContent = item.rating;
+            clone.querySelector('.rating.friend').textContent = item.rating;
         }
         else
         {
-            disable(clone, '.friend_rating');
+            disable(clone, '.rating.friend');
         }
 
         /* minha lista */
 
         if (!item.ml_watchlist || item.ml_watched)
         {
-            disable(clone, '.watchlist');
+            disable(clone, '.watchlist.me');
         }
 
-        disable(clone, '.watched', !item.ml_watched);
-        disable(clone, '.liked', !item.ml_liked);
+        disable(clone, '.watched.me', !item.ml_watched);
+        disable(clone, '.liked.me', !item.ml_liked);
 
         if (item.ml_rating)
         {
-            clone.querySelector('.rating').textContent = item.ml_rating;
+            clone.querySelector('.rating.me').textContent = item.ml_rating;
         }
         else
         {
-            disable(clone, '.rating');
+            disable(clone, '.rating.me');
         }
 
         container.appendChild(clone);

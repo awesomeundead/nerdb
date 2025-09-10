@@ -7,7 +7,7 @@ $uri = substr_replace(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH), '', 0, s
 
 try
 {
-    $routes = require ROOT . '/routes.php';
+    $routes = require ROOT_DIR . '/routes.php';
 
     $dispatcher = \FastRoute\simpleDispatcher($routes);
     $route_info = $dispatcher->dispatch($http_method, $uri);

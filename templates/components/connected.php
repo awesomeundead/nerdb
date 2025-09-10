@@ -1,0 +1,20 @@
+<div id="menu_mobile">
+    <label>
+        <input type="checkbox" />
+    </label>
+</div>
+<nav>
+    <a href="mymovielist">Minha lista de filmes</a>
+    <a href="mygamelist">Minha lista de jogos</a>
+    <a href="friends">Amigos</a>
+    <a href="achievements">Conquistas</a>
+    <a href="movie/add">Adicionar filme</a>
+    <a href="game/add">Adicionar jogo</a>
+</nav>
+<div class="steam_connected">
+    <div class="avatar">
+        <img alt="Imagem do seu avatar" src="https://avatars.steamstatic.com/<?= $session->avatarhash ?>.jpg" />
+    </div>
+    <div class="personaname"><?= $session->personaname ?></div>
+</div>
+<a class="logout" href="logout">Sair</a>

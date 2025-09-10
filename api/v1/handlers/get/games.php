@@ -2,7 +2,7 @@
 
 header('Content-Type: application/json; charset=utf-8');
 
-require ROOT_DIR . '/pdo.php';
+$pdo = Database::connect();
 
 $params = [];
 $query = 'SELECT * FROM games';

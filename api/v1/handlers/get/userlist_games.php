@@ -28,7 +28,7 @@ $played = $_GET['played'] ?? null;
 $rating = $_GET['rating'] ?? null;
 $liked = $_GET['liked'] ?? null;
 
-require ROOT_DIR . '/pdo.php';
+$pdo = Database::connect();
 
 $conditions = [];
 $params = [

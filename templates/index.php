@@ -1,37 +1,11 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Início</title>
-<base href="<?= $this->base('/') ?>" />
-<link href="<?= $this->asset('layout.css') ?>" rel="stylesheet" />
-<link href="<?= $this->asset('default.css') ?>" rel="stylesheet" />
 <link href="https://unpkg.com/swiper/swiper-bundle.min.css" rel="stylesheet" />
-<link href="<?= $this->asset('index.css') ?>" rel="stylesheet" />
-<script src="<?= $this->asset('default.js') ?>"></script>
 <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
-</head>
-<body>
 
-<div id="app">
-    <header>
-        <?php $this->insert('components/user_panel.php') ?>
-        <?php $this->insert('components/nav.html') ?>
-    </header>
-    <section>
-        <form action="movies" id="search">
-            <input name="q" placeholder="Pesquisar por título, diretor ou ano de lançamento" required="required" type="search" />
-            <button type="submit">Pesquisar</button>
-        </form>
-    </section>
-    <footer>
-        <div class="swiper mySwiper">
-            <div class="swiper-wrapper" id="movies_media"></div>
-        </div>
-    </footer>
+<div id="home">
+    <div class="swiper mySwiper">
+        <div class="swiper-wrapper" id="movies_media"></div>
+    </div>
 </div>
-
 <template>
     <div class="swiper-slide">
         <a href="">
@@ -78,6 +52,3 @@ url.searchParams.set('order', 'random');
 getJSON();
 
 </script>
-
-</body>
-</html>

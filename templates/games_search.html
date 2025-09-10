@@ -2,19 +2,19 @@
     <div class="container"></div>
 </div>
 <template>
-    <div class="item flex_column">
+    <div class="item">
         <div class="image">
             <a>
                 <img />
             </a>
         </div>
-        <div class="info flex_row">
+        <div class="content">
             <div>
                 <div class="title"></div>
             </div>
             <div class="flex_column">
                 <div class="label">Desenvolvedor:</div>
-                <div class="developer flex_row"></div>
+                <div class="developer"></div>
             </div>
             <div class="steam">
                 <a target="_blank">Steam</a>
@@ -48,7 +48,7 @@ const render = function({ games })
             clone.querySelector('.developer').appendChild(element);
         });
 
-        clone.querySelector('a').href = `game/${item.id}`;
+        clone.querySelector('a').href = `game/${item.id}/${item.title}`;
         clone.querySelector('img').src = item.media?.trim() ? `images/games/256/${item.media}.webp` : 'noimage.png';
         clone.querySelector('.title').textContent =  `${item.title} (${item.release_year})`;
         clone.querySelector('.steam a').href =  `https://steampowered.com/app/${item.steam}/`;

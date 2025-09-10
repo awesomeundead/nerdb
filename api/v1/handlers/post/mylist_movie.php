@@ -23,7 +23,7 @@ $watched = $dados['watched'] ?? null;
 $rating = $dados['rating'] ?? null;
 $liked = $dados['liked'] ?? null;
 
-require ROOT_DIR . '/pdo.php';
+$pdo = Database::connect();
 
 $params = [
     'user_id' => $user_id,

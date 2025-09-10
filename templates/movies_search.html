@@ -2,13 +2,13 @@
     <div class="container"></div>
 </div>
 <template>
-    <div class="item flex_column">
+    <div class="item">
         <div class="image">
-            <a href="">
-                <img alt="" src="" />
+            <a>
+                <img />
             </a>
         </div>
-        <div class="info flex_row">
+        <div class="content">
             <div>
                 <div class="title title_br"></div>
             </div>
@@ -18,7 +18,7 @@
             </div>
             <div class="flex_column">
                 <div class="label">Diretor:</div>
-                <div class="director flex_row"></div>
+                <div class="director"></div>
             </div>
             <div class="imdb">
                 <a href="" target="_blank">IMDB</a>
@@ -52,7 +52,7 @@ const render = function({ movies })
             clone.querySelector('.director').appendChild(element);
         });
 
-        clone.querySelector('a').href = `movie/${item.id}`;
+        clone.querySelector('a').href = `movie/${item.id}/${item.title_br}`;
         clone.querySelector('img').src = item.media?.trim() ? `images/256/${item.media}.webp` : 'noimage.png';
         clone.querySelector('.title_br').textContent =  `${item.title_br} (${item.release_year})`;
         clone.querySelector('.title_us').textContent =  item.title_us;

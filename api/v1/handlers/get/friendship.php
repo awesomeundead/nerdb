@@ -2,7 +2,7 @@
 
 header('Content-Type: application/json; charset=utf-8');
 
-$steam_api_key = (require ROOT_DIR . '/../../config.php')['steam_api_key'];
+$steam_api_key = (require ROOT_DIR . '/config.php')['steam_api_key'];
 
 $user_id = $vars['id'] ?? false;
 $steamid = $_GET['steamid'] ?? false;
@@ -37,7 +37,7 @@ foreach ($list as $index => $item)
 
 $placeholders = implode(', ', $keys);
 
-require ROOT_DIR . '/pdo.php';
+$pdo = Database::connect();
 
 $query = "SELECT id FROM users WHERE steamid IN ({$placeholders})";
 $stmt = $pdo->prepare($query);

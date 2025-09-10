@@ -6,7 +6,7 @@
     <div class="item flex_row">
         <div class="image">
             <a>
-                <img height="256" />
+                <img />
             </a>
         </div>
         <div>
@@ -27,7 +27,7 @@ const render = function({ movies })
     movies.forEach(item =>
     {
         const clone = template.content.cloneNode(true);
-        clone.querySelector('a').href = `movie/${item.id}`;
+        clone.querySelector('a').href = `movie/${item.id}/${item.title_br}`;
         clone.querySelector('img').src = item.media?.trim() ? `images/256/${item.media}.webp` : 'noimage.png';
         clone.querySelector('.title').textContent =  `${item.title_br} (${item.release_year})`;
 

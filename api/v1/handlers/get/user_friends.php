@@ -2,8 +2,6 @@
 
 header('Content-Type: application/json; charset=utf-8');
 
-$steam_api_key = (require ROOT_DIR . '/../../config.php')['steam_api_key'];
-
 $logged_in = Session::get('logged_in');
 $user_id = Session::get('user_id');
 
@@ -14,27 +12,7 @@ if(!$logged_in)
     exit;
 }
 
-/*
-$context = stream_context_create(['http' => ['ignore_errors' => true]]);
-$response = file_get_contents("https://api.steampowered.com/ISteamUser/GetFriendList/v1/?key={$steam_api_key}&steamid={$steamid}&relationship=friend", false, $context);
-$data = json_decode($response, true);
-$list = $data['friendslist']['friends'] ?? false;
-
-if (!$list)
-{
-    echo '{"friends": []}';
-    exit;
-}
-
-foreach ($list as $index => $item)
-{
-    $key = ":placeholder_{$index}";
-    $keys[] = $key;
-    $params[$key] = $item['steamid'];
-}
-*/
-
-require ROOT_DIR . '/pdo.php';
+$pdo = Database::connect();
 
 $query = 'SELECT IF(user_id1 = :user_id, user_id2, user_id1) AS id
           FROM friendship WHERE :user_id IN (user_id1, user_id2)';

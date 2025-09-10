@@ -13,7 +13,7 @@ if(!$logged_in)
     exit;
 }
 
-require ROOT_DIR . '/pdo.php';
+$pdo = Database::connect();
 
 $content = trim(file_get_contents('php://input'));
 $dados = json_decode($content, true);

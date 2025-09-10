@@ -31,9 +31,9 @@ function authMiddleware($handler)
 
 function templates(): Engine
 {
-    $engine = new Engine(ROOT . '/templates');
+    $engine = new Engine(ROOT_DIR . '/templates');
     $engine->setFileExtension(null);
-    $engine->loadExtension(new Asset(ROOT . '/public'));
+    $engine->loadExtension(new Asset(ROOT_DIR . '/public'));
     $engine->loadExtension(new URI(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH)));
 
     $engine->registerFunction('base', function($path = null)
@@ -45,6 +45,8 @@ function templates(): Engine
         
         return BASE_PATH . $path;
     });
+
+    $engine->addData(['open_graph' => []]);
 
     $session = (object) [
         'logged_in'   => Session::get('logged_in'),
@@ -62,7 +64,10 @@ return function(RouteCollector $route)
 {
     $route->get('/', function()
     {
-        echo templates()->render('index.php');
+        $template = templates()->make('index.php');
+        $template->layout('layouts/default.php', ['title' => '']);
+
+        echo $template->render();
     });
     
     $route->get('/achievements', authMiddleware(function()
@@ -107,9 +112,20 @@ return function(RouteCollector $route)
         echo $template->render();
     }));
 
-    $route->get('/game/{id:\d+}', function()
+    $route->get('/game/{id:\d+}[/{title}]', function($vars)
     {
-        $template = templates()->make('game.php');
+        $pdo = Database::connect();
+        $loggedIn = Session::get('logged_in');
+        $userId = Session::get('user_id');
+        $gameId = $vars['id'];
+
+        $service = new GameService($pdo, $loggedIn, $userId);
+        $result = $service->getGameDetails($gameId);
+
+        $result['developer'] = explode(';', $result['developer']);
+        $result['genres'] = explode(';', $result['genres']);
+
+        $template = templates()->make('game.php', ['game' => $result]);
         $template->layout('layouts/default.php');
 
         echo $template->render();
@@ -167,10 +183,21 @@ return function(RouteCollector $route)
         redirect('/?logout');
     }));
 
-    $route->get('/movie/{id:\d+}', function()
+    $route->get('/movie/{id:\d+}[/{title}]', function($vars)
     {
-        $template = templates()->make('movie.php');
-        $template->layout('layouts/default.php');
+        $pdo = Database::connect();
+        $loggedIn = Session::get('logged_in');
+        $userId = Session::get('user_id');
+        $movieId = $vars['id'];
+
+        $service = new MovieService($pdo, $loggedIn, $userId);
+        $result = $service->getMovieDetails($movieId);
+
+        $result['director'] = explode(';', $result['director']);
+        $result['genres'] = explode(';', $result['genres']);
+
+        $template = templates()->make('movie.php', ['movie' => $result]);
+        $template->layout('layouts/default.php', ['title' => $result['title_br']]);
 
         echo $template->render();
     });
@@ -207,6 +234,14 @@ return function(RouteCollector $route)
         echo $template->render();
     });
 
+    $route->get('/movies/search', function()
+    {
+        $template = templates()->make('movies_search.html');
+        $template->layout('layouts/default.php', ['title' => 'Filmes']);
+
+        echo $template->render();
+    });
+
     $route->get('/movies/top', function()
     {
         $template = templates()->make('movies_top.html');
@@ -239,19 +274,60 @@ return function(RouteCollector $route)
         echo $template->render();
     });
 
-    $route->get('/movies/search', function()
-    {
-        $template = templates()->make('movies_search.html');
-        $template->layout('layouts/default.php', ['title' => 'Filmes']);
-
-        echo $template->render();
-    });
-
     $route->get('/store', function()
     {
         $template = templates()->make('store.html');
         $template->layout('layouts/default.php', ['title' => 'Loja']);
 
         echo $template->render();
+    });
+
+    $route->addGroup('/api/v1', function($route)
+    {
+        $root = 'api/v1/handlers';
+
+        $route->get('/friendship/{id:\d+}', $root . '/get/friendship.php'); // (Query String) steamid={selector}
+
+        $route->get('/game/{id:\d+}', $root . '/get/game.php');
+        $route->post('/game', $root . '/post/game.php');
+        $route->put('/game/{id:\d+}', $root . '/put/game.php');
+        
+        $route->get('/games', $root . '/get/games.php');
+        $route->get('/games/best-rated', $root . '/get/games_best_rated.php');
+
+        $route->get('/login', $root . '/get/login.php'); // (Query String) selector={selector}
+        $route->post('/login', $root . '/post/login.php');    
+
+        $route->post('/mylist/game/{id:\d+}', $root . '/post/mylist_game.php');
+        $route->post('/mylist/movie/{id:\d+}', $root . '/post/mylist_movie.php');
+        $route->get('/mylist/games', $root . '/get/mylist_games.php'); // Query String: playlist={0-1}|played={0-1}|rating={1-10}|liked={0-1}
+        $route->get('/mylist/movies', $root . '/get/mylist_movies.php'); // Query String: watchlist={0-1}|watched={0-1}|rating={1-10}|liked={0-1}
+
+        $route->get('/movie/{id:\d+}', $root . '/get/movie.php');
+        $route->post('/movie', $root . '/post/movie.php');
+        $route->put('/movie/{id:\d+}', $root . '/put/movie.php');
+        $route->post('/movie/cast/{id:\d+}', $root . '/post/movie_cast.php');
+
+        /*
+        * url: /movies?actor=Bale&director=Nolan&genre=Ação&release=2005&search=Batman
+        * url: /movies?limit=20&offset=100&order=random
+        */
+        $route->get('/movies', $root . '/get/movies.php');
+        $route->get('/movies/best-rated', $root . '/get/movies_best_rated.php');
+        $route->get('/movies/count', $root . '/get/movies_count.php');
+
+        $route->get('/people', $root . '/get/people.php');
+
+        $route->get('/score', $root . '/get/score.php');
+
+        $route->get('/user[/{id:\d+}]', $root . '/get/user.php'); // (Query String) steamid={steamid}
+        $route->post('/user', $root . '/post/user.php');
+        $route->get('/user/friends', $root . '/get/user_friends.php');
+        $route->get('/user/score/{id:\d+}', $root . '/get/user_score.php');
+
+        $route->get('/userlist/games/{id:\d+}', $root . '/get/userlist_games.php');
+        $route->get('/userlist/movies/{id:\d+}', $root . '/get/userlist_movies.php');
+
+        $route->get('/top-movies', $root . '/get/top_movies.php');
     });
 };
