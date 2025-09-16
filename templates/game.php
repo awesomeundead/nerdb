@@ -64,10 +64,10 @@
             <script>
 
                 const game = {
-                    playlist: <?= $game['playlist'] ?>,
-                    played: <?= $game['played'] ?>,
-                    liked: <?= $game['liked'] ?>,
-                    rating: <?= $game['rating'] ?>,
+                    playlist: <?= $game['playlist'] ?? 0 ?>,
+                    played: <?= $game['played'] ?? 0 ?>,
+                    liked: <?= $game['liked'] ?? 0 ?>,
+                    rating: <?= $game['rating'] ?? 0 ?>,
                 };
 
                 document.querySelectorAll('.toggle button').forEach(item =>
@@ -168,6 +168,30 @@
         <div class="update">
             <a href="game/update/<?= $game['id'] ?>">Editar jogo</a>
         </div>
+    <?php endif ?>
+
+    <?php if ($game['related_games']): ?>
+    <div class="related flex_row">
+        <div class="label">Jogos relacionados ou semelhantes</div>
+        <div class="container">
+        <?php foreach ($game['related_games'] as $item): ?>
+            <div class="item flex_row">
+            <div class="image">
+                <a href="game/<?= $item['id'] ?>/<?= $item['title_url'] ?>">
+                    <?php if ($item['media']): ?>
+                    <img alt="<?= $item['title'] ?>" src="images/games/256/<?= $item['media'] ?>.webp" />
+                    <?php else: ?>
+                    <img alt="" src="noimage.png" />
+                    <?php endif ?>
+                </a>
+            </div>
+            <div>
+                <div class="title"><?= $item['title'] ?> (<?= $item['release_year'] ?>)</div>
+            </div>
+        </div>
+        <?php endforeach ?>
+        </div>
+    </div>
     <?php endif ?>
 </div>
 

@@ -65,7 +65,7 @@ const render = function({ movies })
     {
         const clone = template.content.cloneNode(true);
 
-        clone.querySelector('a').href = `movie/${item.id}`;        
+        clone.querySelector('a').href = `movie/${item.id}/${item.title_url}`;        
         clone.querySelector('img').src = item.media?.trim() ? `images/256/${item.media}.webp` : 'noimage.png';
         clone.querySelector('.title_br').textContent =  item.title_br;
 

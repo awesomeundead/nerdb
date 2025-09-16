@@ -261,6 +261,35 @@
             }
         }
     }
+
+    .related
+    {
+        margin-top: 50px;
+
+        .container
+        {
+            display: grid;
+            gap: 10px;
+            grid-template-columns: repeat(2, 1fr);
+
+            .item
+            {
+                max-width: 160px;
+
+                img:hover
+                {
+                    box-shadow: 0 0 8px 2px #FFF;
+                    filter: brightness(115%);
+                    filter: contrast(115%);
+                }
+
+                .title
+                {
+                    font-size: 12px;
+                }
+            }
+        }
+    }
 }
 
 #games, #movies
@@ -463,6 +492,7 @@
 {
     margin: auto;
     padding: var(--padding-side);
+    width: var(--layout-width);
 
     .container
     {
@@ -506,12 +536,9 @@
 
     #best-rated
     {
-        margin: auto;
-        width: min-content;
-
         .container
         {
-            grid-template-columns: repeat(6, 192px);
+            grid-template-columns: repeat(6, 1fr);
         }
     }
 
@@ -521,6 +548,14 @@
         {
             gap: 10px;
             grid-template-columns: 384px auto;
+        }
+
+        .related
+        {
+            .container
+            {
+                grid-template-columns: repeat(8, 1fr);
+            }
         }
     }
 

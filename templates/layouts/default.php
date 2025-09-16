@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <?php foreach ($open_graph as $property => $content): ?>
-<meta content="<?= $this->e($content) ?>"property="og:<?= $property ?>" />
+<meta content="<?= $this->e($content) ?>" property="og:<?= $property ?>" />
 <?php endforeach ?>
 <title><?= empty($title) ? 'NERDB' : "{$title} | NERDB" ?></title>
 <base href="<?= $this->base('/') ?>" />
@@ -53,7 +53,7 @@
                     <option value="games">Jogos</option>
                 </select>
                 <input name="q" required="required" type="search" />
-                <button type="submit">Pesquisar</button>
+                <button title="Pesquisar" type="submit"></button>
             </form>
         </div>
     </header>

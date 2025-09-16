@@ -2,8 +2,6 @@
 
 header('Content-Type: application/json; charset=utf-8');
 
-
-
 $logged_in = Session::get('logged_in');
 
 if(!$logged_in)

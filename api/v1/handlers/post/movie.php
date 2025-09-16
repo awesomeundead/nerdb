@@ -26,6 +26,7 @@ $cast = trim($dados['cast']);
 $genres = trim($dados['genres']);
 $release_year = trim($dados['release_year']);
 $imdb = trim($dados['imdb']);
+$title_url = remove_accents($dados['title_br']);
 
 $params = [
     'title_br' => $title_br,
@@ -52,12 +53,13 @@ if ($result)
         'genres' => $genres,
         'release_year' => $release_year,
         'imdb' => $imdb,
+        'title_url' => $title_url,
         'first_user_id' => $user_id,
         'last_user_id' => $user_id
     ];
 
-    $query = 'INSERT INTO movies (title_br, title_us, director, genres, release_year, imdb, first_user_id, last_user_id)
-              VALUES (:title_br, :title_us, :director, :genres, :release_year, :imdb, :first_user_id, :last_user_id)';
+    $query = 'INSERT INTO movies (title_br, title_us, director, genres, release_year, imdb, title_url, first_user_id, last_user_id)
+              VALUES (:title_br, :title_us, :director, :genres, :release_year, :imdb, :title_url, :first_user_id, :last_user_id)';
 
     $stmt = $pdo->prepare($query);
     $result = $stmt->execute($params);

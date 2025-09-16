@@ -23,6 +23,7 @@ class GameService
         }
 
         $game['friends'] = $this->loggedIn ? $this->fetchFriendsActivity($gameId) : [];
+        $game['related_games'] = $this->fetchRelatedGames($gameId);
 
         return $game;
     }
@@ -89,6 +90,20 @@ class GameService
 
         $stmt = $this->pdo->prepare($query);
         $stmt->execute($params);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    private function fetchRelatedGames($gameId)
+    {
+        $query = 'SELECT g.id, g.title, g.release_year, g.media, g.title_url
+                  FROM related_games AS r
+                  INNER JOIN games AS g ON g.id = IF (r.game_id1 = :game_id, r.game_id2, r.game_id1)
+                  WHERE :game_id IN (r.game_id1, r.game_id2)
+                  ORDER BY g.release_year
+                  LIMIT 24';
+
+        $stmt = $this->pdo->prepare($query);
+        $stmt->execute(['game_id' => $gameId]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 }

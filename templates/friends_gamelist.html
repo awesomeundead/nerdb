@@ -91,7 +91,7 @@ const render = function({ games })
     {
         const clone = template.content.cloneNode(true);
 
-        clone.querySelector('a').href = `game/${item.id}`;
+        clone.querySelector('a').href = `game/${item.id}/${item.title_url}`;
         clone.querySelector('.image img').src = item.media?.trim() ? `images/games/256/${item.media}.webp` : 'noimage.png';
         clone.querySelector('.title').textContent =  item.title;
 

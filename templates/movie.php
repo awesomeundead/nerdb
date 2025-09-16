@@ -72,10 +72,10 @@
             <script>
 
                 const movie = {
-                    watchlist: <?= $movie['watchlist'] ?>,
-                    watched: <?= $movie['watched'] ?>,
-                    liked: <?= $movie['liked'] ?>,
-                    rating: <?= $movie['rating'] ?>,
+                    watchlist: <?= $movie['watchlist'] ?? 0 ?>,
+                    watched: <?= $movie['watched'] ?? 0 ?>,
+                    liked: <?= $movie['liked'] ?? 0 ?>,
+                    rating: <?= $movie['rating'] ?? 0 ?>,
                 };
 
                 document.querySelectorAll('.toggle button').forEach(item =>
@@ -207,6 +207,30 @@
         <div class="update">
             <a href="movie/update/<?= $movie['id'] ?>">Editar filme</a>
         </div>
+    <?php endif ?>
+
+    <?php if ($movie['related_movies']): ?>
+    <div class="related flex_row">
+        <div class="label">Filmes relacionados ou semelhantes</div>
+        <div class="container">
+        <?php foreach ($movie['related_movies'] as $item): ?>
+            <div class="item flex_row">
+            <div class="image">
+                <a href="movie/<?= $item['id'] ?>/<?= $item['title_url'] ?>">
+                    <?php if ($item['media']): ?>
+                    <img alt="<?= $item['title_br'] ?>" src="images/256/<?= $item['media'] ?>.webp" />
+                    <?php else: ?>
+                    <img alt="" src="noimage.png" />
+                    <?php endif ?>
+                </a>
+            </div>
+            <div>
+                <div class="title"><?= $item['title_br'] ?> (<?= $item['release_year'] ?>)</div>
+            </div>
+        </div>
+        <?php endforeach ?>
+        </div>
+    </div>
     <?php endif ?>
 </div>
 <script>

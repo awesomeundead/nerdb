@@ -60,7 +60,7 @@ if (!empty($liked))
     $params['liked'] = $liked;
 }
 
-$query = 'SELECT  games.id, games.title, games.media, list.playlist, list.played, list.rating, list.liked,
+$query = 'SELECT  games.id, games.title, games.media, games.title_url, list.playlist, list.played, list.rating, list.liked,
           gl.playlist AS gl_playlist,
           gl.played AS gl_played,
           gl.rating AS gl_rating,

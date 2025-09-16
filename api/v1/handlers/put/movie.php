@@ -2,8 +2,6 @@
 
 header('Content-Type: application/json; charset=utf-8');
 
-
-
 $logged_in = Session::get('logged_in');
 
 if(!$logged_in)
@@ -23,10 +21,10 @@ $movie_id= $vars['id'];
 $title_br = trim($dados['title_br']);
 $title_us = trim($dados['title_us']);
 $director = trim($dados['director']);
-$cast = trim($dados['cast']);
 $genres = trim($dados['genres']);
 $release_year = trim($dados['release_year']);
 $imdb = trim($dados['imdb']);
+$title_url = remove_accents($dados['title_br']);
 
 $params = [
     'id' => $movie_id,
@@ -55,6 +53,7 @@ if ($result)
         'genres' => $genres,
         'release_year' => $release_year,
         'imdb' => $imdb,
+        'title_url' => $title_url,
         'last_user_id' => $user_id
     ];
 
@@ -65,6 +64,7 @@ if ($result)
             genres = :genres,
             release_year = :release_year,
             imdb = :imdb,
+            title_url = :title_url,
             last_user_id = :last_user_id
             WHERE id = :id';
 

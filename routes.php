@@ -29,7 +29,7 @@ function authMiddleware($handler)
     };
 };
 
-function templates(): Engine
+function templates(array $data = []): Engine
 {
     $engine = new Engine(ROOT_DIR . '/templates');
     $engine->setFileExtension(null);
@@ -46,7 +46,11 @@ function templates(): Engine
         return BASE_PATH . $path;
     });
 
-    $engine->addData(['open_graph' => []]);
+    $data['open_graph']['image'] ??= HOST . BASE_PATH . '/nerdb_logo_social.png';
+    $data['open_graph']['title'] ??= 'NERDB';
+    $data['open_graph']['description'] ??= 'Plataforma em desenvolvimento com conteúdos sobre entretenimento, tecnologia e tendências. Acompanhe novidades e atualizações.';
+
+    $engine->addData($data);
 
     $session = (object) [
         'logged_in'   => Session::get('logged_in'),
@@ -125,8 +129,11 @@ return function(RouteCollector $route)
         $result['developer'] = explode(';', $result['developer']);
         $result['genres'] = explode(';', $result['genres']);
 
-        $template = templates()->make('game.php', ['game' => $result]);
-        $template->layout('layouts/default.php');
+        $data['open_graph']['image'] = HOST . BASE_PATH . "/images/games/512/{$result['media']}.webp";
+        $data['open_graph']['title'] = $result['title'];
+
+        $template = templates($data)->make('game.php', ['game' => $result]);
+        $template->layout('layouts/default.php', ['title' => $result['title']]);
 
         echo $template->render();
     });
@@ -149,8 +156,23 @@ return function(RouteCollector $route)
 
     $route->get('/games', function()
     {
-        $template = templates()->make('games.html');
-        $template->layout('layouts/default.php', ['title' => 'Melhores jogos avaliados por usuários do site']);
+        $pdo = Database::connect();
+        $service = new GamesService($pdo);
+        $result = $service->getTopRatedGames(60);
+
+        $title = 'Melhores jogos avaliados por usuários do site';
+        $data['open_graph']['title'] = $title;
+
+        $template = templates($data)->make('games.php', ['games' => $result]);
+        $template->layout('layouts/default.php', ['title' => $title]);
+
+        echo $template->render();
+    });
+
+    $route->get('/games/search', function()
+    {
+        $template = templates()->make('games_search.html');
+        $template->layout('layouts/default.php', ['title' => 'Jogos']);
 
         echo $template->render();
     });
@@ -196,7 +218,10 @@ return function(RouteCollector $route)
         $result['director'] = explode(';', $result['director']);
         $result['genres'] = explode(';', $result['genres']);
 
-        $template = templates()->make('movie.php', ['movie' => $result]);
+        $data['open_graph']['image'] = HOST . BASE_PATH . "/images/512/{$result['media']}.webp";
+        $data['open_graph']['title'] = $result['title_br'];
+
+        $template = templates($data)->make('movie.php', ['movie' => $result]);
         $template->layout('layouts/default.php', ['title' => $result['title_br']]);
 
         echo $template->render();
@@ -228,8 +253,15 @@ return function(RouteCollector $route)
 
     $route->get('/movies', function()
     {
-        $template = templates()->make('movies.html');
-        $template->layout('layouts/default.php', ['title' => 'Melhores filmes avaliados por usuários do site']);
+        $pdo = Database::connect();
+        $service = new MoviesService($pdo);
+        $result = $service->getTopRatedMovies(60);
+
+        $title = 'Melhores filmes avaliados por usuários do site';
+        $data['open_graph']['title'] = $title;
+
+        $template = templates($data)->make('movies.php', ['movies' => $result]);
+        $template->layout('layouts/default.php', ['title' => $title]);
 
         echo $template->render();
     });
@@ -238,14 +270,6 @@ return function(RouteCollector $route)
     {
         $template = templates()->make('movies_search.html');
         $template->layout('layouts/default.php', ['title' => 'Filmes']);
-
-        echo $template->render();
-    });
-
-    $route->get('/movies/top', function()
-    {
-        $template = templates()->make('movies_top.html');
-        $template->layout('layouts/default.php', ['title' => 'Os 100 melhores filmes']);
 
         echo $template->render();
     });
@@ -264,23 +288,7 @@ return function(RouteCollector $route)
         $template->layout('layouts/default.php', ['title' => 'Minha lista de filmes']);
 
         echo $template->render();
-    }));    
-
-    $route->get('/games/search', function()
-    {
-        $template = templates()->make('games_search.html');
-        $template->layout('layouts/default.php', ['title' => 'Jogos']);
-
-        echo $template->render();
-    });
-
-    $route->get('/store', function()
-    {
-        $template = templates()->make('store.html');
-        $template->layout('layouts/default.php', ['title' => 'Loja']);
-
-        echo $template->render();
-    });
+    }));
 
     $route->addGroup('/api/v1', function($route)
     {

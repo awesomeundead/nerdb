@@ -59,7 +59,7 @@ class Session
             $_SESSION = [];
             session_destroy();
             
-            throw new RuntimeException('Sessão potencialmente sequestrada.');
+            //throw new RuntimeException('Sessão potencialmente sequestrada.');
         }
     }
 

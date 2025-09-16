@@ -4,7 +4,12 @@
             "src/Database.php",
             "src/Session.php",
             "api/v1/src/GameService.php",
-            "api/v1/src/MovieService.php"
+            "api/v1/src/GamesService.php",
+            "api/v1/src/MovieService.php",
+            "api/v1/src/MoviesService.php"
+        ],
+        "files": [
+            "src/helpers.php"
         ]
     },
     "require": {

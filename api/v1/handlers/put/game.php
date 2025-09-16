@@ -2,8 +2,6 @@
 
 header('Content-Type: application/json; charset=utf-8');
 
-
-
 $logged_in = Session::get('logged_in');
 
 if(!$logged_in)
@@ -25,6 +23,7 @@ $developer = trim($dados['developer']);
 $genres = trim($dados['genres']);
 $release_year = trim($dados['release_year']);
 $steam = trim($dados['steam']);
+$title_url = remove_accents($dados['title']);
 
 $params = [
     'id' => $game_id,
@@ -52,6 +51,7 @@ if ($result)
         'genres' => $genres,
         'release_year' => $release_year,
         'steam' => $steam,
+        'title_url' => $title_url,
         'last_user_id' => $user_id
     ];
 
@@ -61,6 +61,7 @@ if ($result)
             genres = :genres,
             release_year = :release_year,
             steam = :steam,
+            title_url = :title_url,
             last_user_id = :last_user_id
             WHERE id = :id';
 

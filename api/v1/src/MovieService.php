@@ -25,6 +25,7 @@ class MovieService
         $movie['cast'] = $this->fetchCast($movieId);
         $movie['platforms'] = $this->fetchPlatforms($movieId);
         $movie['friends'] = $this->loggedIn ? $this->fetchFriendsActivity($movieId) : [];
+        $movie['related_movies'] = $this->fetchRelatedMovies($movieId);
 
         return $movie;
     }
@@ -71,6 +72,41 @@ class MovieService
         $stmt->execute(['id' => $id]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    private function fetchRelatedMovies($movieId)
+    {
+        $query = 'SELECT m.id, m.title_br, m.release_year, m.media, m.title_url
+                  FROM related_movies AS r
+                  INNER JOIN movies AS m ON m.id = IF (r.movie_id1 = :movie_id, r.movie_id2, r.movie_id1)
+                  WHERE :movie_id IN (r.movie_id1, r.movie_id2)
+                  ORDER BY m.release_year
+                  LIMIT 24';
+
+        $stmt = $this->pdo->prepare($query);
+        $stmt->execute(['movie_id' => $movieId]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    /*
+    private function fetchSimilarMovies($movieId, $genres)
+    {
+        $params['movie_id'] = $movieId;
+
+        foreach ($genres as $index => $genre)
+        {
+            $key = ":genre_{$index}";
+            $placeholders[] = "INSTR(`genres`, {$key}) > 0";
+            $params[$key] = $genre;
+        }
+
+        $conditions = implode(' AND ', $placeholders);
+
+        $query = "SELECT id, title_br, release_year, media FROM movies WHERE id != :movie_id AND {$conditions} LIMIT 12";
+        $stmt = $this->pdo->prepare($query);
+        $stmt->execute($params);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+    */
 
     private function fetchFriendsActivity($movieId)
     {

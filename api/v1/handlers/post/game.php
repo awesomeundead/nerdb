@@ -24,6 +24,7 @@ $developer = trim($dados['developer']);
 $genres = trim($dados['genres']);
 $release_year = trim($dados['release_year']);
 $steam = trim($dados['steam']);
+$title_url = remove_accents($dados['title']);
 
 $params = [
     'title' => $title,
@@ -49,12 +50,13 @@ if ($result)
         'genres' => $genres,
         'release_year' => $release_year,
         'steam' => $steam,
+        'title_url' => $title_url,
         'first_user_id' => $user_id,
         'last_user_id' => $user_id
     ];
 
-    $query = 'INSERT INTO games (title, developer, genres, release_year, steam, first_user_id, last_user_id)
-              VALUES (:title, :developer, :genres, :release_year, :steam, :first_user_id, :last_user_id)';
+    $query = 'INSERT INTO games (title, developer, genres, release_year, steam, title_url, first_user_id, last_user_id)
+              VALUES (:title, :developer, :genres, :release_year, :steam, :title_url, :first_user_id, :last_user_id)';
 
     $stmt = $pdo->prepare($query);
     $result = $stmt->execute($params);
