@@ -205,6 +205,15 @@
         }
     }
 
+    textarea
+    {
+        background-color: #333;
+        border: 1px solid #999;
+        color: #FFF;
+        padding: 10px;
+        width: 100%;
+    }
+
     .cast
     {
         margin: 10px 0;
@@ -294,6 +303,14 @@
 
 #games, #movies
 {
+    .advice
+    {
+        background-color: #0066ad;
+        font-weight: bold;
+        margin-bottom: 10px;
+        padding: 10px;
+    }
+
     .container
     {
         display: grid;

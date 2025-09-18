@@ -14,9 +14,10 @@
     <input name="release_year" placeholder="Ano de lançamento" type="number" />
     <label>Link para o IMDB</label>
     <input name="imdb" placeholder="Link IMDB" type="text" />
-    <button id="button_dialog_open" type="button">Elenco</button>
+    <!--<button id="button_dialog_open" type="button">Elenco</button>-->
     <button type="submit">Atualizar</button>
 </form>
+<!--
 <dialog id="dialog_cast">
     <form class="flex_row" id="update_cast">
         <div class="flex_column">
@@ -36,6 +37,7 @@
         <input class="character" name="character[]" placeholder="Personagem" type="text" />
     </div>
 </template>
+-->
 
 <script>
 
@@ -57,6 +59,7 @@ const render = function(item)
     form.elements['release_year'].value = item.release_year,
     form.elements['imdb'].value = item.imdb;
 
+    /*
     item.cast.forEach(item =>
     {
         const clone = template.content.cloneNode(true);
@@ -65,8 +68,10 @@ const render = function(item)
         clone.querySelector('.character').value = item.movie_character;
         container.appendChild(clone);
     });
+    */
 }
 
+/*
 document.querySelector('#button_dialog_open').addEventListener('click', () => dialog.showModal());
 document.querySelector('#button_dialog_close').addEventListener('click', () => dialog.close());
 
@@ -128,10 +133,11 @@ document.querySelector('#update_cast').addEventListener('submit', e =>
         console.error('Erro ao carregar:', error);
     });
 });
+*/
 
 updateForm(form);
 getJSON();
 get_directors();
-get_people();
+//get_people();
 
 </script>

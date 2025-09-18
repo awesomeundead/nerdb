@@ -3,10 +3,12 @@
         "classmap": [
             "src/Database.php",
             "src/Session.php",
-            "api/v1/src/GameService.php",
-            "api/v1/src/GamesService.php",
-            "api/v1/src/MovieService.php",
-            "api/v1/src/MoviesService.php"
+            "api/v1/src/GameRepository.php",
+            "api/v1/src/LoginService.php",
+            "api/v1/src/MovieRepository.php",
+            "api/v1/src/UserGamelist.php",
+            "api/v1/src/UserMovielist.php",
+            "api/v1/src/UserService.php"
         ],
         "files": [
             "src/helpers.php"

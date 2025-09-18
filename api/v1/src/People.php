@@ -1,8 +1,8 @@
 <?php
 
-class GamesService
+class People
 {
-    private $pdo;
+    private PDO $pdo;
     private $loggedIn;
     private $userId;
 
@@ -13,13 +13,12 @@ class GamesService
         $this->userId = $userId;
     }
 
-    public function getTopRatedGames()
+    public function getPeople(int $limit, int $offset = 0): array
     {
-        $query = 'SELECT games.*, SUM(rating) as rating FROM user_game_list
-                  INNER JOIN games ON games.id = user_game_list.game_id
-                  WHERE rating >= 1 GROUP BY games.id ORDER BY rating DESC LIMIT 60';
-
+        $query = 'SELECT * FROM people LIMIT :offset, :limit';
         $stmt = $this->pdo->prepare($query);
+        $stmt->bindValue('offset', $offset, PDO::PARAM_INT);
+        $stmt->bindValue('limit', $limit, PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }

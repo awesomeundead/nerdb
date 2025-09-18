@@ -10,33 +10,30 @@ function auto_login()
         [$selector, $validator] = $parts;
     }
 
-    $response = file_get_contents(HOST . BASE_PATH . "/api/v1/login?selector={$selector}");
-    $login = json_decode($response, true);
+    $pdo = Database::connect();
+    $service = new LoginService($pdo);
+    $login = $service->getLog($selector);
 
     if (password_verify($validator, $login['hashed_validator']))
     {
         if ($login['expire_date'] > date('Y-m-d H:i:s'))
         {
-            /*
-             *  verifica se o usuário existe
-             */
-            $response = file_get_contents(HOST . BASE_PATH . "/api/v1/user/{$login['user_id']}");
+            $service = new UserService($pdo);
 
-            if ($response)
+            /* verifica se o usuário existe */
+            $data = $service->getUserById($login['user_id']);
+
+            if (!empty($data))
             {
-                $data = json_decode($response, true);
-
-                $steamid64 = $data['steamid'];
+                $steamid = $data['steamid'];
 
                 create_session($data);
 
-                $player = get_steam_user($steamid64);                       
+                $player = get_steam_user($steamid);
 
-                /*
-                * atualiza usuário
-                */
-                $response = update_user($player);
-                friendship($data['id'], $steamid64);
+                /* atualiza usuário */
+                $service->updateUser($player);
+                $service->updateUserFriendship($data['id'], $steamid);
 
                 if (isset($_GET['redirect']))
                 {
@@ -59,26 +56,12 @@ function create_auto_login($user_id)
             ?? $_SERVER['REMOTE_ADDR']
             ?? 'UNKNOWN';
 
-    $params = [
-        'user_id' => $user_id,
-        'address' => $address
-    ];
+    $pdo = Database::connect();
+    $service = new LoginService($pdo);
+    $data = $service->addLog($user_id, $address);
 
-    $jsonData = json_encode($params, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
-    $context = stream_context_create([
-        'http' => [
-            'method'  => 'POST',
-            'header'  => "Content-type: application/json\r\n" .
-                          "Content-Length: " . strlen($jsonData) . "\r\n",
-            'content' => $jsonData
-        ]
-    ]);
-    $response = file_get_contents(HOST . BASE_PATH . '/api/v1/login', false, $context);
-
-    if ($response)
+    if ($data)
     {
-        $data = json_decode($response, true);
-
         setcookie('login', $data['token'], ['expires' => $data['expire_date'], 'path' => '/', 'httponly' => true]);
     }
 }
@@ -92,12 +75,7 @@ function create_session($data)
     Session::set('avatarhash', $data['avatarhash']);
 }
 
-function friendship($user_id, $steamid64)
-{
-    file_get_contents(HOST . BASE_PATH . "/api/v1/friendship/{$user_id}?steamid={$steamid64}");
-}
-
-function get_steam_user($steamid64)
+function get_steam_user($steamid)
 {
     $steam_api_key = (require __DIR__ . '/config.php')['steam_api_key'];
 
@@ -105,7 +83,7 @@ function get_steam_user($steamid64)
      *  busca os dados do usuário steam
      */
     $context = stream_context_create(['http' => ['ignore_errors' => true]]);
-    $response = file_get_contents("https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key={$steam_api_key}&steamids={$steamid64}", false, $context);
+    $response = file_get_contents("https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key={$steam_api_key}&steamids={$steamid}", false, $context);
     $data = json_decode($response, true);
     $player = $data['response']['players'][0] ?? false;
 
@@ -117,55 +95,6 @@ function get_steam_user($steamid64)
     }
 
     return $player;
-}
-
-function insert_user($player)
-{
-    $params = [
-        'steamid'     => $player['steamid'],
-        'personaname' => $player['personaname'],
-        'avatarhash'  => $player['avatarhash'],
-        'realname'    => $player['realname'] ?? ''
-    ];
-
-    $jsonData = json_encode($params, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
-    $context = stream_context_create([
-        'http' => [
-            'method'  => 'POST',
-            'header'  => "Content-type: application/json\r\n" .
-                         "Content-Length: " . strlen($jsonData) . "\r\n",
-            'content' => $jsonData
-        ]
-    ]);
-
-    /*
-     * insere novo usuário
-     */
-    return file_get_contents(HOST . BASE_PATH . '/api/v1/user', false, $context);
-}
-
-function update_user($player)
-{
-    $params = [
-        'personaname' => $player['personaname'],
-        'avatarhash'  => $player['avatarhash'],
-        'realname'    => $player['realname'] ?? ''
-    ];
-
-    $jsonData = json_encode($params, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
-    $context = stream_context_create([
-        'http' => [
-            'method'  => 'PUT',
-            'header'  => "Content-type: application/json\r\n" .
-                          "Content-Length: " . strlen($jsonData) . "\r\n",
-            'content' => $jsonData
-        ]
-    ]);
-
-    /*
-     * atualiza usuário
-     */
-    return file_get_contents(HOST . BASE_PATH . '/api/v1/user', false, $context);
 }
 
 if (isset($_COOKIE['login']))
@@ -205,36 +134,42 @@ elseif (isset($_GET['openid_signed']))
     if (preg_match('#is_valid\s*:\s*true#i', $response))
     {
         preg_match('#^https://steamcommunity.com/openid/id/([0-9]{17,25})#', $_GET['openid_claimed_id'], $matches);
-        $steamid64 = $matches[1] ?? null;
+        $steamid = $matches[1] ?? null;
 
-        $player = get_steam_user($steamid64);
+        $player = get_steam_user($steamid);
 
-        /*
-        *  verifica se o usuário existe
-        */
-        $response = file_get_contents(HOST . BASE_PATH . "/api/v1/user?steamid={$steamid64}");
+        /* verifica se o usuário existe */
+        
+        $pdo = Database::connect();
+        $service = new UserService($pdo);
+        $data = $service->getUserBySteam($steamid);
 
-        if ($response == 'false')
+        if (empty($data))
         {
-            /*
-            * insere novo usuário
-            */
-            $response = insert_user($player);
+            /* insere novo usuário */
+            $user_id = $service->addNewUser($player);
 
-            $data = json_decode($response, true);
-            $status = $data['status'] ?? false;
-
-            if ($status)
+            if (!$user_id)
             {
-                $response = file_get_contents(HOST . BASE_PATH . "/api/v1/user?steamid={$steamid64}");
+                redirect('/?error');
             }
-        }
 
-        $data = json_decode($response, true);
+            $data = [
+                'id'          => $user_id,
+                'steamid'     => $player['steamid'],
+                'personaname' => $player['personaname'],
+                'avatarhash'  => $player['avatarhash']
+            ];
+        }
+        else
+        {
+            /* atualiza usuário */
+            $service->updateUser($player);
+        }
 
         create_session($data);
         create_auto_login($data['id']);
-        friendship($data['id'], $steamid64);
+        $service->updateUserFriendship($data['id'], $steamid);
 
         if (isset($_GET['redirect']))
         {

@@ -76,32 +76,6 @@ function get_directors()
     });
 }
 
-function get_people()
-{
-    requestJSON('api/v1/people')
-    .then(json =>
-    {
-        const container = document.createElement('datalist');
-        container.setAttribute('id', 'people');
-
-        json.people.forEach(item =>
-        {
-            option = document.createElement('option');
-            option.dataset.id = item.id;
-            option.value = item.name;
-
-            container.appendChild(option);
-        });
-
-        document.body.appendChild(container);
-
-    })
-    .catch(error =>
-    {
-        console.error('Erro ao carregar:', error);
-    });
-}
-
 function getJSON()
 {
     requestJSON(url)
@@ -129,6 +103,11 @@ function sendForm(form, method)
         requestJSON(url, method, body)
         .then(json =>
         {
+            if (json.hasOwnProperty('message'))
+            {
+                alert(json.message);
+            }
+
             if (json.hasOwnProperty('status'))
             {
                 notification(json.status, {success: 'Sucesso.', failure: 'Falha.'});

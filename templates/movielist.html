@@ -27,7 +27,7 @@
 const query = new URLSearchParams(location.search);
 const container = document.querySelector('#movielist .container');
 const template = document.querySelector('template');
-const url = new URL('api/v1/movies', document.baseURI);
+const url = new URL('api/v1/movielist', document.baseURI);
 const searchParams = url.searchParams;
 var offset = query.has('offset') ? Number(query.get('offset')) : 0;
 

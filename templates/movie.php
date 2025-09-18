@@ -68,6 +68,11 @@
                 <button class="star" data-value="9" title="9 estrelas" type="button"></button>
                 <button class="star" data-value="10" title="10 estrelas" type="button"></button>
             </div>
+            <div class="review">
+                <div>Minha análise</div>
+                <textarea maxlength="255"></textarea>
+                <button>Editar análise</button>
+            </div>
 
             <script>
 

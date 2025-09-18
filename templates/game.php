@@ -24,7 +24,7 @@
                 <div class="release_year"><?= $game['release_year'] ?></div>
             </div>
             <div class="listing">
-                <div>Diretor</div>
+                <div>Desenvolvedor</div>
                 <div class="developer flex_row">
                 <?php foreach ($game['developer'] as $developer): ?>
                     <a href="games/search?q=desenvolvedor:<?= $developer ?>"><?= $developer ?></a>
