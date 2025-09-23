@@ -1,4 +1,4 @@
-<div id="movielist">
+<div id="gamelist">
     <div class="pagination">
         <button class="previous" type="button">Anterior</button>
         <button class="next" type="button">Próximo</button>
@@ -13,9 +13,7 @@
             </a>
         </div>
         <div class="content flex_row">
-            <div class="movie_id"></div>
-            <div class="title_br"></div>
-            <div class="release_year"></div>
+            <div class="title"></div>
             <a class="update" target="_blank">Editar</a>
         </div>
     </div>
@@ -24,9 +22,9 @@
 <script>
 
 const query = new URLSearchParams(location.search);
-const container = document.querySelector('#movielist .container');
+const container = document.querySelector('#gamelist .container');
 const template = document.querySelector('template');
-const url = new URL('api/v1/movielist', document.baseURI);
+const url = new URL('api/v1/gamelist/added', document.baseURI);
 const searchParams = url.searchParams;
 var offset = query.has('offset') ? Number(query.get('offset')) : 0;
 var previous_offset;
@@ -36,19 +34,17 @@ const render = function(json)
 {
     previous_offset = json.previous_offset;
     next_offset = json.next_offset;
-
+    
     container.innerHTML = '';
 
-    json.movies.forEach(item =>
+    json.games.forEach(item =>
     {
         const clone = template.content.cloneNode(true);
         
-        clone.querySelector('.image a').href = `movie/${item.id}`;
-        clone.querySelector('.image img').src = (item.media == '') ? 'noimage.png' : `images/256/${item.media}.webp`;
-        clone.querySelector('.movie_id').textContent =  `#${item.id}`;
-        clone.querySelector('.title_br').textContent =  item.title_br;
-        clone.querySelector('.release_year').textContent =  item.release_year;
-        clone.querySelector('.update').href = `movie/update/${item.id}`;
+        clone.querySelector('.image a').href = `game/${item.id}/${item.title_url}`;
+        clone.querySelector('.image img').src = (item.media == '') ? 'noimage.png' : `images/games/256/${item.media}.webp`;
+        clone.querySelector('.title').textContent =  item.title;
+        clone.querySelector('.update').href = `game/update/${item.id}`;
 
         container.appendChild(clone);
     });

@@ -14,6 +14,42 @@ function notification(status, message)
     }, 1000 * 3);
 }
 
+function pagination()
+{
+    document.querySelectorAll('.pagination button').forEach(item =>
+    {
+        item.addEventListener('click', () =>
+        {
+            if (item.className == 'previous')
+            {
+                if (previous_offset == null)
+                {
+                    return;
+                }
+
+                offset = previous_offset;
+            }
+            
+            if (item.className == 'next')
+            {
+                if (next_offset == null)
+                {
+                    return;
+                }
+
+                offset = next_offset;
+            }
+            
+            const url = new URL(window.location.href);
+            url.searchParams.set('offset', offset);
+            history.pushState({}, '', url.toString());
+
+            searchParams.set('offset', offset);
+            getJSON();
+        });
+    });
+}
+
 function requestJSON(url, method = 'get', body = null)
 {
     return new Promise((resolve, reject) =>

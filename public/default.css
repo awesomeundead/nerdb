@@ -1,7 +1,5 @@
 .image
 {
-    display: flex;
-
     a
     {
         display: flex;
@@ -55,7 +53,7 @@
     }
 }
 
-#achievements, #friends, #game, #games, #movies, #movie, #movielist, #userlist
+#achievements, #friends, #game, #gamelist, #games, #login, #movies, #movie, #movielist, #userlist
 {
     margin: auto;
     padding: var(--padding-side);
@@ -125,6 +123,28 @@
                 {
                     height: 42px;
                     width: 42px;
+                }
+            }
+        }
+
+        .add
+        {
+            display: flex;
+
+            a
+            {
+                align-items: center;
+                background-color: #3A5;
+                border-radius: 5px;
+                display: flex;
+                font-weight: bold;
+                gap: 5px;
+                padding: 5px;
+
+                &:hover
+                {
+                    background-color: #394;
+                    color: inherit;
                 }
             }
         }
@@ -221,15 +241,13 @@
         .container
         {
             background-color: #333;
-            display: flex;
-            flex-wrap: wrap;
+            display: grid;
+            grid-template-columns: repeat(var(--columns), 1fr);
             gap: 10px;
             padding: 10px;
 
-            .actor
+            .item
             {
-                width: 96px;
-
                 .image img
                 {
                     border-radius: 5px;
@@ -257,6 +275,9 @@
         .container
         {
             background-color: #234;
+            display: grid;
+            grid-template-columns: repeat(var(--columns), 1fr);
+            gap: 10px;
             padding: 10px;
 
             .image
@@ -264,8 +285,6 @@
                 img
                 {
                     border-radius: 5px;
-                    height: 128px;
-                    width: 128px;
                 }
             }
         }
@@ -279,12 +298,10 @@
         {
             display: grid;
             gap: 10px;
-            grid-template-columns: repeat(2, 1fr);
+            grid-template-columns: repeat(var(--columns), 1fr);
 
             .item
             {
-                max-width: 160px;
-
                 img:hover
                 {
                     box-shadow: 0 0 8px 2px #FFF;
@@ -357,17 +374,17 @@
     }
 }
 
-#movielist
+#gamelist, #movielist
 {
     display: flex;
     flex-direction: column;
     gap: 5px;
-        
+
     .container
     {
-        display: flex;
-        flex-direction: column;
-        gap: 5px;
+        display: grid;
+        gap: 10px;
+        grid-template-columns: repeat(var(--columns), 1fr);
 
         .item
         {
@@ -375,7 +392,17 @@
 
             .image img
             {
-                height: 128px;
+                width: 100%;
+            }
+
+            .content
+            {
+                padding: 5px;
+            }
+
+            .title
+            {
+                font-size: 12px;
             }
         }
     }
@@ -405,12 +432,6 @@
         .title
         {
             font-size: var(--min-font-size);
-        }
-
-        .image img
-        {
-            height: 160px;
-            width: 120px;
         }
     }
 }
@@ -515,7 +536,7 @@
     {
         display: grid;
         gap: 10px;
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(var(--columns), 1fr);
 
         .item
         {
@@ -536,21 +557,52 @@
     }
 }
 
-@media (min-width: 1280px)
+#login
 {
-    .user_panel
+    .advice
     {
-        #menu_mobile
+        background-color: #0066ad;
+        margin-bottom: 10px;
+        padding: 20px;
+
+        *
         {
-            display: none;
+            font-family: 'Segoe UI', sans-serif;
         }
 
-        nav
+        ul
         {
             display: flex;
-        }
-    }
+            flex-direction: column;
+            list-style: none;
+            gap: 20px;
+            margin: 0;
+            padding: 0;
 
+            li
+            {
+                display: flex;
+                flex-direction: column;
+                gap: 5px;
+            }
+        }
+
+    }
+}
+
+#not_found
+{
+    text-align: center;
+
+    *
+    {
+        font-family: 'Segoe UI', sans-serif;
+        font-size: 18px;
+    }
+}
+
+@media (min-width: 1280px)
+{
     #best-rated
     {
         .container
@@ -567,12 +619,9 @@
             grid-template-columns: 384px auto;
         }
 
-        .related
+        .cast .container
         {
-            .container
-            {
-                grid-template-columns: repeat(8, 1fr);
-            }
+            grid-template-columns: repeat(10, 1fr);
         }
     }
 

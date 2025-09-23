@@ -13,8 +13,8 @@
             </a>
         </div>
         <div class="content flex_row">
-            <div class="movie_id"></div>
             <div class="title_br"></div>
+            <div class="director"></div>
             <div class="release_year"></div>
             <a class="update" target="_blank">Editar</a>
         </div>
@@ -26,7 +26,7 @@
 const query = new URLSearchParams(location.search);
 const container = document.querySelector('#movielist .container');
 const template = document.querySelector('template');
-const url = new URL('api/v1/movielist', document.baseURI);
+const url = new URL('api/v1/movielist/added', document.baseURI);
 const searchParams = url.searchParams;
 var offset = query.has('offset') ? Number(query.get('offset')) : 0;
 var previous_offset;
@@ -36,18 +36,16 @@ const render = function(json)
 {
     previous_offset = json.previous_offset;
     next_offset = json.next_offset;
-
+    
     container.innerHTML = '';
 
     json.movies.forEach(item =>
     {
         const clone = template.content.cloneNode(true);
         
-        clone.querySelector('.image a').href = `movie/${item.id}`;
+        clone.querySelector('.image a').href = `movie/${item.id}/${item.title_url}`;
         clone.querySelector('.image img').src = (item.media == '') ? 'noimage.png' : `images/256/${item.media}.webp`;
-        clone.querySelector('.movie_id').textContent =  `#${item.id}`;
         clone.querySelector('.title_br').textContent =  item.title_br;
-        clone.querySelector('.release_year').textContent =  item.release_year;
         clone.querySelector('.update').href = `movie/update/${item.id}`;
 
         container.appendChild(clone);

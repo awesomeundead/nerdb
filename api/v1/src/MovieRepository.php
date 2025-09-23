@@ -156,7 +156,7 @@ class MovieRepository
 
     public function getUserMovies(int $userId, int $limit, int $offset = 0): array
     {
-        $query = 'SELECT id, title_br, title_url FROM movies WHERE first_user_id = :user_id LIMIT :offset, :limit';
+        $query = 'SELECT id, title_br, media, title_url FROM movies WHERE first_user_id = :user_id LIMIT :offset, :limit';
         $stmt = $this->pdo->prepare($query);
         $stmt->bindValue('user_id', $userId, PDO::PARAM_INT);
         $stmt->bindValue('offset', $offset, PDO::PARAM_INT);

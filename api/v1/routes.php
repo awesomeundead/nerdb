@@ -96,6 +96,62 @@ return function($route)
 
         return $array;
     }));
+
+    $route->get('/gamelist', jsonMiddleware(function()
+    {
+        $pdo = Database::connect();
+
+        $limit = 80;
+        $offset = $_GET['offset'] ?? 0;
+
+        $service = new GameRepository($pdo);
+        $games = $service->getGames($limit + 1, $offset);
+
+        $hasNextPage = count($games) > $limit;
+
+        if ($hasNextPage)
+        {
+            array_pop($games);
+        }
+
+        return [
+            'games'          => $games,
+            'previous_offset' => $offset > 0 ? max(0, $offset - $limit) : null,
+            'next_offset'     => $hasNextPage ? $offset + $limit : null
+        ];
+    }));
+
+    $route->get('/gamelist/added', jsonMiddleware(function()
+    {
+        $pdo = Database::connect();
+        $userId = Session::get('user_id');
+
+        if(!$userId)
+        {
+            http_response_code(401);
+            echo 'UNAUTHORIZED';
+            exit;
+        }
+
+        $limit = 80;
+        $offset = $_GET['offset'] ?? 0;
+
+        $service = new GameRepository($pdo);
+        $games = $service->getUserGames($userId, $limit + 1, $offset);
+
+        $hasNextPage = count($games) > $limit;
+
+        if ($hasNextPage)
+        {
+            array_pop($games);
+        }
+
+        return [
+            'games'          => $games,
+            'previous_offset' => $offset > 0 ? max(0, $offset - $limit) : null,
+            'next_offset'     => $hasNextPage ? $offset + $limit : null
+        ];
+    }));
     
     $route->get('/games', jsonMiddleware(function()
     {
@@ -110,6 +166,14 @@ return function($route)
 
         $service = new GameRepository($pdo);
         $array['games'] = $service->findGames($filters);
+        return $array;
+    }));
+
+    $route->get('/games/count', jsonMiddleware(function()
+    {
+        $pdo = Database::connect();
+        $service = new GameRepository($pdo);
+        $array['total'] = $service->getCountGames();
         return $array;
     }));
 
@@ -214,11 +278,56 @@ return function($route)
     {
         $pdo = Database::connect();
 
-        $offset = (int)$_GET['offset'] ?? 0;
+        $limit = 80;
+        $offset = $_GET['offset'] ?? 0;
 
         $service = new MovieRepository($pdo);
-        $array['movies'] = $service->getMovies(100, $offset);
-        return $array;
+        $movies = $service->getMovies($limit + 1, $offset);
+
+        $hasNextPage = count($movies) > $limit;
+
+        if ($hasNextPage)
+        {
+            array_pop($movies);
+        }
+
+        return [
+            'movies'          => $movies,
+            'previous_offset' => $offset > 0 ? max(0, $offset - $limit) : null,
+            'next_offset'     => $hasNextPage ? $offset + $limit : null
+        ];
+    }));
+
+    $route->get('/movielist/added', jsonMiddleware(function()
+    {
+        $pdo = Database::connect();
+        $userId = Session::get('user_id');
+
+        if(!$userId)
+        {
+            http_response_code(401);
+            echo 'UNAUTHORIZED';
+            exit;
+        }
+
+        $limit = 80;
+        $offset = $_GET['offset'] ?? 0;
+
+        $service = new MovieRepository($pdo);
+        $movies = $service->getUserMovies($userId, $limit + 1, $offset);
+
+        $hasNextPage = count($movies) > $limit;
+
+        if ($hasNextPage)
+        {
+            array_pop($movies);
+        }
+
+        return [
+            'movies'          => $movies,
+            'previous_offset' => $offset > 0 ? max(0, $offset - $limit) : null,
+            'next_offset'     => $hasNextPage ? $offset + $limit : null
+        ];
     }));
 
     $route->get('/movies', jsonMiddleware(function()

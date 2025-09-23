@@ -79,9 +79,17 @@ class GameRepository
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    public function getCountGames(): int
+    {
+        $query = 'SELECT COUNT(id) FROM games';
+        $stmt = $this->pdo->prepare($query);
+        $stmt->execute();
+        return $stmt->fetchColumn();
+    }
+
     public function getGameDetails($gameId, $userId = null): ?array
     {
-        $game = $this->fetchGame($gameId);
+        $game = $this->fetchGame($gameId, $userId);
 
         if (!$game)
         {
@@ -128,14 +136,14 @@ class GameRepository
 
     public function getUserGames(int $userId, int $limit, int $offset = 0): array
     {
-        $query = 'SELECT id, title, title_url FROM games WHERE first_user_id = :user_id LIMIT :offset, :limit';
+        $query = 'SELECT id, title, media, title_url FROM games WHERE first_user_id = :user_id LIMIT :offset, :limit';
         $stmt = $this->pdo->prepare($query);
         $stmt->bindValue('user_id', $userId, PDO::PARAM_INT);
         $stmt->bindValue('offset', $offset, PDO::PARAM_INT);
         $stmt->bindValue('limit', $limit, PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }    
+    }
 
     public function updateGame(array $data): bool
     {

@@ -25,15 +25,10 @@
             <?php if ($session->logged_in): ?>
             <?php $this->insert('components/connected.php') ?>
             <?php else: ?>
-            <a class="steam_disconnected" href="" title="Entrar com a Steam">
+            <a class="steam_disconnected" href="auth" title="Entrar com a Steam">
                 <span>Entrar com a</span>
                 <img alt="Link para se conectar via Steam" src="logo_steam.svg" />
             </a>
-            <script>
-
-            document.querySelector('.steam_disconnected').href = `auth?redirect=${relativePath}`;
-
-            </script>
             <?php endif ?>
         </div>
         <div class="flex_column">
@@ -67,6 +62,19 @@
 </div>
 
 <script>
+
+const qs = new URLSearchParams(window.location.search);
+const redirect = qs.has('redirect') ? qs.get('redirect') : relativePath;
+
+document.querySelectorAll('.steam_disconnected').forEach(item =>
+{
+    item.href = `auth?redirect=${redirect}`;
+});
+
+document.querySelectorAll('.add a[href="login"]').forEach(item =>
+{
+    item.href = `login?redirect=${redirect}`;
+});
 
 function main_search()
 {

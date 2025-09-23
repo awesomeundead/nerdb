@@ -7,7 +7,7 @@
 :root
 {
     --body-font-size: 16px;
-    --columns: 2;
+    --columns: 3;
     --form-width: 100%;
     --layout-width: 100%;
     --min-font-size: 16px;
@@ -169,6 +169,12 @@ label
     }
 }
 
+.hidden
+{
+    display: none;
+}
+
+
 #app
 {
     display: grid;
@@ -189,7 +195,7 @@ header.main
 
         a
         {
-            background-color: #024;
+            background-color: #136;
             font-weight: bold;
             padding: 10px;
 
@@ -243,8 +249,6 @@ header.main
     }
 }
 
-
-
 .user_panel
 {
     display: flex;
@@ -252,58 +256,62 @@ header.main
     justify-content: end;
     margin: auto;
     padding: 5px 0;
+    position: relative;
 
-    & #menu_mobile
+    button
     {
-        background-color: #FFF;
+        background: #333 no-repeat center/32px url("icon_menu.png");
+        border: none;
         border-radius: 5px;
-        padding: 5px;
-
-        & label
-        {
-            background: no-repeat center/32px url("icon_menu.png");
-            display: block;
-            height: 32px;
-            width: 32px;
-        }
-
-        & input
-        {
-            display: none;
-        }
-
-        &:has(input:checked) ~ nav
-        {
-            background-color: #FFF;
-            display: flex;
-            flex-direction: column;
-            left: 0;
-            padding: 10px;
-            position: absolute;
-            top: 52px;
-            width: 100%;
-            z-index: 9999;
-        }
-    }
-
-    & nav
-    {
-        display: none;
-        gap: 5px;
-    }
-
-    & a
-    {
-        align-items: center;
-        background-color: #024;
-        border-radius: 5px;
-        display: flex;
+        height: 42px;
         padding: 5px 10px;
-        
+        width: 42px;
+
         &:hover
         {
-            background-color: #135;
-            color: #FFF;
+            background-color: #444;
+        }
+    }
+
+    nav
+    {
+        background-color: #136;
+        border-radius: 5px;
+        position: absolute;
+        top: 52px;
+        z-index: 1000;
+
+        *
+        {
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        .content
+        {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            padding: 10px;
+
+            a
+            {
+                padding: 10px;
+                width: 200px;
+                
+                &:hover
+                {
+                    background-color: #CCC;
+                    color: #333;
+                }
+            }
+
+            .logout
+            {
+                align-items: center;
+                background-color: #999;
+                color: #333;
+                display: flex;
+            }
         }
     }
 
@@ -333,11 +341,6 @@ header.main
             font-weight: bold;
         }
     }
-
-    & .logout
-    {
-        background-color: #555;
-    }
 }
 
 .steam_disconnected
@@ -365,6 +368,14 @@ header.main
 
 @media (min-width: 1600px)
 {
+    .user_panel
+    {
+        nav
+        {
+            --display: flex;
+        }
+    }
+
     header.main
     {
         margin: auto;

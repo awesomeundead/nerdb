@@ -68,11 +68,12 @@
                 <button class="star" data-value="9" title="9 estrelas" type="button"></button>
                 <button class="star" data-value="10" title="10 estrelas" type="button"></button>
             </div>
+            <!--
             <div class="review">
                 <div>Minha análise</div>
                 <textarea maxlength="255"></textarea>
                 <button>Editar análise</button>
-            </div>
+            </div>-->
 
             <script>
 
@@ -80,7 +81,7 @@
                     watchlist: <?= $movie['watchlist'] ?? 0 ?>,
                     watched: <?= $movie['watched'] ?? 0 ?>,
                     liked: <?= $movie['liked'] ?? 0 ?>,
-                    rating: <?= $movie['rating'] ?? 0 ?>,
+                    rating: <?= $movie['rating'] ?? 0 ?>
                 };
 
                 document.querySelectorAll('.toggle button').forEach(item =>
@@ -98,6 +99,12 @@
                     item.addEventListener('click', () => 
                     {
                         reaction(item);
+
+                        if (item.dataset.action == 'liked' && item.dataset.value == 1)
+                        {
+                            //console.log(1);
+                            //document.querySelector('.icon.watched').click();
+                        }
                     });
                 });
 
@@ -118,6 +125,13 @@
                 });
 
             </script>
+            <?php else: ?>
+            <div class="add">
+                <a href="login">
+                    <img alt="Ícone de salvar na lista" height="32px" src="saved_empty.png" />
+                    <span>Adicionar à minha lista</span>
+                </a>
+            </div>
             <?php endif ?>
 
         </div>
@@ -129,7 +143,7 @@
         <div class="label">Elenco</div>
         <div class="container">
         <?php foreach ($movie['cast'] as $actor): ?>
-            <div class="actor">
+            <div class="item">
                 <div class="image">
                     <a href="movies/search?q=ator:<?= $actor['name'] ?>">
                         <?php if ($actor['media']): ?>
@@ -155,7 +169,7 @@
     <?php if ($movie['friends']): ?>
     <div class="friends flex_row">
         <div class="label">Avaliação dos amigos</div>
-        <div class="container flex_column wrap">
+        <div class="container">
         <?php foreach ($movie['friends'] as $friend): ?>
             <div class="item">
                 <div class="flex_column">

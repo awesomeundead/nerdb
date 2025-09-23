@@ -22,7 +22,7 @@ function authMiddleware($handler)
         {
             $uri = substr_replace(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH), '', 0, strlen(BASE_PATH));
 
-            redirect("auth?redirect={$uri}");
+            redirect("login?redirect={$uri}");
         }
 
         $handler($vars);
@@ -81,6 +81,14 @@ return function(RouteCollector $route)
     $route->get('/', function()
     {
         $template = templates()->make('index.html');
+        $template->layout('layouts/default.php');
+
+        echo $template->render();
+    });
+
+    $route->get('/404', function()
+    {
+        $template = templates()->make('404.html');
         $template->layout('layouts/default.php');
 
         echo $template->render();
@@ -154,14 +162,16 @@ return function(RouteCollector $route)
         $service = new GameRepository($pdo);
         $result = $service->getGameDetails($gameId, $userId);
 
+        $title = "{$result['title']} ({$result['release_year']})";
+
         $result['developer'] = explode(';', $result['developer']);
         $result['genres'] = explode(';', $result['genres']);
 
         $data['open_graph']['image'] = HOST . BASE_PATH . "/images/games/512/{$result['media']}.webp";
-        $data['open_graph']['title'] = $result['title'];
+        $data['open_graph']['title'] = $title;
 
         $template = templates($data)->make('game.php', ['game' => $result]);
-        $template->layout('layouts/default.php', ['title' => $result['title']]);
+        $template->layout('layouts/default.php', ['title' => $title]);
 
         echo $template->render();
     });
@@ -178,6 +188,22 @@ return function(RouteCollector $route)
     {
         $template = templates()->make('game_update.html');
         $template->layout('layouts/default.php', ['title' => 'Atualizar jogo']);
+
+        echo $template->render();
+    }));
+
+    $route->get('/gamelist', function()
+    {
+        $template = templates()->make('gamelist.html');
+        $template->layout('layouts/default.php', ['title' => 'Lista de jogos']);
+
+        echo $template->render();
+    });
+
+    $route->get('/gamelist/added', authMiddleware(function()
+    {
+        $template = templates()->make('gamelist_added.html');
+        $template->layout('layouts/default.php', ['title' => 'Jogos que eu adicionei']);
 
         echo $template->render();
     }));
@@ -211,7 +237,7 @@ return function(RouteCollector $route)
     {
         $logged_in = Session::get('logged_in');
 
-        if (!$logged_in)
+        if ($logged_in)
         {
             redirect('/');
         }
@@ -244,14 +270,16 @@ return function(RouteCollector $route)
         $service = new MovieRepository($pdo);
         $result = $service->getMovieDetails($movieId, $userId);
 
+        $title = "{$result['title_br']} ({$result['release_year']})";
+
         $result['director'] = explode(';', $result['director']);
         $result['genres'] = explode(';', $result['genres']);
 
         $data['open_graph']['image'] = HOST . BASE_PATH . "/images/512/{$result['media']}.webp";
-        $data['open_graph']['title'] = $result['title_br'];
+        $data['open_graph']['title'] = $title;
 
         $template = templates($data)->make('movie.php', ['movie' => $result]);
-        $template->layout('layouts/default.php', ['title' => $result['title_br']]);
+        $template->layout('layouts/default.php', ['title' => $title]);
 
         echo $template->render();
     });
@@ -279,6 +307,14 @@ return function(RouteCollector $route)
 
         echo $template->render();
     });
+
+    $route->get('/movielist/added', authMiddleware(function()
+    {
+        $template = templates()->make('movielist_added.html');
+        $template->layout('layouts/default.php', ['title' => 'Filmes que eu adicionei']);
+
+        echo $template->render();
+    }));
 
     $route->get('/movies', function()
     {
@@ -315,23 +351,6 @@ return function(RouteCollector $route)
 
     $route->get('/mymovielist', authMiddleware(function()
     {
-        $template = templates()->make('mymovielist.html');
-        $template->layout('layouts/default.php', ['title' => 'Minha lista de filmes']);
-
-        echo $template->render();
-    }));
-
-    $route->get('/movies/added', authMiddleware(function()
-    {
-        $pdo = Database::connect();
-        $userId = Session::get('user_id');
-
-        $service = new MovieRepository($pdo);
-        $result = $service->getUserMovies($userId, 10);
-
-        print_r($result);
-
-        exit;
         $template = templates()->make('mymovielist.html');
         $template->layout('layouts/default.php', ['title' => 'Minha lista de filmes']);
 

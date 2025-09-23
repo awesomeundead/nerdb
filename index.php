@@ -2,6 +2,8 @@
 
 use \FastRoute\Dispatcher;
 
+class HttpException extends \Exception {}
+
 $http_method = $_SERVER['REQUEST_METHOD'];
 $uri = substr_replace(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH), '', 0, strlen(BASE_PATH));
 
@@ -15,12 +17,10 @@ try
     switch ($route_info[0])
     {
         case Dispatcher::NOT_FOUND:
-            http_response_code(404);
-            echo 'NOT_FOUND';
+            throw new HttpException('NOT FOUND', 404);
             break;
         case Dispatcher::METHOD_NOT_ALLOWED:
-            http_response_code(405);
-            echo 'METHOD_NOT_ALLOWED';
+            throw new HttpException('METHOD NOT ALLOWED', 405);
             break;
         case Dispatcher::FOUND:
             [,$handler, $vars] = $route_info;
@@ -35,6 +35,15 @@ try
             }
 
             break;
+    }
+}
+catch (HttpException $e)
+{
+    if (in_array($e->getCode(), [404, 405]))
+    {
+        http_response_code(404);
+        $fallback = $dispatcher->dispatch('GET', '/404');
+        call_user_func($fallback[1]);
     }
 }
 catch (Throwable $error)

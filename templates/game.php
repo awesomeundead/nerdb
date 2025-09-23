@@ -105,6 +105,13 @@
                 });
 
             </script>
+            <?php else: ?>
+            <div class="add">
+                <a href="login">
+                    <img alt="Ícone de salvar na lista" height="32px" src="saved_empty.png" />
+                    <span>Adicionar à minha lista</span>
+                </a>
+            </div>
             <?php endif ?>
         </div>
     </div>
@@ -112,7 +119,7 @@
     <?php if ($game['friends']): ?>
     <div class="friends flex_row">
         <div class="label">Avaliação dos amigos</div>
-        <div class="container flex_column wrap">
+        <div class="container">
         <?php foreach ($game['friends'] as $friend): ?>
             <div class="item">
                 <div class="flex_column">
