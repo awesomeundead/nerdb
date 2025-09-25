@@ -16,39 +16,42 @@
 
 <script>
 
-const container = document.querySelector('#movies_media');
-const template = document.querySelector('template');
-const url = new URL('api/v1/movies/random', document.baseURI);
-
-const render = function({ movies })
+const list = new ContentList(
 {
-    container.innerHTML = '';
-
-    movies.forEach(item =>
+    url: 'api/v1/movies/random',
+    containerSelector: '#movies_media',
+    templateSelector: 'template',
+    render: (json, container, template) =>
     {
-        const clone = template.content.cloneNode(true);
+        const items = json.movies || [];
 
-        clone.querySelector('a').href = `movie/${item.id}/${item.title_url}`;
-        clone.querySelector('img').alt = `Cartaz do filme ${item.title_br}`;
-        clone.querySelector('img').src = `images/512/${item.media}.webp`;
+        container.innerHTML = '';
 
-        container.appendChild(clone);
-    });
-
-    const swiper = new Swiper('.mySwiper',
-    {
-        autoplay:
+        items.forEach(item =>
         {
-            delay: 1000,
-            disableOnInteraction: false,
-        },
-        slidesPerView: 'auto',
-        spaceBetween: 5,
-        freeMode: true
-    });
-}
+            const clone = template.content.cloneNode(true);
 
-url.searchParams.set('order', 'random');
-getJSON();
+            clone.querySelector('a').href = `movie/${item.id}/${item.title_url}`;
+            clone.querySelector('img').alt = `Cartaz do filme ${item.title_br}`;
+            clone.querySelector('img').src = `images/512/${item.media}.webp`;
+
+            container.appendChild(clone);
+        });
+
+        const swiper = new Swiper('.mySwiper',
+        {
+            autoplay:
+            {
+                delay: 1000,
+                disableOnInteraction: false,
+            },
+            slidesPerView: 'auto',
+            spaceBetween: 5,
+            freeMode: true
+        });
+    }
+});
+
+list.init();
 
 </script>

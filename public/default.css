@@ -53,6 +53,38 @@
     }
 }
 
+.pagination .content
+{
+    display: flex;
+    gap: 5px;
+    margin-bottom: 10px;
+
+    button
+    {
+        background-color: #444;
+        background-color: #EB0;
+        border: none;
+        border-radius: 5px;
+        color: #222;
+        cursor: pointer;
+        font-weight: bold;
+        padding: 10px;
+        user-select: none;
+
+        &:disabled
+        {
+            cursor: none;
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        &:hover
+        {
+            background-color: #FD0;
+        }
+    }
+}
+
 #achievements, #friends, #game, #gamelist, #games, #login, #movies, #movie, #movielist, #userlist
 {
     margin: auto;
@@ -81,6 +113,44 @@
         display: block;
         height: 320px;
         object-fit: cover;
+    }
+}
+
+#home_loggedin
+{
+    margin: auto;
+    padding: var(--padding-side);
+    width: var(--layout-width);
+
+    .games, .movies
+    {
+        background-color: #234;
+        border-radius: 5px;
+        gap: 10px;
+        margin: 10px 0;
+        padding: 10px;
+
+        .label
+        {
+            font-family: 'Segoe UI', sans-serif;
+            font-weight: bold;
+        }
+
+        .container
+        {
+            display: grid;
+            gap: 10px;
+            grid-template-columns: repeat(var(--columns), 1fr);
+
+            .item
+            {
+                .title
+                {
+                    
+                    font-size: 12px;
+                }
+            }
+        }
     }
 }
 

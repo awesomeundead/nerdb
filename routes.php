@@ -16,9 +16,9 @@ function authMiddleware($handler)
 {
     return function($vars) use ($handler)
     {
-        $logged_in = Session::get('logged_in');
+        $loggedIn = Session::get('logged_in');
 
-        if (!$logged_in)
+        if (!$loggedIn)
         {
             $uri = substr_replace(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH), '', 0, strlen(BASE_PATH));
 
@@ -28,18 +28,6 @@ function authMiddleware($handler)
         $handler($vars);
     };
 };
-
-function jsonMiddleware($handler)
-{
-    return function($vars) use ($handler)
-    {
-        header('Content-Type: application/json; charset=utf-8');
-
-        $result = $handler($vars);
-
-        echo json_encode($result, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
-    };
-}
 
 function templates(array $data = []): Engine
 {
@@ -80,7 +68,52 @@ return function(RouteCollector $route)
 {
     $route->get('/', function()
     {
-        $template = templates()->make('index.html');
+        $loggedIn = Session::get('logged_in');
+        $userId = Session::get('user_id');
+
+        if ($loggedIn)
+        {
+            $pdo = Database::connect();
+            $service = new UserService($pdo);
+            $count = $service->countFriends($userId);
+
+            $service = new UserMovielist($pdo);
+
+            if ($count)
+            {
+                $data['movies_label'] = 'Sugestões de filmes que você ainda não viu e que seus amigos avaliaram bem.';
+                $data['movies'] = $service->getMoviesRatedByFriends($userId);
+            }
+            else
+            {
+                $data['movies_label'] = 'Sugestões de filmes que você ainda não viu e que outras pessoas avaliaram bem.';
+                $data['movies'] = $service->getMoviesRatedByUsers($userId);
+            }
+
+            $service = new UserGamelist($pdo);
+
+            if ($count)
+            {
+                $data['games_label'] = 'Sugestões de jogos que você ainda não jogou e que seus amigos avaliaram bem.';
+                $data['games'] = $service->getGamesRatedByFriends($userId);
+            }
+            else
+            {
+                $data['games_label'] = 'Sugestões de jogos que você ainda não jogou e que outras pessoas avaliaram bem.';
+                $data['games'] = $service->getGamesRatedByUsers($userId);
+            }
+
+            if ($data['movies'] || $data['games'])
+            {
+                $template = templates()->make('index.php', $data);
+            }
+        }
+
+        if (!isset($template))
+        {
+            $template = templates()->make('index.html');
+        }
+
         $template->layout('layouts/default.php');
 
         echo $template->render();
@@ -92,18 +125,6 @@ return function(RouteCollector $route)
         $template->layout('layouts/default.php');
 
         echo $template->render();
-    });
-
-    $route->get('/test', function()
-    {
-        $pdo = Database::connect();
-        $loggedIn = Session::get('logged_in');
-        $userId = Session::get('user_id');
-
-        $service = new GameRepository($pdo);
-        $result = $service->getGameId('Half-Life 2', '2004');
-
-        var_dump($result);
     });
     
     $route->get('/achievements', authMiddleware(function()
@@ -235,9 +256,9 @@ return function(RouteCollector $route)
 
     $route->get('/login', function()
     {
-        $logged_in = Session::get('logged_in');
+        $loggedIn = Session::get('logged_in');
 
-        if ($logged_in)
+        if ($loggedIn)
         {
             redirect('/');
         }

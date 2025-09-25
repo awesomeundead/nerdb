@@ -1,3 +1,143 @@
+class ContentList
+{
+    constructor({ url, containerSelector, templateSelector, render, pagination = false})
+    {
+        this.baseURL = new URL(url, document.baseURI);
+        this.container = document.querySelector(containerSelector);
+        this.template = document.querySelector(templateSelector);
+        this.render = render;
+        this.pagination = pagination;
+
+        if (pagination)
+        {
+            this.offset = new URLSearchParams(window.location.search).get('offset') || 0;
+            this.previous_offset = null;
+            this.next_offset = null
+        }
+
+        if (!this.container || !this.template)
+        {
+            throw new Error('Container ou template não encontrados.');
+        }
+    }
+
+    setQueryParams(params = {})
+    {
+        for (const [key, value] of Object.entries(params))
+        {
+            this.baseURL.searchParams.set(key, value);
+        }
+    }
+
+    removeQueryParam(key)
+    {
+        this.baseURL.searchParams.delete(key);
+    }
+
+    next()
+    {
+        if (this.pagination && this.next_offset != null)
+        {
+            this.setOffset(this.next_offset);
+            this.init();
+        }
+    }
+
+    previous()
+    {
+        if (this.pagination && this.previous_offset != null)
+        {
+            this.setOffset(this.previous_offset);
+            this.init();
+        }
+    }
+
+    resetOffset()
+    {
+        if (this.pagination)
+        {
+            this.offset = 0;
+            this.previous_offset = null;
+            this.next_offset = null
+        }
+
+        const url = new URL(window.location.href);
+        url.searchParams.delete('offset');
+        history.pushState({}, '', url.toString());
+    }
+
+    setOffset(offset)
+    {
+        if (this.pagination)
+        {
+            this.offset = offset;
+            this.baseURL.searchParams.set('offset', offset);
+
+            const url = new URL(window.location.href);
+            url.searchParams.set('offset', offset);
+            history.pushState({}, '', url.toString());
+        }
+    }
+
+    updatePaginationControls()
+    {
+        const paginationCard = document.querySelector('.pagination');
+
+        if (!paginationCard) return;
+
+        console.log(this.previous_offset, this.next_offset);
+
+        paginationCard.hidden = (this.previous_offset == null && this.next_offset == null);
+        paginationCard.querySelector('.previous').disabled = this.previous_offset == null;
+        paginationCard.querySelector('.next').disabled = this.next_offset == null;
+    }
+
+
+    async fetchData(method = 'GET', body = null)
+    {
+        const options = {
+            method,
+            headers: { 'Content-Type': 'application/json; charset=utf-8' },
+            body: body ? JSON.stringify(body) : null
+        };
+
+        const response = await fetch(this.baseURL, options);
+
+        if (!response.ok)
+        {
+            throw new Error(response.statusText);
+        }
+
+        return await response.json();
+    }
+
+    async init()
+    {
+        try
+        {
+            if (this.pagination)
+            {
+                this.baseURL.searchParams.set('offset', this.offset);
+            }
+
+            const data = await this.fetchData();
+
+            if (this.pagination)
+            {
+                this.previous_offset = data.previous_offset;
+                this.next_offset = data.next_offset;
+                this.updatePaginationControls();
+            }
+
+            this.render(data, this.container, this.template);
+        }
+        catch (error)
+        {
+            console.error('Erro ao carregar lista:', error);
+        }
+    }
+}
+
 function notification(status, message)
 {
     const card = document.createElement('div');
@@ -12,42 +152,6 @@ function notification(status, message)
         card.remove();
 
     }, 1000 * 3);
-}
-
-function pagination()
-{
-    document.querySelectorAll('.pagination button').forEach(item =>
-    {
-        item.addEventListener('click', () =>
-        {
-            if (item.className == 'previous')
-            {
-                if (previous_offset == null)
-                {
-                    return;
-                }
-
-                offset = previous_offset;
-            }
-            
-            if (item.className == 'next')
-            {
-                if (next_offset == null)
-                {
-                    return;
-                }
-
-                offset = next_offset;
-            }
-            
-            const url = new URL(window.location.href);
-            url.searchParams.set('offset', offset);
-            history.pushState({}, '', url.toString());
-
-            searchParams.set('offset', offset);
-            getJSON();
-        });
-    });
 }
 
 function requestJSON(url, method = 'get', body = null)
@@ -112,20 +216,7 @@ function get_directors()
     });
 }
 
-function getJSON()
-{
-    requestJSON(url)
-    .then(json =>
-    {
-        render(json)
-    })
-    .catch(error =>
-    {
-        console.error('Erro ao carregar:', error);
-    });
-}
-
-function sendForm(form, method)
+function sendForm(url, form, method)
 {
     const submit = form.querySelector('[type="submit"]');
     
@@ -164,8 +255,9 @@ function sendForm(form, method)
     });
 }
 
-const addForm = (form) => sendForm(form, 'post');
-const updateForm = (form) => sendForm(form, 'put');
+const addForm = (url, form) => sendForm(url, form, 'post');
+const updateForm = (url, form) => sendForm(url, form, 'put');
 
+const query = new URLSearchParams(window.location.search);
 const relativePath = window.location.href.substring(document.baseURI.length);
 const routeSegments = relativePath ? relativePath.split('/') : [];

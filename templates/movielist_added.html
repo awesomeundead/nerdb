@@ -1,7 +1,9 @@
 <div id="movielist">
     <div class="pagination">
-        <button class="previous" type="button">Anterior</button>
-        <button class="next" type="button">Próximo</button>
+        <div class="content">
+            <button class="previous" type="button">Anterior</button>
+            <button class="next" type="button">Próximo</button>
+        </div>
     </div>
     <div class="container"></div>
 </div>
@@ -23,37 +25,35 @@
 
 <script>
 
-const query = new URLSearchParams(location.search);
-const container = document.querySelector('#movielist .container');
-const template = document.querySelector('template');
-const url = new URL('api/v1/movielist/added', document.baseURI);
-const searchParams = url.searchParams;
-var offset = query.has('offset') ? Number(query.get('offset')) : 0;
-var previous_offset;
-var next_offset;
-
-const render = function(json)
+const list = new ContentList(
 {
-    previous_offset = json.previous_offset;
-    next_offset = json.next_offset;
-    
-    container.innerHTML = '';
-
-    json.movies.forEach(item =>
+    url: 'api/v1/movielist/added',
+    containerSelector: '#movielist .container',
+    templateSelector: 'template',
+    pagination: true,
+    render: (json, container, template) =>
     {
-        const clone = template.content.cloneNode(true);
-        
-        clone.querySelector('.image a').href = `movie/${item.id}/${item.title_url}`;
-        clone.querySelector('.image img').src = (item.media == '') ? 'noimage.png' : `images/256/${item.media}.webp`;
-        clone.querySelector('.title_br').textContent =  item.title_br;
-        clone.querySelector('.update').href = `movie/update/${item.id}`;
+        const items = json.movies || [];
 
-        container.appendChild(clone);
-    });
-}
+        container.innerHTML = '';
 
-searchParams.set('offset', offset);
-getJSON();
-pagination();
+        items.forEach(item =>
+        {
+            const clone = template.content.cloneNode(true);
+            
+            clone.querySelector('.image a').href = `movie/${item.id}/${item.title_url}`;
+            clone.querySelector('.image img').src = (item.media == '') ? 'noimage.png' : `images/256/${item.media}.webp`;
+            clone.querySelector('.title_br').textContent =  item.title_br;
+            clone.querySelector('.update').href = `movie/update/${item.id}`;
+
+            container.appendChild(clone);
+        });
+    }
+});
+
+list.init();
+
+document.querySelector('.pagination .next').addEventListener('click', () => list.next());
+document.querySelector('.pagination .previous').addEventListener('click', () => list.previous());
 
 </script>

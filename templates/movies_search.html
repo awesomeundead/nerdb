@@ -1,5 +1,11 @@
 <div id="movies">
     <div class="advice">Não achou o filme que queria? Torne nossa comunidade mais completa: entre e adicione o filme você mesmo.</div>
+    <div class="pagination" hidden="hidden">
+        <div class="content">
+            <button class="previous" type="button">Anterior</button>
+            <button class="next" type="button">Próximo</button>
+        </div>
+    </div>
     <div class="container"></div>
 </div>
 <template>
@@ -30,38 +36,44 @@
 
 <script>
 
-const query = new URLSearchParams(window.location.search);
-const container = document.querySelector('#movies .container');
-const template = document.querySelector('template');
-const url = new URL('api/v1/movies', document.baseURI);
-const searchParams = url.searchParams;
-
-const render = function({ movies })
+const list = new ContentList(
 {
-    container.innerHTML = '';
-
-    movies.forEach(item =>
+    url: 'api/v1/movies',
+    containerSelector: '#movies .container',
+    templateSelector: 'template',
+    pagination: true,
+    render: (json, container, template) =>
     {
-        const clone = template.content.cloneNode(true);
-        const directors = item.director.split(';');
+        const items = json.movies || [];
 
-        directors.forEach(director =>
+        container.innerHTML = '';
+
+        items.forEach(item =>
         {
-            const element = document.createElement('a');
-            element.href = `movies/search?q=diretor:${director}`;
-            element.textContent = director;
-            clone.querySelector('.director').appendChild(element);
+            const clone = template.content.cloneNode(true);
+            const directors = item.director.split(';');
+
+            directors.forEach(director =>
+            {
+                const element = document.createElement('a');
+                element.href = `movies/search?q=diretor:${director}`;
+                element.textContent = director;
+                clone.querySelector('.director').appendChild(element);
+            });
+
+            clone.querySelector('a').href = `movie/${item.id}/${item.title_url}`;
+            clone.querySelector('img').src = item.media?.trim() ? `images/256/${item.media}.webp` : 'noimage.png';
+            clone.querySelector('.title_br').textContent =  `${item.title_br} (${item.release_year})`;
+            clone.querySelector('.title_us').textContent =  item.title_us;
+            clone.querySelector('.imdb a').href =  `https://www.imdb.com/pt/title/${item.imdb}/`;
+
+            container.appendChild(clone);
         });
+    }
+});
 
-        clone.querySelector('a').href = `movie/${item.id}/${item.title_url}`;
-        clone.querySelector('img').src = item.media?.trim() ? `images/256/${item.media}.webp` : 'noimage.png';
-        clone.querySelector('.title_br').textContent =  `${item.title_br} (${item.release_year})`;
-        clone.querySelector('.title_us').textContent =  item.title_us;
-        clone.querySelector('.imdb a').href =  `https://www.imdb.com/pt/title/${item.imdb}/`;
-
-        container.appendChild(clone);
-    });
-}
+document.querySelector('.pagination .next').addEventListener('click', () => list.next());
+document.querySelector('.pagination .previous').addEventListener('click', () => list.previous());
 
 search.addEventListener('submit', e =>
 {
@@ -74,7 +86,7 @@ search.addEventListener('submit', e =>
         window.history.replaceState({}, '', url);
 
         document.title = search_movie(search.q.value);
-        getJSON();
+        list.init();
     }
 });
 
@@ -82,14 +94,7 @@ if (query.has('q'))
 {
     search.q.value = query.get('q');
     document.title = search_movie(query.get('q'));
-    getJSON();
-}
-else
-{
-    searchParams.set('order', 'random');
-    getJSON();
-
-    document.title = 'Filmes aleatórios';
+    list.init();
 }
 
 function search_movie(value)
@@ -105,17 +110,17 @@ function search_movie(value)
     
     if (match && filters[match[1]])
     {
-        searchParams.set(filters[match[1]], match[2]);
+        list.setQueryParams({ [filters[match[1]]]: match[2], 'offset': 0 });
         return match[2];
     }
 
     if (/^\d{4}$/.test(value))
     {
-        searchParams.set('release', value);
+        list.setQueryParams({ 'release': value, 'offset': 0 });
         return value;
     }
 
-    searchParams.set('search', value);
+    list.setQueryParams({ 'search': value, 'offset': 0 });
     return value;
 }
 

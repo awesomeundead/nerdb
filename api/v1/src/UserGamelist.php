@@ -13,7 +13,7 @@ class UserGamelist
         $this->userId = $userId;
     }
 
-    public function getGames(array $filters = []): array
+    public function getGames(array $filters = [], int $limit, int $offset = 0): array
     {
         [$conditions, $operator, $params] = $this->buildConditions($filters); 
 
@@ -28,6 +28,8 @@ class UserGamelist
             $query .= ' ORDER BY list.rating DESC';
         }
 
+        $query .= " LIMIT {$offset}, {$limit}";
+
         $params['user_id'] = $this->userId;
 
         $stmt = $this->pdo->prepare($query);
@@ -35,7 +37,7 @@ class UserGamelist
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }    
 
-    public function getGamesFriends($friendId, array $filters = []): array
+    public function getGamesFriends($friendId, array $filters = [], int $limit, int $offset = 0): array
     {
         [$conditions, $operator, $params] = $this->buildConditions($filters);
 
@@ -55,11 +57,66 @@ class UserGamelist
             $query .= ' ORDER BY list.rating DESC';
         }
 
+        $query .= " LIMIT {$offset}, {$limit}";
+
         $params['user_id'] = $this->userId;
         $params['friend_id'] = $friendId;
 
         $stmt = $this->pdo->prepare($query);
         $stmt->execute($params);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function getGamesRatedByFriends(int $userId): array
+    {
+        $query =   'SELECT g.id, g.title, g.release_year, g.media, g.title_url, AVG(ugl.rating) AS avg_rating, COUNT(*) AS rating_count
+                    FROM user_game_list AS ugl
+                    INNER JOIN games AS g ON g.id = ugl.game_id
+                    WHERE 
+                    ugl.rating > 0
+                    AND ugl.user_id IN (
+                        SELECT 
+                            CASE 
+                                WHEN f.user_id1 = :user_id THEN f.user_id2
+                                ELSE f.user_id1
+                            END
+                        FROM friendship AS f
+                        WHERE f.user_id1 = :user_id OR f.user_id2 = :user_id
+                    )
+                    AND ugl.game_id NOT IN (
+                        SELECT game_id
+                        FROM user_game_list
+                        WHERE user_id = :user_id AND played = 1
+                    )
+                    GROUP BY g.id, g.title
+                    HAVING COUNT(*) >= 2
+                    ORDER BY avg_rating DESC, rating_count DESC
+                    LIMIT 8';
+        $stmt = $this->pdo->prepare($query);
+        $stmt->bindValue('user_id', $userId, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function getGamesRatedByUsers(int $userId): array
+    {
+        $query =   'SELECT g.id, g.title, g.release_year, g.media, g.title_url, AVG(ugl.rating) AS avg_rating, COUNT(*) AS rating_count
+                    FROM user_game_list AS ugl
+                    INNER JOIN games AS g ON g.id = ugl.game_id
+                    WHERE 
+                    ugl.rating > 0
+                    AND ugl.game_id NOT IN (
+                        SELECT game_id
+                        FROM user_game_list
+                        WHERE user_id = :user_id AND played = 1
+                    )
+                    GROUP BY g.id, g.title
+                    HAVING COUNT(*) >= 2
+                    ORDER BY avg_rating DESC, rating_count DESC
+                    LIMIT 8';
+        $stmt = $this->pdo->prepare($query);
+        $stmt->bindValue('user_id', $userId, PDO::PARAM_INT);
+        $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 

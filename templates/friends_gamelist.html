@@ -17,6 +17,12 @@
             <label for="rating_checkbox">Melhor avaliou</label>
         </div>
     </div>
+    <div class="pagination">
+        <div class="content">
+            <button class="previous" type="button">Anterior</button>
+            <button class="next" type="button">Próximo</button>
+        </div>
+    </div>
     <div class="container compare"></div>
 </div>
 <template>
@@ -61,97 +67,107 @@
 <script>
 
 const friend_id = routeSegments[2];
-const container = document.querySelector('#userlist .container');
-const template = document.querySelector('template');
-const url = new URL(`api/v1/userlist/games/${friend_id}`, document.baseURI);
-const searchParams = url.searchParams;
-
-const render = function({ games })
+const list = new ContentList(
 {
-    if (!games.length)
+    url: `api/v1/userlist/games/${friend_id}`,
+    containerSelector: '#userlist .container',
+    templateSelector: 'template',
+    pagination: true,
+    render: (json, container, template) =>
     {
-        container.innerHTML = '<div class="centralizado">Não foram encontrados jogos nesta lista.</div>';
+        const items = json.games || [];
 
-        return;
+        if (!items.length)
+        {
+            container.innerHTML = '<div class="centralizado">Não foram encontrados jogos nesta lista.</div>';
+
+            return;
+        }
+
+        container.innerHTML = '';
+
+        const disable = (clone, selector, condition = true) =>
+        {
+            const element = clone.querySelector(selector);
+
+            if (condition)
+            {
+                element.classList.add('disable');
+            }
+        }
+        
+        items.forEach(item =>
+        {
+            const clone = template.content.cloneNode(true);
+
+            clone.querySelector('a').href = `game/${item.id}/${item.title_url}`;
+            clone.querySelector('.image img').src = item.media?.trim() ? `images/games/256/${item.media}.webp` : 'noimage.png';
+            clone.querySelector('.title').textContent =  item.title;
+
+            if (!item.playlist)
+            {
+                disable(clone, '.playlist.friend');
+            }
+
+            disable(clone, '.played.friend', !item.played);
+            disable(clone, '.liked.friend', !item.liked);
+
+            if (item.rating)
+            {
+                clone.querySelector('.rating.friend').textContent = item.rating;
+            }
+            else
+            {
+                disable(clone, '.rating.friend');
+            }
+
+            /* minha lista */
+
+            if (!item.gl_playlist || item.gl_played)
+            {
+                disable(clone, '.playlist.me');
+            }
+
+            disable(clone, '.played.me', !item.gl_played);
+            disable(clone, '.liked.me', !item.gl_liked);
+
+            if (item.gl_rating)
+            {
+                clone.querySelector('.rating.me').textContent = item.gl_rating;
+            }
+            else
+            {
+                disable(clone, '.rating.me');
+            }
+
+            container.appendChild(clone);
+        });
     }
+});
 
-    container.innerHTML = '';
+list.init();
 
-    const disable = (clone, selector, condition = true) =>
-    {
-        const element = clone.querySelector(selector);
-
-        if (condition)
-        {
-            element.classList.add('disable');
-        }
-    }
-
-    games.forEach(item =>
-    {
-        const clone = template.content.cloneNode(true);
-
-        clone.querySelector('a').href = `game/${item.id}/${item.title_url}`;
-        clone.querySelector('.image img').src = item.media?.trim() ? `images/games/256/${item.media}.webp` : 'noimage.png';
-        clone.querySelector('.title').textContent =  item.title;
-
-        if (!item.playlist)
-        {
-            disable(clone, '.playlist.friend');
-        }
-
-        disable(clone, '.played.friend', !item.played);
-        disable(clone, '.liked.friend', !item.liked);
-
-        if (item.rating)
-        {
-            clone.querySelector('.rating.friend').textContent = item.rating;
-        }
-        else
-        {
-            disable(clone, '.rating.friend');
-        }
-
-        /* minha lista */
-
-        if (!item.gl_playlist || item.gl_played)
-        {
-            disable(clone, '.playlist.me');
-        }
-
-        disable(clone, '.played.me', !item.gl_played);
-        disable(clone, '.liked.me', !item.gl_liked);
-
-        if (item.gl_rating)
-        {
-            clone.querySelector('.rating.me').textContent = item.gl_rating;
-        }
-        else
-        {
-            disable(clone, '.rating.me');
-        }
-
-        container.appendChild(clone);
-    });
-}
+document.querySelector('.pagination .next').addEventListener('click', () => list.next());
+document.querySelector('.pagination .previous').addEventListener('click', () => list.previous());
 
 document.querySelectorAll('#playlist_checkbox, #played_checkbox, #liked_checkbox, #rating_checkbox').forEach(item =>
 {
     item.addEventListener('click', () =>
     {
+        const key = item.dataset.filter;
+        
         if (item.checked)
         {
-            searchParams.set(item.dataset.filter, 1);
+            list.setQueryParams({ [key]: 1 });
         }
         else
         {
-            searchParams.delete(item.dataset.filter);
+            list.removeQueryParam(key);
         }
 
-        getJSON();
+        list.resetOffset();
+        list.init();
     });
 });
-
-getJSON();
 
 </script>

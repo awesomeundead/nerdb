@@ -13,7 +13,7 @@ class UserMovielist
         $this->userId = $userId;
     }
 
-    public function getMovies(array $filters = []): array
+    public function getMovies(array $filters = [], int $limit, int $offset = 0): array
     {
         [$conditions, $operator, $params] = $this->buildConditions($filters); 
 
@@ -28,6 +28,8 @@ class UserMovielist
             $query .= ' ORDER BY list.rating DESC';
         }
 
+        $query .= " LIMIT {$offset}, {$limit}";
+
         $params['user_id'] = $this->userId;
 
         $stmt = $this->pdo->prepare($query);
@@ -35,7 +37,7 @@ class UserMovielist
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function getMoviesFriends($friendId, array $filters = []): array
+    public function getMoviesFriends($friendId, array $filters = [], int $limit, int $offset = 0): array
     {
         [$conditions, $operator, $params] = $this->buildConditions($filters); 
 
@@ -55,11 +57,66 @@ class UserMovielist
             $query .= ' ORDER BY list.rating DESC';
         }
 
+        $query .= " LIMIT {$offset}, {$limit}";
+
         $params['user_id'] = $this->userId;
         $params['friend_id'] = $friendId;
 
         $stmt = $this->pdo->prepare($query);
         $stmt->execute($params);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function getMoviesRatedByFriends(int $userId): array
+    {
+        $query =   'SELECT m.id, m.title_br, m.release_year, m.media, m.title_url, AVG(uml.rating) AS avg_rating, COUNT(*) AS rating_count
+                    FROM user_movie_list AS uml
+                    INNER JOIN movies AS m ON m.id = uml.movie_id
+                    WHERE 
+                    uml.rating > 0
+                    AND uml.user_id IN (
+                        SELECT 
+                            CASE 
+                                WHEN f.user_id1 = :user_id THEN f.user_id2
+                                ELSE f.user_id1
+                            END
+                        FROM friendship AS f
+                        WHERE f.user_id1 = :user_id OR f.user_id2 = :user_id
+                    )
+                    AND uml.movie_id NOT IN (
+                        SELECT movie_id
+                        FROM user_movie_list
+                        WHERE user_id = :user_id AND watched = 1
+                    )
+                    GROUP BY m.id, m.title_br
+                    HAVING COUNT(*) >= 2
+                    ORDER BY avg_rating DESC, rating_count DESC
+                    LIMIT 8';
+        $stmt = $this->pdo->prepare($query);
+        $stmt->bindValue('user_id', $userId, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function getMoviesRatedByUsers(int $userId): array
+    {
+        $query =   'SELECT m.id, m.title_br, m.release_year, m.media, m.title_url, AVG(uml.rating) AS avg_rating, COUNT(*) AS rating_count
+                    FROM user_movie_list AS uml
+                    INNER JOIN movies AS m ON m.id = uml.movie_id
+                    WHERE 
+                    uml.rating > 0
+                    AND uml.movie_id NOT IN (
+                        SELECT movie_id
+                        FROM user_movie_list
+                        WHERE user_id = :user_id AND watched = 1
+                    )
+                    GROUP BY m.id, m.title_br
+                    HAVING COUNT(*) >= 2
+                    ORDER BY avg_rating DESC, rating_count DESC
+                    LIMIT 8';
+        $stmt = $this->pdo->prepare($query);
+        $stmt->bindValue('user_id', $userId, PDO::PARAM_INT);
+        $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 

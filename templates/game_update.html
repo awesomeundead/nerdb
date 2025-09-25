@@ -28,7 +28,16 @@ const render = function(item)
     form.elements['steam'].value = item.steam;
 }
 
-updateForm(form);
-getJSON();
+requestJSON(url)
+.then(json =>
+{
+    render(json)
+})
+.catch(error =>
+{
+    console.error('Erro ao carregar:', error);
+});
+
+updateForm(url, form);
 
 </script>

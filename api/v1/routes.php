@@ -1,5 +1,17 @@
 <?php
 
+function jsonMiddleware($handler)
+{
+    return function($vars) use ($handler)
+    {
+        header('Content-Type: application/json; charset=utf-8');
+
+        $result = $handler($vars);
+
+        echo json_encode($result, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+    };
+}
+
 return function($route)
 {
     $route->get('/game/{id:\d+}', jsonMiddleware(function($vars)
@@ -163,10 +175,23 @@ return function($route)
             'release'   => $_GET['release'] ?? null,
             'search'    => $_GET['search'] ?? null
         ];
+        $limit = 40;
+        $offset = $_GET['offset'] ?? 0;
 
         $service = new GameRepository($pdo);
-        $array['games'] = $service->findGames($filters);
-        return $array;
+        $games = $service->findGames($filters, $limit + 1, $offset);
+        $hasNextPage = count($games) > $limit;
+
+        if ($hasNextPage)
+        {
+            array_pop($games);
+        }
+
+        return [
+            'games'           => $games,
+            'previous_offset' => $offset > 0 ? max(0, $offset - $limit) : null,
+            'next_offset'     => $hasNextPage ? $offset + $limit : null
+        ];
     }));
 
     $route->get('/games/count', jsonMiddleware(function()
@@ -315,7 +340,6 @@ return function($route)
 
         $service = new MovieRepository($pdo);
         $movies = $service->getUserMovies($userId, $limit + 1, $offset);
-
         $hasNextPage = count($movies) > $limit;
 
         if ($hasNextPage)
@@ -341,10 +365,23 @@ return function($route)
             'release'  => $_GET['release'] ?? null,
             'search'   => $_GET['search'] ?? null
         ];
+        $limit = 40;
+        $offset = $_GET['offset'] ?? 0;
 
         $service = new MovieRepository($pdo);
-        $array['movies'] = $service->findMovies($filters);
-        return $array;
+        $movies = $service->findMovies($filters, $limit + 1, $offset);
+        $hasNextPage = count($movies) > $limit;
+
+        if ($hasNextPage)
+        {
+            array_pop($movies);
+        }
+
+        return [
+            'movies'          => $movies,
+            'previous_offset' => $offset > 0 ? max(0, $offset - $limit) : null,
+            'next_offset'     => $hasNextPage ? $offset + $limit : null
+        ];
     }));
 
     $route->get('/movies/count', jsonMiddleware(function()
@@ -360,6 +397,24 @@ return function($route)
         $pdo = Database::connect();
         $service = new MovieRepository($pdo);
         $array['movies'] = $service->getRandomMovies(40);
+        return $array;
+    }));
+
+    $route->get('/movies/ratedbyfriends', jsonMiddleware(function()
+    {
+        $loggedIn = Session::get('logged_in');
+        $userId = Session::get('user_id');
+
+        if(!$loggedIn)
+        {
+            http_response_code(401);
+            echo 'UNAUTHORIZED';
+            exit;
+        }
+
+        $pdo = Database::connect();
+        $service = new UserMovielist($pdo);
+        $array['movies'] = $service->getMoviesRatedByFriends($userId);
         return $array;
     }));
 
@@ -407,9 +462,23 @@ return function($route)
             'liked'    => $_GET['liked'] ?? null
         ];
 
+        $limit = 80;
+        $offset = $_GET['offset'] ?? 0;
+
         $service = new UserGamelist($pdo, $loggedIn, $userId);
-        $array['games'] = $service->getGames($filters);
-        return $array;
+        $games = $service->getGames($filters, $limit + 1, $offset);
+        $hasNextPage = count($games) > $limit;
+
+        if ($hasNextPage)
+        {
+            array_pop($games);
+        }
+
+        return [
+            'games'          => $games,
+            'previous_offset' => $offset > 0 ? max(0, $offset - $limit) : null,
+            'next_offset'     => $hasNextPage ? $offset + $limit : null
+        ];
     }));
 
     $route->get('/mylist/movies', jsonMiddleware(function()
@@ -431,10 +500,23 @@ return function($route)
             'rating'    => $_GET['rating'] ?? null,
             'liked'     => $_GET['liked'] ?? null
         ];
+        $limit = 80;
+        $offset = $_GET['offset'] ?? 0;
 
         $service = new UserMovielist($pdo, $loggedIn, $userId);
-        $array['movies'] = $service->getMovies($filters);
-        return $array;
+        $movies = $service->getMovies($filters, $limit + 1, $offset);
+        $hasNextPage = count($movies) > $limit;
+
+        if ($hasNextPage)
+        {
+            array_pop($movies);
+        }
+
+        return [
+            'movies'          => $movies,
+            'previous_offset' => $offset > 0 ? max(0, $offset - $limit) : null,
+            'next_offset'     => $hasNextPage ? $offset + $limit : null
+        ];
     }));
 
     $route->post('/mylist/movie/{id:\d+}', jsonMiddleware(function($vars)
@@ -511,8 +593,8 @@ return function($route)
             exit;
         }
 
-        $service = new UserService($pdo, $loggedIn, $userId);
-        $array['friends'] = $service->getFriends();
+        $service = new UserService($pdo);
+        $array['friends'] = $service->getFriends($userId);
         return $array;
     }));
 
@@ -561,10 +643,23 @@ return function($route)
             'rating'   => $_GET['rating'] ?? null,
             'liked'    => $_GET['liked'] ?? null
         ];
+        $limit = 60;
+        $offset = $_GET['offset'] ?? 0;
 
         $service = new UserGamelist($pdo, $loggedIn, $userId);
-        $array['games'] = $service->getGamesFriends($vars['id'], $filters);
-        return $array;
+        $games = $service->getGamesFriends($vars['id'], $filters, $limit + 1, $offset);
+        $hasNextPage = count($games) > $limit;
+
+        if ($hasNextPage)
+        {
+            array_pop($games);
+        }
+
+        return [
+            'games'          => $games,
+            'previous_offset' => $offset > 0 ? max(0, $offset - $limit) : null,
+            'next_offset'     => $hasNextPage ? $offset + $limit : null
+        ];
     }));
 
     $route->get('/userlist/movies/{id:\d+}', jsonMiddleware(function($vars)
@@ -586,9 +681,22 @@ return function($route)
             'rating'    => $_GET['rating'] ?? null,
             'liked'     => $_GET['liked'] ?? null
         ];
+        $limit = 60;
+        $offset = $_GET['offset'] ?? 0;
 
         $service = new UserMovielist($pdo, $loggedIn, $userId);
-        $array['movies'] = $service->getMoviesFriends($vars['id'], $filters);
-        return $array;
+        $movies = $service->getMoviesFriends($vars['id'], $filters, $limit + 1, $offset);
+        $hasNextPage = count($movies) > $limit;
+
+        if ($hasNextPage)
+        {
+            array_pop($movies);
+        }
+
+        return [
+            'movies'          => $movies,
+            'previous_offset' => $offset > 0 ? max(0, $offset - $limit) : null,
+            'next_offset'     => $hasNextPage ? $offset + $limit : null
+        ];
     }));
 };

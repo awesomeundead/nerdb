@@ -29,34 +29,38 @@
 
 <script>
 
-const container = document.querySelector('#friends .container');
-const template = document.querySelector('template');
-const url = new URL('api/v1/user/friends', document.baseURI);
-
-getJSON();
-
-function render({ friends })
+const list = new ContentList(
 {
-    if (!friends.length)
+    url: 'api/v1/user/friends',
+    containerSelector: '#friends .container',
+    templateSelector: 'template',
+    render: (json, container, template) =>
     {
-        container.innerHTML = 'Os serviços da Steam podem estar fora do ar ou o seu perfil está bloqueando a visualização de amigos.';
-        return;
+        const items = json.friends || [];
+
+        if (!items.length)
+        {
+            container.innerHTML = 'Os serviços da Steam podem estar fora do ar ou o seu perfil está bloqueando a visualização de amigos.';
+            return;
+        }
+
+        container.innerHTML = '';
+
+        items.forEach(item =>
+        {
+            const clone = template.content.cloneNode(true);
+
+            clone.querySelector('img').src =  `https://avatars.steamstatic.com/${item.avatarhash}_medium.jpg`;
+            clone.querySelector('.personaname').textContent = item.personaname;
+            clone.querySelector('.movies a').href = `friends/movielist/${item.id}`;
+            clone.querySelector('.games a').href = `friends/gamelist/${item.id}`;
+            clone.querySelector('.achievements a').href = `friends/achievements/${item.id}`;
+
+            container.appendChild(clone);
+        });
     }
+});
 
-    container.innerHTML = '';
-
-    friends.forEach(item =>
-    {
-        const clone = template.content.cloneNode(true);
-
-        clone.querySelector('img').src =  `https://avatars.steamstatic.com/${item.avatarhash}_medium.jpg`;
-        clone.querySelector('.personaname').textContent = item.personaname;
-        clone.querySelector('.movies a').href = `friends/movielist/${item.id}`;
-        clone.querySelector('.games a').href = `friends/gamelist/${item.id}`;
-        clone.querySelector('.achievements a').href = `friends/achievements/${item.id}`;
-
-        container.appendChild(clone);
-    });
-}
+list.init();
 
 </script>

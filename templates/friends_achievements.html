@@ -75,6 +75,14 @@ const render = function({ user_score, my_score})
     });
 }
 
-getJSON();
+requestJSON(url)
+.then(json =>
+{
+    render(json)
+})
+.catch(error =>
+{
+    console.error('Erro ao carregar:', error);
+});
 
 </script>

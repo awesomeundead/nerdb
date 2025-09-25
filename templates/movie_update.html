@@ -14,30 +14,8 @@
     <input name="release_year" placeholder="Ano de lançamento" type="number" />
     <label>Link para o IMDB</label>
     <input name="imdb" placeholder="Link IMDB" type="text" />
-    <!--<button id="button_dialog_open" type="button">Elenco</button>-->
     <button type="submit">Atualizar</button>
 </form>
-<!--
-<dialog id="dialog_cast">
-    <form class="flex_row" id="update_cast">
-        <div class="flex_column">
-            <div class="flex_row flex">Nome do ator</div>
-            <div class="flex_row flex">Personagem</div>
-        </div>
-        <div class="container"></div>
-        <button id="button_cast_add" type="button">Adicionar personagem</button>
-        <button id="button_dialog_close" type="button">Fechar</button>
-        <button type="submit">Atualizar</button>
-    </form>
-</dialog>
-<template id="template_cast">
-    <div class="flex_column">
-        <input class="id" name="id[]" type="hidden" value="null" />
-        <input class="name" list="people" name="name[]" placeholder="Nome do ator" type="text" />
-        <input class="character" name="character[]" placeholder="Personagem" type="text" />
-    </div>
-</template>
--->
 
 <script>
 
@@ -45,9 +23,6 @@ const movie_id = routeSegments[2];
 const url = new URL(`api/v1/movie/${movie_id}`, document.baseURI);
 const media = document.querySelector('#media');
 const form = document.querySelector('#update_movie');
-const dialog = document.querySelector('#dialog_cast');
-const container = document.querySelector('#dialog_cast .container');
-const template = document.querySelector('#template_cast');
 
 const render = function(item)
 {
@@ -58,86 +33,20 @@ const render = function(item)
     form.elements['genres'].value = item.genres,
     form.elements['release_year'].value = item.release_year,
     form.elements['imdb'].value = item.imdb;
-
-    /*
-    item.cast.forEach(item =>
-    {
-        const clone = template.content.cloneNode(true);
-        clone.querySelector('.id').value = item.id;
-        clone.querySelector('.name').value = item.name;
-        clone.querySelector('.character').value = item.movie_character;
-        container.appendChild(clone);
-    });
-    */
 }
 
-/*
-document.querySelector('#button_dialog_open').addEventListener('click', () => dialog.showModal());
-document.querySelector('#button_dialog_close').addEventListener('click', () => dialog.close());
-
-document.querySelector('#button_cast_add').addEventListener('click', () =>
+requestJSON(url)
+.then(json =>
 {
-    const clone = template.content.cloneNode(true);
-    container.appendChild(clone);
+    render(json)
+})
+.catch(error =>
+{
+    console.error('Erro ao carregar:', error);
 });
 
-document.querySelector('#update_cast').addEventListener('submit', e =>
-{
-    const url = new URL(`api/v1/movie/cast/${movie_id}`, document.baseURI);
-    const submit = e.target.querySelector('[type="submit"]');
-
-    e.preventDefault();
-    submit.disabled = true;
-
-    const formData = new FormData(e.target);
-    const grouped = {};
-
-    for (const [key, value] of formData.entries())
-    {
-        if (key.endsWith('[]'))
-        {
-            const cleanKey = key.slice(0, -2);
-            
-            if (!grouped[cleanKey])
-            {
-                grouped[cleanKey] = [];
-            }
-
-            grouped[cleanKey].push(value);
-        }
-    }
-
-    const body =
-    {
-        cast: grouped.id.map((_, i) =>
-        {
-            return Object.fromEntries(
-                Object.keys(grouped).map(key => [key, grouped[key][i]])
-            );
-        })
-    };
-    
-    requestJSON(url, 'post', body)
-    .then(json =>
-    {
-        if (json.hasOwnProperty('status'))
-        {
-            notification(json.status, {success: 'Sucesso.', failure: 'Falha.'});
-        }
-
-        submit.disabled = false;
-    })
-    .catch(error =>
-    {
-        submit.disabled = false;
-        console.error('Erro ao carregar:', error);
-    });
-});
-*/
-
-updateForm(form);
-getJSON();
+updateForm(url, form);
 get_directors();
-//get_people();
+
 
 </script>

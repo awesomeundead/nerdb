@@ -39,7 +39,7 @@ class GameRepository
         return $stmt->execute();
     }
 
-    public function findGames(array $filters = []): array
+    public function findGames(array $filters = [], int $limit, int $offset = 0): array
     {
         $query = 'SELECT * FROM games';
         $params = [];
@@ -73,6 +73,8 @@ class GameRepository
         {
             $query .= ' WHERE ' . implode(' AND ', $conditions);
         }
+
+        $query .= " LIMIT {$offset}, {$limit}";
 
         $stmt = $this->pdo->prepare($query);
         $stmt->execute($params);

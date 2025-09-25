@@ -17,6 +17,12 @@
             <label for="rating_checkbox">Filmes que eu melhor avaliei</label>
         </div>
     </div>
+    <div class="pagination">
+        <div class="content">
+            <button class="previous" type="button">Anterior</button>
+            <button class="next" type="button">Próximo</button>
+        </div>
+    </div>
     <div class="container"></div>
 </div>
 
@@ -45,75 +51,85 @@
 
 <script>
 
-const container = document.querySelector('#userlist .container');
-const template = document.querySelector('template');
-const url = new URL('api/v1/mylist/movies', document.baseURI);
-const searchParams = url.searchParams;
-
-const render = function({ movies })
+const list = new ContentList(
 {
-    if (!movies.length)
+    url: 'api/v1/mylist/movies',
+    containerSelector: '#userlist .container',
+    templateSelector: 'template',
+    pagination: true,
+    render: (json, container, template) =>
     {
-        container.innerHTML = '<div class="centralizado">Não foram encontrados filmes nesta lista.</div>';
+        const items = json.movies || [];
 
-        return;
+        if (!items.length)
+        {
+            container.innerHTML = '<div class="centralizado">Não foram encontrados filmes nesta lista.</div>';
+
+            return;
+        }
+
+        container.innerHTML = '';
+        
+        items.forEach(item =>
+        {
+            const clone = template.content.cloneNode(true);
+
+            clone.querySelector('a').href = `movie/${item.id}/${item.title_url}`;        
+            clone.querySelector('img').src = item.media?.trim() ? `images/256/${item.media}.webp` : 'noimage.png';
+            clone.querySelector('.title_br').textContent =  item.title_br;
+
+            if (!item.watchlist || item.watched)
+            {
+                clone.querySelector('.watchlist').remove();
+            }
+
+            if (!item.watched)
+            {
+                clone.querySelector('.watched').remove();
+            }
+
+            if (!item.liked)
+            {
+                clone.querySelector('.liked').remove();
+            }
+
+            if (item.rating)
+            {
+                clone.querySelector('.rating').textContent = item.rating;
+            }
+            else
+            {
+                clone.querySelector('.rating').remove();
+            }
+
+            container.appendChild(clone);
+        });
     }
-    
-    container.innerHTML = '';
+});
 
-    movies.forEach(item =>
-    {
-        const clone = template.content.cloneNode(true);
+list.init();
 
-        clone.querySelector('a').href = `movie/${item.id}/${item.title_url}`;        
-        clone.querySelector('img').src = item.media?.trim() ? `images/256/${item.media}.webp` : 'noimage.png';
-        clone.querySelector('.title_br').textContent =  item.title_br;
-
-        if (!item.watchlist || item.watched)
-        {
-            clone.querySelector('.watchlist').remove();
-        }
-
-        if (!item.watched)
-        {
-            clone.querySelector('.watched').remove();
-        }
-
-        if (!item.liked)
-        {
-            clone.querySelector('.liked').remove();
-        }
-
-        if (item.rating)
-        {
-            clone.querySelector('.rating').textContent = item.rating;
-        }
-        else
-        {
-            clone.querySelector('.rating').remove();
-        }
-
-        container.appendChild(clone);
-    });
-}
+document.querySelector('.pagination .next').addEventListener('click', () => list.next());
+document.querySelector('.pagination .previous').addEventListener('click', () => list.previous());
 
 document.querySelectorAll('#watchlist_checkbox, #watched_checkbox, #liked_checkbox, #rating_checkbox').forEach(item =>
 {
     item.addEventListener('click', () =>
     {
+        const key = item.dataset.filter;
+
         if (item.checked)
         {
-            searchParams.set(item.dataset.filter, 1);
+            list.setQueryParams({ [key]: 1, 'offset': 0 });
         }
         else
         {
-            searchParams.delete(item.dataset.filter);
+            list.removeQueryParam(key);
         }
 
-        getJSON();
+        list.resetOffset();
+        list.init();
     });
 });
-
-getJSON();
 
 </script>

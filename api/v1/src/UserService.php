@@ -3,14 +3,19 @@
 class UserService
 {
     private PDO $pdo;
-    private $loggedIn;
-    private $userId;
 
-    public function __construct(PDO $pdo, $loggedIn = false, $userId = null)
+    public function __construct(PDO $pdo)
     {
         $this->pdo = $pdo;
-        $this->loggedIn = $loggedIn;
-        $this->userId = $userId;
+    }
+
+    public function countFriends($userId)
+    {
+        $query = 'SELECT COUNT(*) FROM friendship WHERE user_id1 = :user_id OR user_id2 = :user_id';
+        $stmt = $this->pdo->prepare($query);
+        $stmt->bindValue('user_id', $userId, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchColumn();
     }
 
     public function getUserById($id)
@@ -31,12 +36,12 @@ class UserService
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function getFriends(): array
+    public function getFriends(int $userId): array
     {
         $query = 'SELECT IF(user_id1 = :user_id, user_id2, user_id1) AS id
                   FROM friendship WHERE :user_id IN (user_id1, user_id2)';
         $stmt = $this->pdo->prepare($query);
-        $stmt->bindValue('user_id', $this->userId, PDO::PARAM_INT);
+        $stmt->bindValue('user_id', $userId, PDO::PARAM_INT);
         $stmt->execute();
         $list = $stmt->fetchAll(PDO::FETCH_COLUMN);
 

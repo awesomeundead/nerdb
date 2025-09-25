@@ -40,7 +40,7 @@ class MovieRepository
         return $stmt->execute();
     }
 
-    public function findMovies(array $filters = []): array
+    public function findMovies(array $filters = [], int $limit, int $offset = 0): array
     {
         $query = 'SELECT * FROM movies';
         $params = [];
@@ -78,10 +78,13 @@ class MovieRepository
             $conditions[] = 'MATCH(title_br, title_us, director) AGAINST(:search)';
             $params['search'] = $filters['search'];
         }
+
         if (!empty($conditions))
         {
             $query .= ' WHERE ' . implode(' AND ', $conditions);
         }
+
+        $query .= " LIMIT {$offset}, {$limit}";
 
         $stmt = $this->pdo->prepare($query);
         $stmt->execute($params);
@@ -144,9 +147,14 @@ class MovieRepository
 
     public function getTopRatedMovies(int $limit): array
     {
-        $query = 'SELECT movies.*, SUM(rating) as rating FROM user_movie_list
+        $query = 'SELECT movies.*, AVG(rating) AS avg_rating, COUNT(*) AS rating_count
+                  FROM user_movie_list
                   INNER JOIN movies ON movies.id = user_movie_list.movie_id
-                  WHERE rating >= 1 GROUP BY movies.id ORDER BY rating DESC LIMIT :limit';
+                  WHERE rating > 0
+                  GROUP BY movies.id
+                  HAVING COUNT(*) >= 2
+                  ORDER BY avg_rating DESC, rating_count DESC
+                  LIMIT :limit';
 
         $stmt = $this->pdo->prepare($query);
         $stmt->bindValue('limit', $limit, PDO::PARAM_INT);
