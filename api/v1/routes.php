@@ -456,8 +456,8 @@ return function($route)
         }
 
         $filters = [
-            'playlist' => $_GET['playlist'] ?? null,
-            'played'   => $_GET['played'] ?? null,
+            'listed' => $_GET['listed'] ?? null,
+            'completed'   => $_GET['completed'] ?? null,
             'rating'   => $_GET['rating'] ?? null,
             'liked'    => $_GET['liked'] ?? null
         ];
@@ -495,8 +495,8 @@ return function($route)
         }
 
         $filters = [
-            'watchlist' => $_GET['watchlist'] ?? null,
-            'watched'   => $_GET['watched'] ?? null,
+            'listed' => $_GET['listed'] ?? null,
+            'completed'   => $_GET['completed'] ?? null,
             'rating'    => $_GET['rating'] ?? null,
             'liked'     => $_GET['liked'] ?? null
         ];
@@ -638,8 +638,8 @@ return function($route)
         }
 
         $filters = [
-            'playlist' => $_GET['playlist'] ?? null,
-            'played'   => $_GET['played'] ?? null,
+            'listed' => $_GET['listed'] ?? null,
+            'completed'   => $_GET['completed'] ?? null,
             'rating'   => $_GET['rating'] ?? null,
             'liked'    => $_GET['liked'] ?? null
         ];
@@ -676,8 +676,8 @@ return function($route)
         }
 
         $filters = [
-            'watchlist' => $_GET['watchlist'] ?? null,
-            'watched'   => $_GET['watched'] ?? null,
+            'listed' => $_GET['listed'] ?? null,
+            'completed'   => $_GET['completed'] ?? null,
             'rating'    => $_GET['rating'] ?? null,
             'liked'     => $_GET['liked'] ?? null
         ];

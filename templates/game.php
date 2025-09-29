@@ -44,8 +44,8 @@
 
             <?php if ($session->logged_in ?? false): ?>
             <div class="toggle flex_column">
-                <button aria-label="Quero jogar" class="icon playlist" data-action="playlist" title="Quero jogar" type="button"></button>
-                <button aria-label="Já joguei" class="icon played" data-action="played" title="Já joguei" type="button"></button>
+                <button aria-label="Quero jogar" class="icon listed" data-action="listed" title="Quero jogar" type="button"></button>
+                <button aria-label="Já joguei" class="icon completed" data-action="completed" title="Já joguei" type="button"></button>
                 <button aria-label="Gostei" class="icon like" data-action="liked" title="Gostei" type="button"></button>
             </div>
             <div>Minha avaliação</div>
@@ -64,8 +64,8 @@
             <script>
 
                 const game = {
-                    playlist: <?= $game['playlist'] ?? 0 ?>,
-                    played: <?= $game['played'] ?? 0 ?>,
+                    listed: <?= $game['listed'] ?? 0 ?>,
+                    completed: <?= $game['completed'] ?? 0 ?>,
                     liked: <?= $game['liked'] ?? 0 ?>,
                     rating: <?= $game['rating'] ?? 0 ?>,
                 };
@@ -108,7 +108,7 @@
             <?php else: ?>
             <div class="add">
                 <a href="login">
-                    <img alt="Ícone de salvar na lista" height="32px" src="saved_empty.png" />
+                    <img alt="Ícone de salvar na lista" height="32px" src="listed_empty.png" />
                     <span>Adicionar à minha lista</span>
                 </a>
             </div>
@@ -123,9 +123,9 @@
         <?php foreach ($game['friends'] as $friend): ?>
             <div class="item">
                 <div class="flex_column">
-                    <div>
+                    <div class="flex_row">
                         <div class="image">
-                            <a href="friends/gamelist/<?= $friend['user_id'] ?>">
+                            <a href="friend/<?= $friend['user_id'] ?>/gamelist">
                                 <img alt="" src="https://avatars.steamstatic.com/<?= $friend['avatarhash'] ?>_full.jpg" />
                             </a>
                         </div>
@@ -133,18 +133,18 @@
                     </div>
                     <div class="flex_row">
                         <div class="flex_column">
-                            <?php if ($friend['playlist']): ?>
-                            <div aria-label="Quer jogar" class="icon playlist friend" title="Quer jogar"></div>
+                            <?php if ($friend['listed']): ?>
+                            <div aria-label="Quer jogar" class="icon listed friend" title="Quer jogar"></div>
                             <?php else: ?>
-                            <div class="icon playlist friend disable"></div>
+                            <div class="icon listed friend disable"></div>
                             <?php endif ?>
                         </div>
 
                         <div class="flex_column">
-                            <?php if ($friend['played']): ?>
-                            <div aria-label="Já jogou" class="icon played friend" title="Já jogou"></div>
+                            <?php if ($friend['completed']): ?>
+                            <div aria-label="Já jogou" class="icon completed friend" title="Já jogou"></div>
                             <?php else: ?>
-                            <div class="icon played friend disable"></div>
+                            <div class="icon completed friend disable"></div>
                             <?php endif ?>
                         </div>
 

@@ -114,7 +114,7 @@ return function(RouteCollector $route)
             $template = templates()->make('index.html');
         }
 
-        $template->layout('layouts/default.php');
+        $template->layout('layouts/default.php', ['title' => 'Explore filmes, jogos e compare com seus amigos']);
 
         echo $template->render();
     });
@@ -126,50 +126,94 @@ return function(RouteCollector $route)
 
         echo $template->render();
     });
-    
-    $route->get('/achievements', authMiddleware(function()
-    {
-        $template = templates()->make('achievements.html');
-        $template->layout('layouts/default.php', ['title' => 'Minhas conquistas']);
-
-        echo $template->render();
-    }));
 
     $route->get('/auth', function()
     {
         header('X-Robots-Tag: noindex');
 
-        require 'auth.php';
+        $auth = new SteamAuth();
+
+        if ($auth->isOpenIDAuthenticated())
+        {
+            $steamid = $auth->validate();
+
+            if ($steamid)
+            {
+                $player = $auth->getSteamUser($steamid);
+
+                /* verifica se o usuário existe */
+                
+                $pdo = Database::connect();
+                $service = new UserService($pdo);
+                $data = $service->getUserBySteam($steamid);
+
+                if (empty($data))
+                {
+                    /* insere novo usuário */
+                    $user_id = $service->addNewUser($player);
+
+                    if (!$user_id)
+                    {
+                        redirect('/?error');
+                    }
+
+                    $data = [
+                        'id'          => $user_id,
+                        'steamid'     => $player['steamid'],
+                        'personaname' => $player['personaname'],
+                        'avatarhash'  => $player['avatarhash']
+                    ];
+                }
+                else
+                {
+                    /* atualiza usuário */
+                    $service->updateUser($player);
+                }
+
+                $service->createSession($data);
+                $service->createAutoLogin($data['id']);
+                $service->updateUserFriendship($data['id'], $steamid);
+
+                if (isset($_GET['redirect']))
+                {
+                    redirect($_GET['redirect']);
+                }
+
+                redirect('/');
+            }
+        }
+        else
+        {
+            header("location: {$auth->getAuthUrl()}");
+            exit;
+        }
     });
 
-    $route->get('/friends', authMiddleware(function()
+    $route->get('/friend/{id:\d+}/{name:(?:achievements|gamelist|movielist)}', authMiddleware(function($vars)
     {
-        $template = templates()->make('friends.html');
-        $template->layout('layouts/default.php', ['title' => 'Meus amigos']);
+        $pdo = Database::connect();
+        $userId = Session::get('user_id');
 
-        echo $template->render();
-    }));
+        $service = new UserService($pdo);
+        $friend = $service->getFriendById($userId, $vars['id']);
 
-    $route->get('/friends/gamelist/{id:\d+}', authMiddleware(function()
-    {
-        $template = templates()->make('friends_gamelist.html');
-        $template->layout('layouts/default.php', ['title' => 'Amigos - Lista de jogos']);
+        if ($friend === null)
+        {
+            redirect('/');
+        }
 
-        echo $template->render();
-    }));
+        if ($vars['name'] == 'achievements')
+        {
+            $template = templates()->make('friends_achievements.php', ['friend' => $friend]);
+            $template->layout('layouts/default.php', ['title' => "Conquistas | {$friend['personaname']}"]);
 
-    $route->get('/friends/achievements/{id:\d+}', authMiddleware(function()
-    {
-        $template = templates()->make('friends_achievements.html');
-        $template->layout('layouts/default.php', ['title' => 'Amigos - Conquistas']);
+            echo $template->render();
 
-        echo $template->render();
-    }));
+            return;
+        }
 
-    $route->get('/friends/movielist/{id:\d+}', authMiddleware(function()
-    {
-        $template = templates()->make('friends_movielist.html');
-        $template->layout('layouts/default.php', ['title' => 'Amigos - Lista de filmes']);
+        $template = templates()->make('friend.php', ['friend' => $friend, 'namelist' => $vars['name']]);
+        $template->layout('layouts/default.php');
 
         echo $template->render();
     }));
@@ -256,6 +300,8 @@ return function(RouteCollector $route)
 
     $route->get('/login', function()
     {
+        header('X-Robots-Tag: noindex');
+
         $loggedIn = Session::get('logged_in');
 
         if ($loggedIn)
@@ -362,18 +408,38 @@ return function(RouteCollector $route)
         echo $template->render();
     });
 
-    $route->get('/mygamelist', authMiddleware(function()
+    $route->get('/my/{name:(?:achievements|friends|gamelist|movielist)}', authMiddleware(function($vars)
     {
-        $template = templates()->make('mygamelist.html');
-        $template->layout('layouts/default.php', ['title' => 'Minha lista de filmes']);
+        $pdo = Database::connect();
+        $userId = Session::get('user_id');
 
-        echo $template->render();
-    }));
+        $service = new UserService($pdo);
+        $user = $service->getUserById($userId);
 
-    $route->get('/mymovielist', authMiddleware(function()
-    {
-        $template = templates()->make('mymovielist.html');
-        $template->layout('layouts/default.php', ['title' => 'Minha lista de filmes']);
+        $engine = templates(['user' => $user]);
+
+        if ($vars['name'] == 'achievements')
+        {
+            $template = $engine->make('myachievements.php');
+            $template->layout('layouts/default.php', ['title' => 'Minha conquistas']);
+
+            echo $template->render();
+
+            return;
+        }
+
+        if ($vars['name'] == 'friends')
+        {
+            $template = $engine->make('myfriends.php');
+            $template->layout('layouts/default.php', ['title' => 'Meus amigos']);
+
+            echo $template->render();
+
+            return;
+        }
+
+        $template = $engine->make('mylist.php', ['namelist' => $vars['name']]);
+        $template->layout('layouts/default.php');
 
         echo $template->render();
     }));

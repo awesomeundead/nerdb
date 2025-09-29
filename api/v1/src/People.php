@@ -17,8 +17,8 @@ class People
     {
         $query = 'SELECT * FROM people LIMIT :offset, :limit';
         $stmt = $this->pdo->prepare($query);
-        $stmt->bindValue('offset', $offset, PDO::PARAM_INT);
-        $stmt->bindValue('limit', $limit, PDO::PARAM_INT);
+        $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+        $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }

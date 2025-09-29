@@ -17,7 +17,7 @@ class UserGamelist
     {
         [$conditions, $operator, $params] = $this->buildConditions($filters); 
 
-        $query = 'SELECT games.*, playlist, played, rating, liked
+        $query = 'SELECT games.*, listed, completed, rating, liked
                   FROM user_game_list AS list
                   INNER JOIN games ON games.id = list.game_id
                   WHERE list.user_id = :user_id';
@@ -41,9 +41,9 @@ class UserGamelist
     {
         [$conditions, $operator, $params] = $this->buildConditions($filters);
 
-        $query = 'SELECT  games.id, games.title, games.media, games.title_url, list.playlist, list.played, list.rating, list.liked,
-                    gl.playlist AS gl_playlist,
-                    gl.played AS gl_played,
+        $query = 'SELECT  games.id, games.title, games.media, games.title_url, list.listed, list.completed, list.rating, list.liked,
+                    gl.listed AS gl_listed,
+                    gl.completed AS gl_completed,
                     gl.rating AS gl_rating,
                     gl.liked AS gl_liked
                     FROM user_game_list AS list
@@ -86,14 +86,14 @@ class UserGamelist
                     AND ugl.game_id NOT IN (
                         SELECT game_id
                         FROM user_game_list
-                        WHERE user_id = :user_id AND played = 1
+                        WHERE user_id = :user_id AND completed = 1
                     )
                     GROUP BY g.id, g.title
                     HAVING COUNT(*) >= 2
                     ORDER BY avg_rating DESC, rating_count DESC
                     LIMIT 8';
         $stmt = $this->pdo->prepare($query);
-        $stmt->bindValue('user_id', $userId, PDO::PARAM_INT);
+        $stmt->bindValue(':user_id', $userId, PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
@@ -108,14 +108,14 @@ class UserGamelist
                     AND ugl.game_id NOT IN (
                         SELECT game_id
                         FROM user_game_list
-                        WHERE user_id = :user_id AND played = 1
+                        WHERE user_id = :user_id AND completed = 1
                     )
                     GROUP BY g.id, g.title
                     HAVING COUNT(*) >= 2
                     ORDER BY avg_rating DESC, rating_count DESC
                     LIMIT 8';
         $stmt = $this->pdo->prepare($query);
-        $stmt->bindValue('user_id', $userId, PDO::PARAM_INT);
+        $stmt->bindValue(':user_id', $userId, PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
@@ -142,16 +142,16 @@ class UserGamelist
         $params = [];
         $operator = ' AND ';
 
-        if (!empty($filters['playlist']))
+        if (!empty($filters['listed']))
         {
-            $conditions[] = 'list.playlist = :playlist';
-            $params['playlist'] = $filters['playlist'];
+            $conditions[] = 'list.listed = :listed';
+            $params['listed'] = $filters['listed'];
         }
 
-        if (!empty($filters['played']))
+        if (!empty($filters['completed']))
         {
-            $conditions[] = 'list.played = :played';
-            $params['played'] = $filters['played'];
+            $conditions[] = 'list.completed = :completed';
+            $params['completed'] = $filters['completed'];
         }
 
         if (!empty($filters['rating']))
@@ -168,12 +168,12 @@ class UserGamelist
 
         if (empty($conditions))
         {
-            $params['playlist'] = 0;
-            $params['played'] = 0;
+            $params['listed'] = 0;
+            $params['completed'] = 0;
             $params['rating'] = 0;
             $params['liked'] = 0;
-            $conditions[] = 'list.playlist != :playlist';
-            $conditions[] = 'list.played != :played';
+            $conditions[] = 'list.listed != :listed';
+            $conditions[] = 'list.completed != :completed';
             $conditions[] = 'list.rating != :rating';
             $conditions[] = 'list.liked != :liked';
             $operator = ' OR ';
@@ -186,8 +186,8 @@ class UserGamelist
     {
         $query = 'SELECT id FROM user_game_list WHERE user_id = :user_id AND game_id = :game_id';
         $stmt = $this->pdo->prepare($query);
-        $stmt->bindValue('user_id', $this->userId, PDO::PARAM_INT);
-        $stmt->bindValue('game_id', $gameId, PDO::PARAM_INT);
+        $stmt->bindValue(':user_id', $this->userId, PDO::PARAM_INT);
+        $stmt->bindValue(':game_id', $gameId, PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->fetchColumn();
     }
@@ -197,14 +197,14 @@ class UserGamelist
         $params = [
             'user_id'  => $this->userId,
             'game_id'  => $data['game_id'],
-            'playlist' => $data['playlist'] ?? 0,
-            'played'   => $data['played'] ?? 0,
+            'listed' => $data['listed'] ?? 0,
+            'completed'   => $data['completed'] ?? 0,
             'rating'   => $data['rating'] ?? 0,
             'liked'    => $data['liked'] ?? 0
         ];
 
-        $query = 'INSERT INTO user_game_list (user_id, game_id, playlist, played, rating, liked)
-                  VALUES (:user_id, :game_id, :playlist, :played, :rating, :liked)';
+        $query = 'INSERT INTO user_game_list (user_id, game_id, listed, completed, rating, liked)
+                  VALUES (:user_id, :game_id, :listed, :completed, :rating, :liked)';
         $stmt = $this->pdo->prepare($query);
         return $stmt->execute($params);
     }
@@ -214,16 +214,16 @@ class UserGamelist
         $conditions = [];
         $params['id'] = $data['id'];
 
-        if (isset($data['playlist']))
+        if (isset($data['listed']))
         {
-            $conditions[] = 'playlist = :playlist';
-            $params['playlist'] = $data['playlist'];
+            $conditions[] = 'listed = :listed';
+            $params['listed'] = $data['listed'];
         }
 
-        if (isset($data['played']))
+        if (isset($data['completed']))
         {
-            $conditions[] = 'played = :played';
-            $params['played'] = $data['played'];
+            $conditions[] = 'completed = :completed';
+            $params['completed'] = $data['completed'];
         }
 
         if (isset($data['rating']) && is_numeric($data['rating']))

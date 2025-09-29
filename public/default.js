@@ -62,8 +62,12 @@ class ContentList
         }
 
         const url = new URL(window.location.href);
-        url.searchParams.delete('offset');
-        history.pushState({}, '', url.toString());
+
+        if (url.searchParams.has('offset'))
+        {
+            url.searchParams.delete('offset');
+            history.pushState({}, '', url.toString());
+        }
     }
 
     setOffset(offset)
@@ -84,8 +88,6 @@ class ContentList
         const paginationCard = document.querySelector('.pagination');
 
         if (!paginationCard) return;
-
-        console.log(this.previous_offset, this.next_offset);
 
         paginationCard.hidden = (this.previous_offset == null && this.next_offset == null);
         paginationCard.querySelector('.previous').disabled = this.previous_offset == null;

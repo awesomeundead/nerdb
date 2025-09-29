@@ -7,10 +7,9 @@
 <button id="menu-toggle" type="button"></button>
 <nav class="hidden" id="menu">
     <div class="content">
-        <a href="mymovielist">Minha lista de filmes</a>
-        <a href="mygamelist">Minha lista de jogos</a>
-        <a href="friends">Amigos</a>
-        <a href="achievements">Conquistas</a>
+        <a href="my/movielist">Minha lista</a>
+        <a href="my/friends">Amigos</a>
+        <a href="my/achievements">Conquistas</a>
         <a href="movie/add">Adicionar filme</a>
         <a href="game/add">Adicionar jogo</a>
         <a href="movielist/added">Filmes adicionados</a>

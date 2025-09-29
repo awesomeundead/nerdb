@@ -1,29 +1,17 @@
+<?php $this->insert('components/my_user_panel.php') ?>
 <div id="friends">
     <h1>Meus amigos</h1>
     <div class="container"></div>
 </div>
 
 <template>
-    <div class="item flex_column">
+    <div class="item">
         <div class="image">
-            <img />
+            <a>
+                <img />
+            </a>
         </div>
-        <div class="content">
-            <div>
-                <div class="personaname"></div>
-            </div>
-            <div class="links flex_column">
-                <div class="movies">
-                    <a>Filmes</a>
-                </div>
-                <div class="games">
-                    <a>Jogos</a>
-                </div>
-                <div class="achievements">
-                    <a>Conquistas</a>
-                </div>
-            </div>
-        </div>
+        <div class="personaname"></div>
     </div>
 </template>
 
@@ -50,11 +38,9 @@ const list = new ContentList(
         {
             const clone = template.content.cloneNode(true);
 
-            clone.querySelector('img').src =  `https://avatars.steamstatic.com/${item.avatarhash}_medium.jpg`;
+            clone.querySelector('.image a').href = `friend/${item.id}/movielist`;
+            clone.querySelector('img').src =  `https://avatars.steamstatic.com/${item.avatarhash}_full.jpg`;
             clone.querySelector('.personaname').textContent = item.personaname;
-            clone.querySelector('.movies a').href = `friends/movielist/${item.id}`;
-            clone.querySelector('.games a').href = `friends/gamelist/${item.id}`;
-            clone.querySelector('.achievements a').href = `friends/achievements/${item.id}`;
 
             container.appendChild(clone);
         });

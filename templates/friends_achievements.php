@@ -1,3 +1,18 @@
+<div id="friend">
+    <div class="image">
+        <img alt="" src="https://avatars.steamstatic.com/<?= $friend['avatarhash'] ?>_full.jpg" />
+    </div>
+    <div class="content">
+        <div class="personaname"><?= $friend['personaname'] ?></div>
+        <div class="role"><?= $friend['role'] ?></div>
+        <div class="created_date"><?= $friend['created_date'] ?></div>
+        <nav>
+            <a data-namelist="movielist" href="friend/<?= $friend['id'] ?>/movielist">Filmes</a>
+            <a data-namelist="gamelist" href="friend/<?= $friend['id'] ?>/gamelist">Jogos</a>
+            <a href="friend/<?= $friend['id'] ?>/achievements">Conquistas</a>
+        </nav>
+    </div>
+</div>
 <div id="achievements" class="flex_row"></div>
 <template>
     <div class="item flex_row">
@@ -26,7 +41,7 @@
 
 <script>
 
-const friend_id = routeSegments[2];
+const friend_id = <?= $friend['id'] ?>;
 const url = new URL(`api/v1/user/score/${friend_id}`, document.baseURI);
 const container = document.querySelector('#achievements');
 const template = document.querySelector('template');

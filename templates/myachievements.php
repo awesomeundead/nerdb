@@ -1,3 +1,4 @@
+<?php $this->insert('components/my_user_panel.php') ?>
 <div id="achievements" class="flex_row"></div>
 <template>
     <div class="flex_row">

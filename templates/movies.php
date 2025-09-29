@@ -8,7 +8,7 @@
                     <?php if ($item['media']): ?>
                     <img alt="<?= $item['title_br'] ?>" src="images/256/<?= $item['media'] ?>.webp" />
                     <?php else: ?>
-                    <img alt="" src="noimage.png" />
+                    <img alt="Sem imagem" src="noimage.png" />
                     <?php endif ?>
                 </a>
             </div>

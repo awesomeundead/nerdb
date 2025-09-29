@@ -3,6 +3,7 @@
         "classmap": [
             "src/Database.php",
             "src/Session.php",
+            "src/SteamAuth.php",
             "api/v1/src/GameRepository.php",
             "api/v1/src/LoginService.php",
             "api/v1/src/MovieRepository.php",

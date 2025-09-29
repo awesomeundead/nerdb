@@ -13,7 +13,7 @@ class LoginService
     {
         $query = 'SELECT * FROM login_log WHERE selector = :selector';
         $stmt = $this->pdo->prepare($query);
-        $stmt->bindValue('selector', $selector);
+        $stmt->bindValue(':selector', $selector);
         $stmt->execute();
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }

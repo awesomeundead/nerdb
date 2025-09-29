@@ -36,7 +36,7 @@ class MovieRepository
 
         $query = 'UPDATE score SET add_movie = add_movie + 1 WHERE user_id = :user_id';
         $stmt = $this->pdo->prepare($query);
-        $stmt->bindValue('user_id', $data['user_id'], PDO::PARAM_INT);
+        $stmt->bindValue(':user_id', $data['user_id'], PDO::PARAM_INT);
         return $stmt->execute();
     }
 
@@ -120,8 +120,8 @@ class MovieRepository
     {
         $query = 'SELECT id FROM movies WHERE title_br = :title_br AND release_year = :release_year';
         $stmt = $this->pdo->prepare($query);
-        $stmt->bindValue('title_br', $title);
-        $stmt->bindValue('release_year', $year);
+        $stmt->bindValue(':title_br', $title);
+        $stmt->bindValue(':release_year', $year);
         $stmt->execute();
         return $stmt->fetchColumn();
     }
@@ -130,8 +130,8 @@ class MovieRepository
     {
         $query = 'SELECT * FROM movies LIMIT :offset, :limit';
         $stmt = $this->pdo->prepare($query);
-        $stmt->bindValue('offset', $offset, PDO::PARAM_INT);
-        $stmt->bindValue('limit', $limit, PDO::PARAM_INT);
+        $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+        $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
@@ -140,7 +140,7 @@ class MovieRepository
     {
         $query = 'SELECT * FROM movies WHERE media != "" ORDER BY rand() LIMIT :limit';
         $stmt = $this->pdo->prepare($query);
-        $stmt->bindValue('limit', $limit, PDO::PARAM_INT);
+        $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
@@ -157,7 +157,7 @@ class MovieRepository
                   LIMIT :limit';
 
         $stmt = $this->pdo->prepare($query);
-        $stmt->bindValue('limit', $limit, PDO::PARAM_INT);
+        $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
@@ -166,9 +166,9 @@ class MovieRepository
     {
         $query = 'SELECT id, title_br, media, title_url FROM movies WHERE first_user_id = :user_id LIMIT :offset, :limit';
         $stmt = $this->pdo->prepare($query);
-        $stmt->bindValue('user_id', $userId, PDO::PARAM_INT);
-        $stmt->bindValue('offset', $offset, PDO::PARAM_INT);
-        $stmt->bindValue('limit', $limit, PDO::PARAM_INT);
+        $stmt->bindValue(':user_id', $userId, PDO::PARAM_INT);
+        $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+        $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
@@ -208,7 +208,7 @@ class MovieRepository
 
         $query = 'UPDATE score SET update_movie = update_movie + 1 WHERE user_id = :user_id';
         $stmt = $this->pdo->prepare($query);
-        $stmt->bindValue('user_id', $data['user_id'], PDO::PARAM_INT);
+        $stmt->bindValue(':user_id', $data['user_id'], PDO::PARAM_INT);
         return $stmt->execute();
     }
 
@@ -220,7 +220,7 @@ class MovieRepository
         if ($userId)
         {
             $params['user_id'] = $userId;
-            $query = 'SELECT movies.*, list.watchlist, list.watched, list.rating, list.liked
+            $query = 'SELECT movies.*, list.listed, list.completed, list.rating, list.liked
                       FROM movies
                       LEFT JOIN user_movie_list AS list ON movies.id = list.movie_id AND list.user_id = :user_id
                       WHERE movies.id = :id';
@@ -248,7 +248,7 @@ class MovieRepository
                   INNER JOIN streaming_platforms ON streaming_platforms.id = movie_platforms.platform_id
                   WHERE movie_id = :id';
         $stmt = $this->pdo->prepare($query);
-        $stmt->bindValue('id', $id, PDO::PARAM_INT);
+        $stmt->bindValue(':id', $id, PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
@@ -263,7 +263,7 @@ class MovieRepository
                   LIMIT 24';
 
         $stmt = $this->pdo->prepare($query);
-        $stmt->bindValue('movie_id', $movieId, PDO::PARAM_INT);
+        $stmt->bindValue(':movie_id', $movieId, PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
@@ -273,7 +273,7 @@ class MovieRepository
         $query = 'SELECT IF(user_id1 = :user_id, user_id2, user_id1) AS id
                   FROM friendship WHERE :user_id IN (user_id1, user_id2)';
         $stmt = $this->pdo->prepare($query);
-        $stmt->bindValue('user_id', $userId, PDO::PARAM_INT);
+        $stmt->bindValue(':user_id', $userId, PDO::PARAM_INT);
         $stmt->execute();
         $friendIds = $stmt->fetchAll(PDO::FETCH_COLUMN);
 
@@ -284,8 +284,8 @@ class MovieRepository
 
         $params = [
             'movie_id' => $movieId,
-            'watchlist' => 0,
-            'watched' => 0,
+            'listed' => 0,
+            'completed' => 0,
             'rating' => 0,
             'liked' => 0
         ];
@@ -304,7 +304,7 @@ class MovieRepository
                   FROM user_movie_list AS l
                   LEFT JOIN users ON users.id = l.user_id
                   WHERE l.movie_id = :movie_id
-                  AND (l.watchlist != :watchlist OR l.watched != :watched OR l.rating != :rating OR l.liked != :liked)
+                  AND (l.listed != :listed OR l.completed != :completed OR l.rating != :rating OR l.liked != :liked)
                   AND users.id IN ($inClause)";
 
         $stmt = $this->pdo->prepare($query);

@@ -17,7 +17,7 @@ class UserMovielist
     {
         [$conditions, $operator, $params] = $this->buildConditions($filters); 
 
-        $query = 'SELECT movies.*, watchlist, watched, rating, liked
+        $query = 'SELECT movies.*, listed, completed, rating, liked
                   FROM user_movie_list AS list
                   INNER JOIN movies ON movies.id = list.movie_id
                   WHERE list.user_id = :user_id';
@@ -41,9 +41,9 @@ class UserMovielist
     {
         [$conditions, $operator, $params] = $this->buildConditions($filters); 
 
-        $query = 'SELECT  m.id, m.title_br, m.media, m.title_url, list.watchlist, list.watched, list.rating, list.liked,
-                ml.watchlist AS ml_watchlist,
-                ml.watched AS ml_watched,
+        $query = 'SELECT  m.id, m.title_br, m.media, m.title_url, list.listed, list.completed, list.rating, list.liked,
+                ml.listed AS ml_listed,
+                ml.completed AS ml_completed,
                 ml.rating AS ml_rating,
                 ml.liked AS ml_liked
                 FROM user_movie_list AS list
@@ -86,14 +86,14 @@ class UserMovielist
                     AND uml.movie_id NOT IN (
                         SELECT movie_id
                         FROM user_movie_list
-                        WHERE user_id = :user_id AND watched = 1
+                        WHERE user_id = :user_id AND completed = 1
                     )
                     GROUP BY m.id, m.title_br
                     HAVING COUNT(*) >= 2
                     ORDER BY avg_rating DESC, rating_count DESC
                     LIMIT 8';
         $stmt = $this->pdo->prepare($query);
-        $stmt->bindValue('user_id', $userId, PDO::PARAM_INT);
+        $stmt->bindValue(':user_id', $userId, PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
@@ -108,14 +108,14 @@ class UserMovielist
                     AND uml.movie_id NOT IN (
                         SELECT movie_id
                         FROM user_movie_list
-                        WHERE user_id = :user_id AND watched = 1
+                        WHERE user_id = :user_id AND completed = 1
                     )
                     GROUP BY m.id, m.title_br
                     HAVING COUNT(*) >= 2
                     ORDER BY avg_rating DESC, rating_count DESC
                     LIMIT 8';
         $stmt = $this->pdo->prepare($query);
-        $stmt->bindValue('user_id', $userId, PDO::PARAM_INT);
+        $stmt->bindValue(':user_id', $userId, PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
@@ -142,16 +142,16 @@ class UserMovielist
         $params = [];
         $operator = ' AND ';
 
-        if (!empty($filters['watchlist']))
+        if (!empty($filters['listed']))
         {
-            $conditions[] = 'list.watchlist = :watchlist';
-            $params['watchlist'] = $filters['watchlist'];
+            $conditions[] = 'list.listed = :listed';
+            $params['listed'] = $filters['listed'];
         }
 
-        if (!empty($filters['watched']))
+        if (!empty($filters['completed']))
         {
-            $conditions[] = 'list.watched = :watched';
-            $params['watched'] = $filters['watched'];
+            $conditions[] = 'list.completed = :completed';
+            $params['completed'] = $filters['completed'];
         }
 
         if (!empty($filters['rating']))
@@ -168,12 +168,12 @@ class UserMovielist
 
         if (empty($conditions))
         {
-            $params['watchlist'] = 0;
-            $params['watched'] = 0;
+            $params['listed'] = 0;
+            $params['completed'] = 0;
             $params['rating'] = 0;
             $params['liked'] = 0;
-            $conditions[] = 'list.watchlist != :watchlist';
-            $conditions[] = 'list.watched != :watched';
+            $conditions[] = 'list.listed != :listed';
+            $conditions[] = 'list.completed != :completed';
             $conditions[] = 'list.rating != :rating';
             $conditions[] = 'list.liked != :liked';
             $operator = ' OR ';
@@ -186,8 +186,8 @@ class UserMovielist
     {
         $query = 'SELECT id FROM user_movie_list WHERE user_id = :user_id AND movie_id = :movie_id';
         $stmt = $this->pdo->prepare($query);
-        $stmt->bindValue('user_id', $this->userId, PDO::PARAM_INT);
-        $stmt->bindValue('movie_id', $movieId, PDO::PARAM_INT);
+        $stmt->bindValue(':user_id', $this->userId, PDO::PARAM_INT);
+        $stmt->bindValue(':movie_id', $movieId, PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->fetchColumn();
     }
@@ -197,14 +197,14 @@ class UserMovielist
         $params = [
             'user_id'   => $this->userId,
             'movie_id'  => $data['movie_id'],
-            'watchlist' => $data['watchlist'] ?? 0,
-            'watched'   => $data['watched'] ?? 0,
+            'listed' => $data['listed'] ?? 0,
+            'completed'   => $data['completed'] ?? 0,
             'rating'    => $data['rating'] ?? 0,
             'liked'     => $data['liked'] ?? 0
         ];
 
-        $query = 'INSERT INTO user_movie_list (user_id, movie_id, watchlist, watched, rating, liked)
-                  VALUES (:user_id, :movie_id, :watchlist, :watched, :rating, :liked)';
+        $query = 'INSERT INTO user_movie_list (user_id, movie_id, listed, completed, rating, liked)
+                  VALUES (:user_id, :movie_id, :listed, :completed, :rating, :liked)';
         $stmt = $this->pdo->prepare($query);
         return $stmt->execute($params);
     }
@@ -214,16 +214,16 @@ class UserMovielist
         $conditions = [];
         $params['id'] = $data['id'];
 
-        if (isset($data['watchlist']))
+        if (isset($data['listed']))
         {
-            $conditions[] = 'watchlist = :watchlist';
-            $params['watchlist'] = $data['watchlist'];
+            $conditions[] = 'listed = :listed';
+            $params['listed'] = $data['listed'];
         }
 
-        if (isset($data['watched']))
+        if (isset($data['completed']))
         {
-            $conditions[] = 'watched = :watched';
-            $params['watched'] = $data['watched'];
+            $conditions[] = 'completed = :completed';
+            $params['completed'] = $data['completed'];
         }
 
         if (isset($data['rating']) && is_numeric($data['rating']))

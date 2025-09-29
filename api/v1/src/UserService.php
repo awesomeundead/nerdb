@@ -13,27 +13,70 @@ class UserService
     {
         $query = 'SELECT COUNT(*) FROM friendship WHERE user_id1 = :user_id OR user_id2 = :user_id';
         $stmt = $this->pdo->prepare($query);
-        $stmt->bindValue('user_id', $userId, PDO::PARAM_INT);
+        $stmt->bindValue(':user_id', $userId, PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->fetchColumn();
     }
 
-    public function getUserById($id)
+    public function createAutoLogin(int $user_id): void
+    {
+        $address = $_SERVER['HTTP_CLIENT_IP']
+                ?? $_SERVER['HTTP_X_FORWARDED_FOR']
+                ?? $_SERVER['HTTP_X_FORWARDED']
+                ?? $_SERVER['HTTP_FORWARDED_FOR']
+                ?? $_SERVER['HTTP_FORWARDED']
+                ?? $_SERVER['REMOTE_ADDR']
+                ?? 'UNKNOWN';
+
+        $service = new LoginService($this->pdo);
+        $data = $service->addLog($user_id, $address);
+
+        if ($data)
+        {
+            setcookie('login', $data['token'], ['expires' => $data['expire_date'], 'path' => '/', 'httponly' => true]);
+        }
+    }
+
+    public function createSession(array $data): void
+    {
+        Session::set('logged_in', true);
+        Session::set('user_id', $data['id']);
+        Session::set('steamid', $data['steamid']);
+        Session::set('personaname', $data['personaname']);
+        Session::set('avatarhash', $data['avatarhash']);
+    }
+
+    public function getUserById($id): ?array
     {
         $query = 'SELECT * FROM users WHERE id = :id';
         $stmt = $this->pdo->prepare($query);
-        $stmt->bindValue('id', $id, PDO::PARAM_INT);
+        $stmt->bindValue(':id', $id, PDO::PARAM_INT);
         $stmt->execute();
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+        return $stmt->fetch(PDO::FETCH_ASSOC) ?: null;
     }
 
-    public function getUserBySteam($steamid)
+    public function getUserBySteam($steamid): ?array
     {
         $query = 'SELECT * FROM users WHERE steamid = :steamid';
         $stmt = $this->pdo->prepare($query);
-        $stmt->bindValue('steamid', $steamid, PDO::PARAM_INT);
+        $stmt->bindValue(':steamid', $steamid, PDO::PARAM_INT);
         $stmt->execute();
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+        return $stmt->fetch(PDO::FETCH_ASSOC) ?: null;
+    }
+
+    public function getFriendById(int $userId, int $friendId): ?array
+    {
+        $query =   'SELECT users.* FROM users
+                    WHERE users.id = :friend_id AND EXISTS (
+                        SELECT 1 FROM friendship
+                        WHERE (user_id1 = :user_id AND user_id2 = :friend_id)
+                        OR (user_id1 = :friend_id AND user_id2 = :user_id)
+                    )';
+        $stmt = $this->pdo->prepare($query);
+        $stmt->bindValue(':user_id', $userId, PDO::PARAM_INT);
+        $stmt->bindValue(':friend_id', $friendId, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC) ?: null;
     }
 
     public function getFriends(int $userId): array
@@ -41,7 +84,7 @@ class UserService
         $query = 'SELECT IF(user_id1 = :user_id, user_id2, user_id1) AS id
                   FROM friendship WHERE :user_id IN (user_id1, user_id2)';
         $stmt = $this->pdo->prepare($query);
-        $stmt->bindValue('user_id', $userId, PDO::PARAM_INT);
+        $stmt->bindValue(':user_id', $userId, PDO::PARAM_INT);
         $stmt->execute();
         $list = $stmt->fetchAll(PDO::FETCH_COLUMN);
 
@@ -73,7 +116,7 @@ class UserService
                   FROM score WHERE user_id = :user_id';
 
         $stmt = $this->pdo->prepare($query);
-        $stmt->bindValue('user_id', $userId, PDO::PARAM_INT);
+        $stmt->bindValue(':user_id', $userId, PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
@@ -101,7 +144,7 @@ class UserService
 
         $query = 'INSERT INTO score (user_id, add_movie, add_game, update_movie, update_game, rating_movie, rating_game) VALUES (:user_id, 0, 0, 0, 0, 0, 0)';
         $stmt = $this->pdo->prepare($query);
-        $stmt->bindValue('user_id', $id, PDO::PARAM_INT);
+        $stmt->bindValue(':user_id', $id, PDO::PARAM_INT);
         $stmt->execute();
 
         return $id;

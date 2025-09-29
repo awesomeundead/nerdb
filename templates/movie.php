@@ -51,8 +51,8 @@
 
             <?php if ($session->logged_in ?? false): ?>
             <div class="toggle flex_column">
-                <button aria-label="Quero assistir" class="icon watchlist" data-action="watchlist" title="Quero assistir" type="button"></button>
-                <button aria-label="Já assisti" class="icon watched" data-action="watched" title="Já assisti" type="button"></button>
+                <button aria-label="Quero assistir" class="icon listed" data-action="listed" title="Quero assistir" type="button"></button>
+                <button aria-label="Já assisti" class="icon completed" data-action="completed" title="Já assisti" type="button"></button>
                 <button aria-label="Gostei" class="icon like" data-action="liked" title="Gostei" type="button"></button>
             </div>
             <div>Minha avaliação</div>
@@ -78,8 +78,8 @@
             <script>
 
                 const movie = {
-                    watchlist: <?= $movie['watchlist'] ?? 0 ?>,
-                    watched: <?= $movie['watched'] ?? 0 ?>,
+                    listed: <?= $movie['listed'] ?? 0 ?>,
+                    completed: <?= $movie['completed'] ?? 0 ?>,
                     liked: <?= $movie['liked'] ?? 0 ?>,
                     rating: <?= $movie['rating'] ?? 0 ?>
                 };
@@ -103,7 +103,7 @@
                         if (item.dataset.action == 'liked' && item.dataset.value == 1)
                         {
                             //console.log(1);
-                            //document.querySelector('.icon.watched').click();
+                            //document.querySelector('.icon.completed').click();
                         }
                     });
                 });
@@ -128,7 +128,7 @@
             <?php else: ?>
             <div class="add">
                 <a href="login">
-                    <img alt="Ícone de salvar na lista" height="32px" src="saved_empty.png" />
+                    <img alt="Ícone de salvar na lista" height="32px" src="listed_empty.png" />
                     <span>Adicionar à minha lista</span>
                 </a>
             </div>
@@ -173,9 +173,9 @@
         <?php foreach ($movie['friends'] as $friend): ?>
             <div class="item">
                 <div class="flex_column">
-                    <div>
+                    <div class="flex_row">
                         <div class="image">
-                            <a href="friends/movielist/<?= $friend['user_id'] ?>">
+                            <a href="friend/<?= $friend['user_id'] ?>/movielist">
                                 <img alt="" src="https://avatars.steamstatic.com/<?= $friend['avatarhash'] ?>_full.jpg" />
                             </a>
                         </div>
@@ -183,18 +183,18 @@
                     </div>
                     <div class="flex_row">
                         <div class="flex_column">
-                            <?php if ($friend['watchlist']): ?>
-                            <div aria-label="Quer assistir" class="icon watchlist friend" title="Quer assistir"></div>
+                            <?php if ($friend['listed']): ?>
+                            <div aria-label="Quer assistir" class="icon listed friend" title="Quer assistir"></div>
                             <?php else: ?>
-                            <div class="icon watchlist friend disable"></div>
+                            <div class="icon listed friend disable"></div>
                             <?php endif ?>
                         </div>
 
                         <div class="flex_column">
-                            <?php if ($friend['watched']): ?>
-                            <div aria-label="Já assistiu" class="icon watched friend" title="Já assistiu"></div>
+                            <?php if ($friend['completed']): ?>
+                            <div aria-label="Já assistiu" class="icon completed friend" title="Já assistiu"></div>
                             <?php else: ?>
-                            <div class="icon watched friend disable"></div>
+                            <div class="icon completed friend disable"></div>
                             <?php endif ?>
                         </div>
 

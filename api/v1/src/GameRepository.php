@@ -35,7 +35,7 @@ class GameRepository
 
         $query = 'UPDATE score SET add_game = add_game + 1 WHERE user_id = :user_id';
         $stmt = $this->pdo->prepare($query);
-        $stmt->bindValue('user_id', $data['user_id'], PDO::PARAM_INT);
+        $stmt->bindValue(':user_id', $data['user_id'], PDO::PARAM_INT);
         return $stmt->execute();
     }
 
@@ -108,8 +108,8 @@ class GameRepository
     {
         $query = 'SELECT id FROM games WHERE title = :title AND release_year = :release_year';
         $stmt = $this->pdo->prepare($query);
-        $stmt->bindValue('title', $title);
-        $stmt->bindValue('release_year', $year);
+        $stmt->bindValue(':title', $title);
+        $stmt->bindValue(':release_year', $year);
         $stmt->execute();
         return $stmt->fetchColumn();
     }
@@ -118,8 +118,8 @@ class GameRepository
     {
         $query = 'SELECT * FROM games LIMIT :offset, :limit';
         $stmt = $this->pdo->prepare($query);
-        $stmt->bindValue('offset', $offset, PDO::PARAM_INT);
-        $stmt->bindValue('limit', $limit, PDO::PARAM_INT);
+        $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+        $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
@@ -131,7 +131,7 @@ class GameRepository
                   WHERE rating >= 1 GROUP BY games.id ORDER BY rating DESC LIMIT :limit';
 
         $stmt = $this->pdo->prepare($query);
-        $stmt->bindValue('limit', $limit, PDO::PARAM_INT);
+        $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
@@ -140,9 +140,9 @@ class GameRepository
     {
         $query = 'SELECT id, title, media, title_url FROM games WHERE first_user_id = :user_id LIMIT :offset, :limit';
         $stmt = $this->pdo->prepare($query);
-        $stmt->bindValue('user_id', $userId, PDO::PARAM_INT);
-        $stmt->bindValue('offset', $offset, PDO::PARAM_INT);
-        $stmt->bindValue('limit', $limit, PDO::PARAM_INT);
+        $stmt->bindValue(':user_id', $userId, PDO::PARAM_INT);
+        $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+        $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
@@ -180,7 +180,7 @@ class GameRepository
 
         $query = 'UPDATE score SET update_game = update_game + 1 WHERE user_id = :user_id';
         $stmt = $this->pdo->prepare($query);
-        $stmt->bindValue('user_id', $data['user_id'], PDO::PARAM_INT);
+        $stmt->bindValue(':user_id', $data['user_id'], PDO::PARAM_INT);
         return $stmt->execute();
     }
 
@@ -192,7 +192,7 @@ class GameRepository
         if ($userId)
         {
             $params['user_id'] = $userId;
-            $query = 'SELECT games.*, list.playlist, list.played, list.rating, list.liked
+            $query = 'SELECT games.*, list.listed, list.completed, list.rating, list.liked
                       FROM games
                       LEFT JOIN user_game_list AS list ON games.id = list.game_id AND list.user_id = :user_id
                       WHERE games.id = :id';
@@ -208,7 +208,7 @@ class GameRepository
         $query = 'SELECT IF(user_id1 = :user_id, user_id2, user_id1) AS id
                   FROM friendship WHERE :user_id IN (user_id1, user_id2)';
         $stmt = $this->pdo->prepare($query);
-        $stmt->bindValue('user_id', $userId, PDO::PARAM_INT);
+        $stmt->bindValue(':user_id', $userId, PDO::PARAM_INT);
         $stmt->execute();
         $friendIds = $stmt->fetchAll(PDO::FETCH_COLUMN);
 
@@ -219,8 +219,8 @@ class GameRepository
 
         $params = [
             'game_id' => $gameId,
-            'playlist' => 0,
-            'played' => 0,
+            'listed' => 0,
+            'completed' => 0,
             'rating' => 0,
             'liked' => 0
         ];
@@ -239,7 +239,7 @@ class GameRepository
                   FROM user_game_list AS l
                   LEFT JOIN users ON users.id = l.user_id
                   WHERE l.game_id = :game_id
-                  AND (l.playlist != :playlist OR l.played != :played OR l.rating != :rating OR l.liked != :liked)
+                  AND (l.listed != :listed OR l.completed != :completed OR l.rating != :rating OR l.liked != :liked)
                   AND users.id IN ($inClause)";
 
         $stmt = $this->pdo->prepare($query);

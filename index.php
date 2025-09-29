@@ -9,6 +9,18 @@ $uri = substr_replace(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH), '', 0, s
 
 try
 {
+    function runMiddlewares(array $middlewares, callable $finalHandler)
+    {
+        $pipeline = array_reduce(
+            array_reverse($middlewares),
+            fn($next, $middleware) => fn($request) => $middleware($request, $next),
+            $finalHandler
+        );
+
+        return $pipeline;
+    }
+
+    $middlewares = require ROOT_DIR . '/middlewares.php';
     $routes = require ROOT_DIR . '/routes.php';
 
     $dispatcher = \FastRoute\simpleDispatcher($routes);
@@ -23,17 +35,10 @@ try
             throw new HttpException('METHOD NOT ALLOWED', 405);
             break;
         case Dispatcher::FOUND:
-            [,$handler, $vars] = $route_info;
-            
-            if ($handler instanceof \Closure)
-            {
-                call_user_func($handler, $vars);
-            }
-            else
-            {
-                require $handler;
-            }
-
+            [,$handler, $vars] = $route_info;            
+            $finalHandler = fn($vars) => $handler($vars);
+            $pipeline = runMiddlewares($middlewares, $finalHandler);
+            $pipeline($vars);
             break;
     }
 }
