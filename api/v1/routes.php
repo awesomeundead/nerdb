@@ -299,6 +299,40 @@ return function($route)
         return $array;
     }));
 
+    $route->put('/movie/{id:\d+}/cast', jsonMiddleware(function($vars)
+    {
+        $pdo = Database::connect();
+        $loggedIn = Session::get('logged_in');
+        $userId = Session::get('user_id');
+
+        if(!$loggedIn)
+        {
+            http_response_code(401);
+            echo 'UNAUTHORIZED';
+            exit;
+        }
+
+        $content = trim(file_get_contents('php://input'));
+        $data = json_decode($content, true);
+
+        $data['movie_id'] = $vars['id'];
+        //$data['user_id']      = $userId;
+        $data['title_br']     = trim($data['cast']);
+        
+        $service = new MovieRepository($pdo);
+        $result = $service->checkMovieExists($data['movie_id']);
+
+        if ($result === false)
+        {
+            return ['message' => 'Este filme não foi encontrado.'];
+        }
+
+        $result = $service->updateMovieCast($data);
+        $array['status'] = $result ? 'success' : 'failure';
+
+        return $array;
+    }));
+
     $route->get('/movielist', jsonMiddleware(function()
     {
         $pdo = Database::connect();

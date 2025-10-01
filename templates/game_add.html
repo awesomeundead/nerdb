@@ -1,16 +1,25 @@
-<form class="forms">
-    <input name="title" placeholder="Título" required="required" type="text" />
-    <input name="developer" placeholder="Desenvolvedor" required="required" type="text" />
-    <input name="genres" placeholder="Gêneros" type="text" />
-    <input name="release_year" placeholder="Ano de lançamento" required="required" type="number" />
-    <input name="steam" placeholder="Link Steam" type="text" />
-    <button type="submit">Adicionar</button>
-</form>
+<div id="game_form">
+    <h1>Adicionar jogo</h1>
+    <form id="add_game">
+        <label>Título</label>
+        <input name="title" placeholder="Título" required="required" type="text" />
+        <label>Desenvolvedor(es)*</label>
+        <input name="developer" placeholder="Desenvolvedor" required="required" type="text" />
+        <label>Gênero(s)*</label>
+        <input name="genres" placeholder="Gêneros" type="text" />
+        <div class="advice">* Use ";" para mais de um desenvolvedor ou gênero, exemplo: Ação;Aventura;Fantasia</div>
+        <label>Ano de lançamento</label>
+        <input name="release_year" placeholder="Ano de lançamento" required="required" type="number" />
+        <label>Link para a Steam</label>
+        <input name="steam" placeholder="Link Steam" type="text" />
+        <button type="submit">Adicionar</button>
+    </form>
+</div>
 
 <script>
 
 const url = new URL(`api/v1/game`, document.baseURI);
-const form = document.querySelector('form.forms');
+const form = document.querySelector('#add_game');
 
 addForm(url, form);
 

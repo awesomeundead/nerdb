@@ -85,7 +85,7 @@
     }
 }
 
-#achievements, #friend, #friends, #game, #gamelist, #games, #login, #movies, #movie, #movielist, #userlist
+#achievements, #profile_panel, #friends, #game, #gamelist, #games, #login, #movies, #movie, #movielist, #userlist
 {
     margin: auto;
     padding: var(--padding-side);
@@ -177,6 +177,14 @@
         .title, .title_br
         {
             font-size: 18px;
+        }
+
+        .developer, .director, .genres
+        {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            text-align: right;
         }
 
         .listing
@@ -540,15 +548,20 @@
     }
 }
 
-#friend
+#profile_panel
 {
     background-color: #234;
-    display: flex;
+    display: grid;
     gap: 10px;
+    grid-template-areas:
+        "one two"
+        "three three";
+    grid-template-columns: 128px auto;
     padding: 10px;
 
     .image
     {
+        grid-area: one;
         width: 128px;
 
         img
@@ -562,22 +575,24 @@
         display: flex;
         flex-direction: column;
         gap: 5px;
+        grid-area: two;
+    }
 
-        nav
+    nav
+    {
+        display: flex;
+        gap: 5px;
+        grid-area: three;
+
+        a
         {
-            display: flex;
-            gap: 5px;
+            background-color: #345;
+            padding: 10px;
 
-            a
+            &:hover
             {
-                background-color: #345;
-                padding: 10px;
-
-                &:hover
-                {
-                    background-color: #FFF;                        
-                    color: #000;
-                }
+                background-color: #FFF;                        
+                color: #000;
             }
         }
     }
@@ -714,6 +729,77 @@
     }
 }
 
+#game_form, #movie_form
+{
+    margin: auto;
+    padding: var(--padding-side);
+    width: var(--layout-width);
+
+    .grid
+    {
+        display: grid;
+        grid-template-columns: 1fr;
+    }
+
+    .advice
+    {
+        background-color: #0066ad;
+        font-weight: bold;
+        padding: 10px;
+    }
+
+    .notification
+    {
+        font-weight: bold;
+        padding: 10px;
+
+        &.failure
+        {
+            background-color: firebrick;
+        }
+
+        &.success
+        {
+            background-color: forestgreen;
+        }
+    }
+
+    form
+    {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    dialog
+    {
+        background-color: #223;
+        border: none;
+        padding: 25px;
+        width: var(--layout-width);
+    }
+
+    button
+    {
+        background-color: #DDD;
+        border: none;
+        border-radius: 5px;
+
+        &:hover
+        {
+            background-color: #CCC;
+        }
+    }
+
+    input, textarea
+    {
+        background-color: #333;
+        border: 1px solid #999;
+        color: #FFF;
+        padding: 10px;
+    }
+}
+
 #not_found
 {
     text-align: center;
@@ -741,6 +827,11 @@
         {
             gap: 10px;
             grid-template-columns: 384px auto;
+
+            .developer, .director, .genres
+            {
+                flex-direction: row;
+            }
         }
 
         .cast .container
@@ -754,12 +845,29 @@
         }
     }
 
+    #game_form, #movie_form
+    {
+        .grid
+        {
+            gap: 10px;
+            grid-template-columns: 384px auto;
+        }
+    }
+
     #games, #movies
     {
         .container
         {
             grid-template-columns: repeat(2, 1fr);
         }
+    }
+
+    #profile_panel
+    {
+        grid-template-areas: 
+            "one two"
+            "one three";
+        grid-template-rows: 1fr min-content;
     }
 
     #userlist

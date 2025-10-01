@@ -116,6 +116,15 @@ class MovieRepository
         return $movie;
     }
 
+    public function checkMovieExists(int $movieId): bool
+    {
+        $query = 'SELECT 1 FROM movies WHERE id = :id';
+        $stmt = $this->pdo->prepare($query);
+        $stmt->bindValue(':id', $movieId, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchColumn();
+    }
+
     public function getMovieId(string $title, string $year): bool
     {
         $query = 'SELECT id FROM movies WHERE title_br = :title_br AND release_year = :release_year';
@@ -210,6 +219,56 @@ class MovieRepository
         $stmt = $this->pdo->prepare($query);
         $stmt->bindValue(':user_id', $data['user_id'], PDO::PARAM_INT);
         return $stmt->execute();
+    }
+
+    public function updateMovieCast(array $data): bool
+    {
+        $movieId = $data['movie_id'];
+        $array = json_decode($data['cast'], true);
+
+        foreach ($array as $item)
+        {
+            $name = trim($item['actor']);
+            $movieCharacter = trim($item['character']);
+
+            $query = 'SELECT id FROM people WHERE name = :name';
+            $stmt = $this->pdo->prepare($query);
+            $stmt->bindValue(':name', $name);
+            $stmt->execute();
+            $personId = $stmt->fetchColumn() ?: null;
+
+            if ($personId === null)
+            {
+                $query = 'INSERT INTO people (name) VALUES (:name)';
+                $stmt = $this->pdo->prepare($query);
+                $stmt->bindValue(':name', $name);
+                
+                if ($stmt->execute() === false)
+                {
+                    return false;
+                }
+
+                $personId = $this->pdo->lastInsertId();
+            }
+
+            $query = 'SELECT 1 FROM movies_cast WHERE person_id = :person_id AND movie_id = :movie_id LIMIT 1';
+            $stmt = $this->pdo->prepare($query);
+            $stmt->bindValue(':person_id', $personId);
+            $stmt->bindValue(':movie_id', $movieId, PDO::PARAM_INT);
+            $stmt->execute();
+            
+            if ($stmt->fetchColumn() === false)
+            {
+                $query = 'INSERT INTO movies_cast (person_id, movie_id, movie_character) VALUES (:person_id, :movie_id, :movie_character)';
+                $stmt = $this->pdo->prepare($query);
+                $stmt->bindValue(':person_id', $personId);
+                $stmt->bindValue(':movie_id', $movieId);
+                $stmt->bindValue(':movie_character', $movieCharacter);
+                $stmt->execute();
+            }
+        }
+
+        return true;
     }
 
     private function fetchMovie($movieId, $userId)

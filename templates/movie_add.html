@@ -1,17 +1,27 @@
-<form class="forms">
-    <input name="title_br" placeholder="Título em português" required="required" type="text" />
-    <input name="title_us" placeholder="Título em inglês" required="required" type="text" />
-    <input name="director" list="directors" placeholder="Diretor" required="required" type="text" />
-    <input name="genres" placeholder="Gêneros" type="text" />
-    <input name="release_year" placeholder="Ano de lançamento" required="required" type="number" />
-    <input name="imdb" placeholder="Link IMDB" type="text" />
-    <button type="submit">Adicionar</button>
-</form>
+<div id="movie_form">
+    <h1>Adicionar filme</h1>
+    <form id="add_movie">
+        <label>Título em português</label>
+        <input name="title_br" placeholder="Título em português" required="required" type="text" />
+        <label>Título em inglês</label>
+        <input name="title_us" placeholder="Título em inglês" required="required" type="text" />
+        <label>Diretor(es)*</label>
+        <input name="director" list="directors" placeholder="Diretor(es)*" required="required" type="text" />
+        <label>Gênero(s)*</label>
+        <input name="genres" placeholder="Gênero(s)*" type="text" />
+        <div class="advice">* Use ";" para mais de um diretor ou gênero, exemplo: Drama;Mistério;Suspense</div>
+        <label>Ano de lançamento</label>
+        <input name="release_year" placeholder="Ano de lançamento" required="required" type="number" />
+        <label>Link para o IMDB</label>
+        <input name="imdb" placeholder="Link IMDB" type="text" />
+        <button type="submit">Adicionar</button>
+    </form>
+</div>
 
 <script>
 
 const url = new URL(`api/v1/movie`, document.baseURI);
-const form = document.querySelector('form.forms');
+const form = document.querySelector('#add_movie');
 
 addForm(url, form);
 get_directors();

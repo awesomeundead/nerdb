@@ -139,41 +139,10 @@ label
     }
 }
 
-.forms
-{
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    margin: auto;
-    padding: var(--padding-side);
-    width: var(--form-width);
-
-    button
-    {
-        background-color: #DDD;
-        border: none;
-        border-radius: 5px;
-
-        &:hover
-        {
-            background-color: #CCC;
-        }
-    }
-
-    input, textarea
-    {
-        background-color: #333;
-        border: 1px solid #999;
-        color: #FFF;
-        padding: 10px;
-    }
-}
-
 .hidden
 {
     display: none;
 }
-
 
 #app
 {

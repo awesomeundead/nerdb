@@ -27,9 +27,6 @@
                 <div class="label">Diretor:</div>
                 <div class="director"></div>
             </div>
-            <div class="imdb">
-                <a href="" target="_blank">IMDB</a>
-            </div>
         </div>
     </div>
 </template>
@@ -65,7 +62,6 @@ const list = new ContentList(
             clone.querySelector('img').src = item.media?.trim() ? `images/256/${item.media}.webp` : 'noimage.png';
             clone.querySelector('.title_br').textContent =  `${item.title_br} (${item.release_year})`;
             clone.querySelector('.title_us').textContent =  item.title_us;
-            clone.querySelector('.imdb a').href =  `https://www.imdb.com/pt/title/${item.imdb}/`;
 
             container.appendChild(clone);
         });

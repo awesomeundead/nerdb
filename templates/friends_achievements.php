@@ -1,4 +1,4 @@
-<div id="friend">
+<div id="profile_panel">
     <div class="image">
         <img alt="" src="https://avatars.steamstatic.com/<?= $friend['avatarhash'] ?>_full.jpg" />
     </div>
@@ -6,12 +6,12 @@
         <div class="personaname"><?= $friend['personaname'] ?></div>
         <div class="role"><?= $friend['role'] ?></div>
         <div class="created_date"><?= $friend['created_date'] ?></div>
-        <nav>
-            <a data-namelist="movielist" href="friend/<?= $friend['id'] ?>/movielist">Filmes</a>
-            <a data-namelist="gamelist" href="friend/<?= $friend['id'] ?>/gamelist">Jogos</a>
-            <a href="friend/<?= $friend['id'] ?>/achievements">Conquistas</a>
-        </nav>
     </div>
+    <nav>
+        <a data-namelist="movielist" href="friend/<?= $friend['id'] ?>/movielist">Filmes</a>
+        <a data-namelist="gamelist" href="friend/<?= $friend['id'] ?>/gamelist">Jogos</a>
+        <a href="friend/<?= $friend['id'] ?>/achievements">Conquistas</a>
+    </nav>
 </div>
 <div id="achievements" class="flex_row"></div>
 <template>

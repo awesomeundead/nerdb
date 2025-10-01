@@ -23,9 +23,6 @@
                 <div class="label">Desenvolvedor:</div>
                 <div class="developer"></div>
             </div>
-            <div class="steam">
-                <a target="_blank">Steam</a>
-            </div>
         </div>
     </div>
 </template>
@@ -60,12 +57,6 @@ const list = new ContentList(
             clone.querySelector('a').href = `game/${item.id}/${item.title_url}`;
             clone.querySelector('img').src = item.media?.trim() ? `images/games/256/${item.media}.webp` : 'noimage.png';
             clone.querySelector('.title').textContent =  `${item.title} (${item.release_year})`;
-            clone.querySelector('.steam a').href =  `https://steampowered.com/app/${item.steam}/`;
-
-            if (!item.steam)
-            {
-                clone.querySelector('.steam').remove();
-            }
 
             container.appendChild(clone);
         });

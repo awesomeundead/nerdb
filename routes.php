@@ -249,9 +249,16 @@ return function(RouteCollector $route)
         echo $template->render();
     }));
 
-    $route->get('/game/update/{id:\d+}', authMiddleware(function()
+    $route->get('/game/update/{id:\d+}', authMiddleware(function($vars)
     {
-        $template = templates()->make('game_update.html');
+        $pdo = Database::connect();
+        $userId = Session::get('user_id');
+        $gameId = $vars['id'];
+
+        $service = new GameRepository($pdo);
+        $result = $service->getGameDetails($gameId, $userId);
+
+        $template = templates()->make('game_update.php', ['game' => $result]);
         $template->layout('layouts/default.php', ['title' => 'Atualizar jogo']);
 
         echo $template->render();
@@ -359,9 +366,16 @@ return function(RouteCollector $route)
         echo $template->render();
     }));
 
-    $route->get('/movie/update/{id:\d+}', authMiddleware(function()
+    $route->get('/movie/update/{id:\d+}', authMiddleware(function($vars)
     {
-        $template = templates()->make('movie_update.html');
+        $pdo = Database::connect();
+        $userId = Session::get('user_id');
+        $movieId = $vars['id'];
+
+        $service = new MovieRepository($pdo);
+        $result = $service->getMovieDetails($movieId, $userId);
+
+        $template = templates()->make('movie_update.php', ['movie' => $result]);
         $template->layout('layouts/default.php', ['title' => 'Atualizar filme']);
 
         echo $template->render();

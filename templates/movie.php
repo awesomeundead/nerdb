@@ -4,7 +4,7 @@
             <?php if ($movie['media']): ?>
             <img alt="<?= $movie['title_br'] ?>" src="images/512/<?= $movie['media'] ?>.webp" />
             <?php else: ?>
-            <img alt="" src="noimage.png" />
+            <img alt="Sem imagem" src="noimage.png" />
             <?php endif ?>
         </div>
         <div class="flex_row">
@@ -17,7 +17,7 @@
             </div>
             <div class="listing">
                 <div>Gêneros:</div>
-                <div class="genres flex_column">
+                <div class="genres">
                 <?php foreach ($movie['genres'] as $genre): ?>
                     <a href="movies/search?q=genero:<?= $genre ?>"><?= $genre ?></a>
                 <?php endforeach ?>
@@ -29,7 +29,7 @@
             </div>
             <div class="listing">
                 <div>Diretor</div>
-                <div class="director flex_row">
+                <div class="director">
                 <?php foreach ($movie['director'] as $director): ?>
                     <a href="movies/search?q=diretor:<?= $director ?>"><?= $director ?></a>
                 <?php endforeach ?>

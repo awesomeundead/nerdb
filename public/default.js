@@ -140,10 +140,9 @@ class ContentList
     }
 }
 
-function notification(status, message)
+function notification(status, message, container)
 {
     const card = document.createElement('div');
-    const container = document.querySelector('body');
 
     card.innerHTML = message[status]; 
     card.classList.add('notification', status);   
@@ -234,12 +233,12 @@ function sendForm(url, form, method)
         {
             if (json.hasOwnProperty('message'))
             {
-                alert(json.message);
+                notification('failure', {success: 'Sucesso.', failure: json.message}, form);
             }
 
             if (json.hasOwnProperty('status'))
             {
-                notification(json.status, {success: 'Sucesso.', failure: 'Falha.'});
+                notification(json.status, {success: 'Sucesso.', failure: 'Falha.'}, form);
 
                 if (method == 'post' && json.status == 'success')
                 {

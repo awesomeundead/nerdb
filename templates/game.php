@@ -13,7 +13,7 @@
             </div>
             <div class="listing">
                 <div>Gêneros:</div>
-                <div class="genres flex_column">
+                <div class="genres">
                 <?php foreach ($game['genres'] as $genre): ?>
                     <a href="games/search?q=genero:<?= $genre ?>"><?= $genre ?></a>
                 <?php endforeach ?>
@@ -25,7 +25,7 @@
             </div>
             <div class="listing">
                 <div>Desenvolvedor</div>
-                <div class="developer flex_row">
+                <div class="developer">
                 <?php foreach ($game['developer'] as $developer): ?>
                     <a href="games/search?q=desenvolvedor:<?= $developer ?>"><?= $developer ?></a>
                 <?php endforeach ?>

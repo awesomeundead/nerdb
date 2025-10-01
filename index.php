@@ -53,5 +53,7 @@ catch (HttpException $e)
 }
 catch (Throwable $error)
 {
+    file_put_contents('error.log', $error->getMessage(), FILE_APPEND);
+
     echo $error->getMessage();
 }
